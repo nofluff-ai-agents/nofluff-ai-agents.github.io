@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engagement Survey Summariser — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --indigo: #3D4DA8;
+    --indigo-light: #EEF0FB;
+    --amber: #C97B2A;
+    --amber-light: #FDF3E3;
+    --green: #2A8C5E;
+    --green-light: #E4F5ED;
+    --red: #C0392B;
+    --red-light: #FDEEEC;
+    --text: #1C1C1A;
+    --text-muted: #6B6B67;
+    --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08);
+    --surface: #ffffff;
+    --bg: #F5F4EF;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #1C1F3A; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::after { content: ''; position: absolute; bottom: -80px; right: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(61,77,168,0.2) 0%, transparent 70%); }
+  .hero-inner { max-width: 740px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(61,77,168,0.2); color: #9BA8E8; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(61,77,168,0.3); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Fraunces', serif; font-size: clamp(2rem, 5vw, 3rem); color: #ffffff; line-height: 1.15; margin-bottom: 1rem; font-weight: 300; }
+  .hero h1 span { color: #9BA8E8; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.35); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 740px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: var(--indigo); }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  .content { max-width: 740px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .sample-label { display: inline-flex; align-items: center; gap: 6px; background: var(--amber-light); color: var(--amber); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid rgba(201,123,42,0.25); margin-bottom: 1.25rem; }
+
+  .score-hero { display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; background: var(--surface); border: 0.5px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
+  .big-score { text-align: center; }
+  .big-score-num { font-family: 'Fraunces', serif; font-size: 72px; font-weight: 300; color: var(--indigo); line-height: 1; }
+  .big-score-label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+  .score-breakdown h3 { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .score-breakdown p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; }
+  .score-bar-wrap { margin-bottom: 6px; }
+  .score-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .score-bar-track { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 3px; }
+
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .metric { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1rem; }
+  .metric-label { font-size: 11px; color: var(--text-faint); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .metric-value { font-size: 26px; font-weight: 300; font-family: 'Fraunces', serif; color: var(--text); }
+  .metric-sub { font-size: 11px; color: var(--text-faint); margin-top: 4px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+  .card-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
+
+  .dept-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .dept-name { font-size: 12px; color: var(--text-muted); width: 100px; flex-shrink: 0; }
+  .dept-bar-track { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+  .dept-bar-fill { height: 100%; border-radius: 3px; background: var(--indigo); }
+  .dept-score { font-size: 12px; font-weight: 500; color: var(--text); width: 32px; text-align: right; }
+
+  .insights-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .insights-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
+  .insight-col-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .insight-item { display: flex; gap: 8px; margin-bottom: 10px; font-size: 13px; color: var(--text); line-height: 1.5; }
+  .i-dot { width: 5px; height: 5px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+
+  .action-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .action-item { display: grid; grid-template-columns: 26px 1fr auto; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
+  .action-item:last-child { border-bottom: none; }
+  .action-num { width: 26px; height: 26px; border-radius: 50%; background: var(--indigo-light); color: var(--indigo); font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .action-text h4 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .action-text p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .action-badge { font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+  .badge-high { background: var(--red-light); color: var(--red); }
+  .badge-med { background: var(--amber-light); color: var(--amber); }
+  .badge-low { background: var(--green-light); color: var(--green); }
+
+  .next-btn { display: block; width: 100%; background: #1C1F3A; color: #9BA8E8; border: 0.5px solid rgba(61,77,168,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 1rem; }
+  .next-btn:hover { background: #252850; }
+
+  /* BUILD TAB */
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+  .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 2rem; }
+  .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .step:first-child { border-radius: 12px 12px 0 0; }
+  .step:last-child { border-radius: 0 0 12px 12px; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #1C1F3A; color: #9BA8E8; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .step-content a { color: var(--indigo); text-decoration: none; }
+
+  .prompt-box { background: #1C1F3A; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  .prompt-box-label { font-size: 11px; color: #9BA8E8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'DM Sans', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: var(--indigo); color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: #9BA8E8; margin-top: 8px; display: none; }
+
+  .save-box { background: var(--indigo-light); border: 0.5px solid rgba(61,77,168,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: var(--indigo); margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: save-counter; }
+  .save-steps li { counter-increment: save-counter; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: var(--indigo); color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #1C1F3A; color: #9BA8E8; border: 0.5px solid rgba(61,77,168,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: 'DM Sans', sans-serif; }
+  .open-btn:hover { background: #252850; }
+
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 740px; margin: 0 auto; }
+
+  @media (max-width: 600px) {
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .insights-cols { grid-template-columns: 1fr; }
+    .score-hero { grid-template-columns: 1fr; text-align: center; }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#9BA8E8"/></svg>
+      HR &amp; People Analytics · AI Agent
+    </div>
+    <h1>Engagement Survey <span>Summariser</span></h1>
+    <p>Upload your raw engagement survey data and get a leadership-ready summary — scores, department breakdowns, key themes, and a prioritised action plan in seconds.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>HR Leaders &amp; CHROs</strong></div>
+      <div class="hero-meta-item">Powered by <strong>Claude AI</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo', this)">Live demo</button>
+    <button class="tab" onclick="showTab('build', this)">Build it yourself</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- DEMO -->
+  <div class="section active" id="demo">
+
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#C97B2A"/></svg>
+      Sample data — Annual Engagement Survey 2025 · TechCorp UAE · 380 respondents
+    </div>
+
+    <div class="score-hero">
+      <div class="big-score">
+        <div class="big-score-num">72</div>
+        <div class="big-score-label">Overall score</div>
+      </div>
+      <div class="score-breakdown">
+        <h3>Above industry benchmark</h3>
+        <p>The overall engagement score of 72/100 is 6 points above the UAE technology sector average of 66. Response rate was 84% — a strong signal of employee trust in the process.</p>
+        <div class="score-bar-wrap">
+          <div class="score-bar-label"><span>Highly Engaged</span><span>38%</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:38%;background:#3D4DA8"></div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar-label"><span>Engaged</span><span>34%</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:34%;background:#9BA8E8"></div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar-label"><span>Disengaged</span><span>28%</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:28%;background:#E8EAEF"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="metric-label">Response Rate</div>
+        <div class="metric-value">84%</div>
+        <div class="metric-sub">320 of 380 employees</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Leadership Score</div>
+        <div class="metric-value" style="color:var(--green)">78</div>
+        <div class="metric-sub">Highest category</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Growth Score</div>
+        <div class="metric-value" style="color:var(--red)">58</div>
+        <div class="metric-sub">Lowest category</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">vs Last Year</div>
+        <div class="metric-value" style="color:var(--green)">+5</div>
+        <div class="metric-sub">Score improved</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Score by department</div>
+        <div class="dept-row"><div class="dept-name">Engineering</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:80%"></div></div><div class="dept-score">80</div></div>
+        <div class="dept-row"><div class="dept-name">Sales</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:76%"></div></div><div class="dept-score">76</div></div>
+        <div class="dept-row"><div class="dept-name">HR</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:74%"></div></div><div class="dept-score">74</div></div>
+        <div class="dept-row"><div class="dept-name">Marketing</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:70%"></div></div><div class="dept-score">70</div></div>
+        <div class="dept-row"><div class="dept-name">Operations</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:65%"></div></div><div class="dept-score">65</div></div>
+        <div class="dept-row"><div class="dept-name">Finance</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:61%"></div></div><div class="dept-score">61</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Score by category</div>
+        <div style="position:relative;width:100%;height:200px;">
+          <canvas id="catChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="insights-box">
+      <div class="card-title">What employees are saying</div>
+      <div class="insights-cols">
+        <div>
+          <div class="insight-col-label" style="color:var(--green)">Top strengths</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--green)"></div>Senior leadership seen as transparent and approachable</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--green)"></div>Team collaboration and peer support consistently praised</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--green)"></div>Flexible working model valued across all departments</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--green)"></div>Company mission resonates strongly with employees</div>
+        </div>
+        <div>
+          <div class="insight-col-label" style="color:var(--red)">Critical concerns</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--red)"></div>Career growth paths are unclear — especially mid-level roles</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--red)"></div>Internal promotions feel inconsistent and non-transparent</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--red)"></div>L&D budget perceived as insufficient for career development</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--red)"></div>Finance and Operations teams report workload imbalance</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-box">
+      <div class="card-title">Leadership action plan</div>
+      <div class="action-item">
+        <div class="action-num">1</div>
+        <div class="action-text">
+          <h4>Define and publish career progression frameworks</h4>
+          <p>Create transparent levelling guides for each function. Share publicly internally within Q1. Owner: HR + Department Heads.</p>
+        </div>
+        <div class="action-badge badge-high">High priority</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">2</div>
+        <div class="action-text">
+          <h4>Review and standardise the promotion process</h4>
+          <p>Establish a consistent promotion committee and criteria. Communicate decisions with feedback. Owner: CHRO.</p>
+        </div>
+        <div class="action-badge badge-high">High priority</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">3</div>
+        <div class="action-text">
+          <h4>Increase L&D budget and visibility</h4>
+          <p>Review L&D spend vs benchmark. Launch a learning allowance programme. Owner: HR + Finance.</p>
+        </div>
+        <div class="action-badge badge-med">Medium priority</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">4</div>
+        <div class="action-text">
+          <h4>Address workload concerns in Finance and Operations</h4>
+          <p>Conduct team-level pulse surveys. Review headcount plans for both departments. Owner: COO + CFO.</p>
+        </div>
+        <div class="action-badge badge-med">Medium priority</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">5</div>
+        <div class="action-text">
+          <h4>Leverage leadership strength for employer branding</h4>
+          <p>Use high leadership scores in recruitment messaging and Glassdoor presence. Owner: Talent Acquisition.</p>
+        </div>
+        <div class="action-badge badge-low">Quick win</div>
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="showTab('build', document.querySelectorAll('.tab')[1])">
+      Want this for your own data? Build it yourself →
+    </button>
+
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+
+    <div class="build-intro">
+      <p>You don't need to be technical. All you need is a free Claude account and your engagement survey data in Excel or CSV format. Three steps and you're done.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Create a free Claude account</h3>
+          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free. No credit card needed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Copy the prompt below</h3>
+          <p>Click copy, open Claude, start a new conversation, paste the prompt in, and fill in your details where indicated.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Upload your survey data file</h3>
+          <p>Attach your Excel or CSV file alongside the prompt and hit send. Claude will generate your leadership-ready summary instantly.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">Your prompt — copy this</div>
+      <div class="prompt-text" id="promptText">Please fill in the details below before using this prompt.
+Delete any lines that are not applicable to your situation.
+
+---
+
+ABOUT MY ORGANISATION:
+- Company name: [your company name]
+- Industry: [e.g. Technology, Healthcare, Retail]
+- Location: [e.g. UAE, Saudi Arabia, Pan-GCC]
+- Total headcount: [e.g. 200 employees]
+- Survey scale used: [e.g. 1-5 or 1-10 or 0-100]
+- Departments included: [e.g. HR, Sales, Engineering, Finance]
+- Who this report is for: [e.g. CEO, CHRO, Department Heads]
+- Any specific focus areas: [e.g. retention risk, wellbeing, growth]
+
+---
+
+I will now upload my engagement survey data file.
+
+Please analyse it and provide a leadership-ready summary including:
+
+1. Overall engagement score and what it means in context
+2. Response rate and participation breakdown
+3. Score breakdown by department — highlight the highest and lowest
+4. Score breakdown by survey category (e.g. leadership, culture, growth, wellbeing)
+5. Top 3 strengths based on scores and open-ended comments
+6. Top 3 critical concern areas with verbatim themes from comments
+7. Year-on-year comparison if previous data is available
+8. A prioritised action plan with specific recommendations, suggested owners, and timelines
+
+Format the output as a clean executive summary ready to present to leadership. Use clear section headers and plain language — no jargon.</div>
+      <button class="copy-btn" onclick="copyPrompt()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy prompt
+      </button>
+      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, paste it in, fill your details, and attach your file.</div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--indigo)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Click <strong>New Project</strong> and name it "Engagement Survey Summariser"</li>
+        <li>Inside the project, click <strong>Set instructions</strong> and paste the prompt above</li>
+        <li>Every time you want to run a new survey analysis, open this project, attach your latest CSV or Excel file, and hit send — no need to find or copy the prompt again</li>
+      </ul>
+    </div>
+
+    <a href="https://claude.ai" target="_blank" class="open-btn">
+      Open Claude now →
+    </a>
+
+  </div>
+
+</div>
+
+<div class="footer">
+  Part of the AI Agents Library · Built with Claude · Free to use and share
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': 'Engagement Survey Summariser' });
+    const c = document.getElementById('copyConfirm');
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+
+new Chart(document.getElementById('catChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Leadership','Culture','Wellbeing','Inclusion','Collab','Growth'],
+    datasets: [{
+      data: [78, 75, 72, 70, 68, 58],
+      backgroundColor: ['#3D4DA8','#3D4DA8','#3D4DA8','#9BA8E8','#9BA8E8','#C0392B'],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { min: 40, max: 90, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#9E9E99' } },
+      x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9E9E99', autoSkip: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>

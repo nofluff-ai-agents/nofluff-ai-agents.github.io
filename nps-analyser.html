@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPS Analyser — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --red: #D85A30;
+    --red-light: #FAECE7;
+    --gray: #888780;
+    --gray-light: #F1EFE8;
+    --text: #1a1a18;
+    --text-muted: #6b6b67;
+    --text-faint: #9e9e99;
+    --border: rgba(0,0,0,0.08);
+    --surface: #ffffff;
+    --bg: #f7f6f2;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    background: #0f1a14;
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(29,158,117,0.15) 0%, transparent 70%);
+  }
+  .hero-inner { max-width: 720px; margin: 0 auto; position: relative; }
+  .agent-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(29,158,117,0.15);
+    color: #5DCAA5;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 20px;
+    border: 0.5px solid rgba(29,158,117,0.3);
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: #ffffff;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .hero h1 span { color: #5DCAA5; }
+  .hero p {
+    font-size: 16px; color: rgba(255,255,255,0.6);
+    line-height: 1.7; max-width: 520px;
+    margin-bottom: 1.5rem;
+  }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.4); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.7); font-weight: 500; }
+
+  /* NAV TABS */
+  .tabs {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .tabs-inner {
+    max-width: 720px; margin: 0 auto;
+    display: flex; gap: 0;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-muted);
+    border: none; background: none; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab.active { color: var(--text); border-bottom-color: var(--green); }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  /* CONTENT */
+  .content { max-width: 720px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* DASHBOARD SECTION */
+  .sample-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #fff8e6; color: #9a6c00;
+    font-size: 11px; font-weight: 500; padding: 4px 10px;
+    border-radius: 20px; border: 0.5px solid #f0d080;
+    margin-bottom: 1.25rem;
+  }
+  .metrics-grid {
+    display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: 10px; margin-bottom: 1.5rem;
+  }
+  .metric {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: 12px; padding: 1rem;
+  }
+  .metric-label { font-size: 11px; color: var(--text-faint); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .metric-value { font-size: 28px; font-weight: 300; color: var(--text); }
+  .metric-value.green { color: var(--green); }
+  .metric-value.red { color: var(--red); }
+  .metric-sub { font-size: 11px; color: var(--text-faint); margin-top: 4px; }
+
+  .segment-bar { display: flex; border-radius: 6px; overflow: hidden; height: 8px; margin-bottom: 6px; }
+  .segment-legend { display: flex; gap: 16px; font-size: 11px; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .seg-dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; margin-right: 4px; }
+
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .chart-box {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: 12px; padding: 1.25rem;
+  }
+  .chart-box-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
+
+  .insights-box {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;
+  }
+  .insights-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
+  .insight-col-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .insight-col-label.pos { color: var(--green); }
+  .insight-col-label.neg { color: var(--red); }
+  .insight-item { display: flex; gap: 8px; margin-bottom: 10px; font-size: 13px; color: var(--text); line-height: 1.5; }
+  .i-dot { width: 5px; height: 5px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+
+  .recs-box {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;
+  }
+  .rec { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
+  .rec:last-child { border-bottom: none; }
+  .rec-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--green-light); color: var(--green);
+    font-size: 12px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .rec-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+
+  /* BUILD SECTION */
+  .build-intro { margin-bottom: 2rem; }
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; }
+  .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 2rem; }
+  .step {
+    background: var(--surface); border: 0.5px solid var(--border);
+    padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start;
+  }
+  .step:first-child { border-radius: 12px 12px 0 0; }
+  .step:last-child { border-radius: 0 0 12px 12px; }
+  .step-num {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #0f1a14; color: #5DCAA5;
+    font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .step-content a { color: var(--green); text-decoration: none; }
+  .step-content a:hover { text-decoration: underline; }
+
+  .prompt-box {
+    background: #0f1a14; border-radius: 12px;
+    padding: 1.5rem; margin-bottom: 2rem; position: relative;
+  }
+  .prompt-box-label { font-size: 11px; color: #5DCAA5; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text {
+    font-family: 'DM Sans', monospace;
+    font-size: 13px; color: rgba(255,255,255,0.75);
+    line-height: 1.7; white-space: pre-wrap;
+  }
+  .copy-btn {
+    margin-top: 1rem;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--green); color: white;
+    border: none; border-radius: 8px;
+    padding: 10px 20px; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: opacity 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: var(--green); margin-top: 8px; display: none; }
+
+  .open-claude-btn {
+    display: block; width: 100%;
+    background: #0f1a14; color: #5DCAA5;
+    border: 0.5px solid rgba(29,158,117,0.3);
+    border-radius: 10px; padding: 14px;
+    font-size: 14px; font-weight: 500; text-align: center;
+    cursor: pointer; transition: background 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .open-claude-btn:hover { background: #1a2e1f; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center; padding: 2rem;
+    font-size: 12px; color: var(--text-faint);
+    border-top: 0.5px solid var(--border);
+    max-width: 720px; margin: 0 auto;
+  }
+
+  @media (max-width: 600px) {
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .insights-cols { grid-template-columns: 1fr; }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" fill="#5DCAA5"/></svg>
+      HR &amp; People Analytics · AI Agent
+    </div>
+    <h1>NPS <span>Analyser</span></h1>
+    <p>Upload your employee or customer NPS survey data and get an instant dashboard — scores, trends, highlights, and actionable insights in seconds.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>HR Leaders &amp; People Managers</strong></div>
+      <div class="hero-meta-item">Powered by <strong>Claude AI</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo', this)">Live demo</button>
+    <button class="tab" onclick="showTab('build', this)">Build it yourself</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- DEMO SECTION -->
+  <div class="section active" id="demo">
+
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#9a6c00"/></svg>
+      Sample data — Q1 2026 Employee NPS Survey · 214 respondents
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="metric-label">NPS Score</div>
+        <div class="metric-value green">+42</div>
+        <div class="metric-sub">+11 vs last quarter</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Promoters</div>
+        <div class="metric-value">58%</div>
+        <div class="metric-sub">124 respondents</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Passives</div>
+        <div class="metric-value" style="color:var(--gray)">26%</div>
+        <div class="metric-sub">56 respondents</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Detractors</div>
+        <div class="metric-value red">16%</div>
+        <div class="metric-sub">34 respondents</div>
+      </div>
+    </div>
+
+    <div class="segment-bar">
+      <div style="width:58%;background:var(--green)"></div>
+      <div style="width:26%;background:var(--gray)"></div>
+      <div style="width:16%;background:var(--red)"></div>
+    </div>
+    <div class="segment-legend">
+      <span><span class="seg-dot" style="background:var(--green)"></span>Promoters 58%</span>
+      <span><span class="seg-dot" style="background:var(--gray)"></span>Passives 26%</span>
+      <span><span class="seg-dot" style="background:var(--red)"></span>Detractors 16%</span>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-box">
+        <div class="chart-box-title">NPS trend — last 4 quarters</div>
+        <div style="position:relative;width:100%;height:180px;">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-box-title">Score distribution</div>
+        <div style="position:relative;width:100%;height:180px;">
+          <canvas id="distChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="insights-box">
+      <div class="chart-box-title">What employees are saying</div>
+      <div class="insights-cols">
+        <div>
+          <div class="insight-col-label pos">Top positives</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--green)"></div>Strong team culture and psychological safety</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--green)"></div>Flexible working arrangements highly valued</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--green)"></div>Leadership communication improved significantly</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--green)"></div>Learning &amp; development opportunities appreciated</div>
+        </div>
+        <div>
+          <div class="insight-col-label neg">Key concerns</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--red)"></div>Career progression paths feel unclear</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--red)"></div>Compensation benchmarking needs review</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--red)"></div>Cross-team collaboration still fragmented</div>
+          <div class="insight-item"><div class="i-dot" style="background:var(--red)"></div>Performance review process seen as inconsistent</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="recs-box">
+      <div class="chart-box-title">Recommendations</div>
+      <div class="rec">
+        <div class="rec-num">1</div>
+        <div class="rec-text">Launch a career pathing initiative — define clear progression frameworks for each function and share them transparently.</div>
+      </div>
+      <div class="rec">
+        <div class="rec-num">2</div>
+        <div class="rec-text">Conduct a compensation benchmarking review — detractor comments correlate strongly with pay concerns.</div>
+      </div>
+      <div class="rec">
+        <div class="rec-num">3</div>
+        <div class="rec-text">Standardise the performance review process with a single rubric used consistently across all departments.</div>
+      </div>
+      <div class="rec">
+        <div class="rec-num">4</div>
+        <div class="rec-text">Channel the high promoter score into referral programs and employer branding to amplify the culture strength.</div>
+      </div>
+    </div>
+
+    <button class="open-claude-btn" onclick="showTab('build', document.querySelectorAll('.tab')[1])">
+      Want this for your own data? Build it yourself →
+    </button>
+
+  </div>
+
+  <!-- BUILD SECTION -->
+  <div class="section" id="build">
+
+    <div class="build-intro" style="margin-bottom:1.5rem;">
+      <p>You don't need to be technical to use this agent. All you need is a free Claude account and your NPS data in Excel or CSV format. Follow the 3 steps below.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Create a free Claude account</h3>
+          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free. No credit card needed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Copy the prompt below</h3>
+          <p>Click the copy button, open Claude, start a new conversation and paste the prompt in.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Upload your NPS data file</h3>
+          <p>Attach your Excel or CSV file alongside the prompt and hit send. Claude will analyse your data and generate your dashboard instantly.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">Your prompt — copy this</div>
+      <div class="prompt-text" id="promptText">You are an NPS analysis expert. I will upload an Excel or CSV file containing NPS survey data.
+
+Please analyse it and provide:
+1. Overall NPS score (Promoters % minus Detractors %)
+2. Breakdown of Promoters (scores 9-10), Passives (7-8), and Detractors (0-6)
+3. Trend analysis if multiple time periods exist in the data
+4. Top themes from open-ended comments — both positive and negative
+5. 3-5 specific, actionable recommendations based on what the data reveals
+
+Present everything in a clean dashboard format with clear sections, key numbers highlighted, and insights written in plain language for an HR leader audience.</div>
+      <button class="copy-btn" onclick="copyPrompt()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy prompt
+      </button>
+      <div class="copy-confirm" id="copyConfirm">Copied! Now open Claude and paste it in.</div>
+    </div>
+
+    <a href="https://claude.ai" target="_blank" class="open-claude-btn">
+      Open Claude now →
+    </a>
+
+  </div>
+</div>
+
+<div class="footer">
+  Part of the AI Agents Library · Built with Claude · Free to use and share
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': 'NPS Analyser' });
+    const c = document.getElementById('copyConfirm');
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 4000);
+  });
+}
+
+new Chart(document.getElementById('trendChart'), {
+  type: 'line',
+  data: {
+    labels: ['Q2 2025','Q3 2025','Q4 2025','Q1 2026'],
+    datasets: [{
+      data: [18, 25, 31, 42],
+      borderColor: '#1D9E75',
+      backgroundColor: 'rgba(29,158,117,0.07)',
+      tension: 0.4,
+      pointBackgroundColor: '#1D9E75',
+      pointRadius: 4,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { min: 0, max: 55, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#9e9e99' } },
+      x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9e9e99' } }
+    }
+  }
+});
+
+new Chart(document.getElementById('distChart'), {
+  type: 'bar',
+  data: {
+    labels: ['0','1','2','3','4','5','6','7','8','9','10'],
+    datasets: [{
+      data: [2,1,3,4,6,8,10,22,34,61,63],
+      backgroundColor: ['#D85A30','#D85A30','#D85A30','#D85A30','#D85A30','#D85A30','#D85A30','#888780','#888780','#1D9E75','#1D9E75'],
+      borderRadius: 3
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#9e9e99' } },
+      x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9e9e99', autoSkip: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>
