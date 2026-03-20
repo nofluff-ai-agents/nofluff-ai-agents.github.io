@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>End of Service Gratuity Guide — UAE · AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --uae-red: #C0392B; --uae-red-light: #FDEEEC;
+    --uae-green: #006633; --uae-green-light: #E6F2EC;
+    --gold: #B8860B; --gold-light: #FBF6E3;
+    --navy: #1C2B45; --navy-light: #E8ECF2;
+    --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08); --surface: #ffffff; --bg: #F6F5F0;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HERO */
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; right: 0; width: 200px; height: 100%; background: linear-gradient(180deg, rgba(0,102,51,0.15) 0%, transparent 100%); }
+  .hero::after { content: ''; position: absolute; bottom: -60px; left: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 760px; margin: 0 auto; position: relative; }
+  .uae-flag-stripe { display: flex; gap: 6px; margin-bottom: 1.25rem; align-items: center; }
+  .stripe { height: 4px; border-radius: 2px; }
+  .stripe-red { width: 24px; background: #C0392B; }
+  .stripe-white { width: 24px; background: rgba(255,255,255,0.8); }
+  .stripe-black { width: 24px; background: rgba(255,255,255,0.3); }
+  .stripe-green { width: 8px; background: #006633; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,102,51,0.2); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(0,102,51,0.3); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem,4.5vw,2.8rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; font-weight: 500; }
+  .hero h1 span { color: #CAFE48; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  /* TABS */
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 760px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
+
+  .content { max-width: 760px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* LAW BANNER */
+  .law-banner { display: flex; align-items: flex-start; gap: 12px; background: #134611; border: 0.5px solid rgba(28,43,69,0.2); border-radius: 10px; padding: 12px 14px; margin-bottom: 1.5rem; }
+  .law-icon { width: 32px; height: 32px; border-radius: 8px; background: #134611; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+  .law-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .law-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+  /* FORMULA STEPS */
+  .formula-title { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
+  .step-cards { display: flex; flex-direction: column; gap: 1px; margin-bottom: 1.5rem; }
+  .step-card { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .step-card:first-child { border-radius: 12px 12px 0 0; }
+  .step-card:last-child { border-radius: 0 0 12px 12px; }
+  .step-card-num { width: 32px; height: 32px; border-radius: 50%; background: var(--uae-green); color: white; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Poppins', sans-serif; }
+  .step-card-content h4 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-card-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .formula-chip { display: inline-block; background: #134611; color: #CAFE48; font-family: 'Poppins', sans-serif; font-size: 12px; padding: 4px 10px; border-radius: 4px; margin-top: 8px; }
+
+  /* TENURE TIERS */
+  .tier-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .tier-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; text-align: center; position: relative; overflow: hidden; }
+  .tier-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .tier-card.no-pay::before { background: var(--uae-red); }
+  .tier-card.partial::before { background: var(--gold); }
+  .tier-card.full::before { background: var(--uae-green); }
+  .tier-years { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+  .tier-days { font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 500; margin-bottom: 4px; }
+  .tier-days.red { color: var(--uae-red); }
+  .tier-days.gold { color: var(--gold); }
+  .tier-days.green { color: var(--uae-green); }
+  .tier-label { font-size: 11px; color: var(--text-faint); }
+  .tier-note { font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.4; }
+
+  /* WORKED EXAMPLE */
+  .example-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .example-header { background: #134611; padding: 1rem 1.25rem; }
+  .example-header h3 { font-size: 14px; font-weight: 500; color: white; margin-bottom: 2px; }
+  .example-header p { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .example-body { padding: 1.25rem; }
+  .example-employee { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .emp-field { background: var(--bg); border-radius: 8px; padding: 10px 12px; }
+  .emp-label { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .emp-value { font-size: 13px; font-weight: 500; color: var(--text); }
+  .calc-steps { display: flex; flex-direction: column; gap: 8px; }
+  .calc-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; }
+  .calc-row.active { background: var(--uae-green-light); border: 0.5px solid rgba(0,102,51,0.15); }
+  .calc-row.result { background: #134611; }
+  .calc-step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--uae-green); color: white; font-size: 10px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .calc-step-num.dark { background: rgba(255,255,255,0.15); }
+  .calc-label { font-size: 12px; color: var(--text-muted); flex: 1; }
+  .calc-label.white { color: rgba(255,255,255,0.6); }
+  .calc-formula { font-family: 'Poppins', sans-serif; font-size: 12px; color: var(--text-muted); }
+  .calc-formula.green { color: #CAFE48; }
+  .calc-value { font-size: 14px; font-weight: 500; color: var(--uae-green); font-family: 'Poppins', sans-serif; white-space: nowrap; }
+  .calc-value.white { color: #CAFE48; font-size: 16px; }
+  .calc-arrow { color: var(--text-faint); font-size: 12px; }
+
+  /* EDGE CASES */
+  .edge-cases { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .edge-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
+  .edge-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+  .edge-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .edge-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; }
+  .edge-icon.warn { background: var(--gold-light); color: var(--gold); }
+  .edge-icon.info { background: var(--navy-light); color: var(--navy); }
+  .edge-icon.danger { background: var(--uae-red-light); color: var(--uae-red); }
+  .edge-content h4 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .edge-content p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* CAP BOX */
+  .cap-box { display: flex; align-items: center; gap: 14px; background: var(--uae-red-light); border: 0.5px solid rgba(192,57,43,0.2); border-radius: 10px; padding: 14px 16px; margin-bottom: 1.5rem; }
+  .cap-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--uae-red); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; font-weight: 500; font-family: 'Poppins', sans-serif; }
+  .cap-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .cap-text strong { color: var(--text); }
+
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
+
+  /* BUILD */
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .build-note { font-size: 13px; color: var(--text-muted); background: var(--uae-green-light); border: 0.5px solid rgba(0,102,51,0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 1.5rem; line-height: 1.6; }
+  .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 2rem; }
+  .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .step:first-child { border-radius: 12px 12px 0 0; }
+  .step:last-child { border-radius: 0 0 12px 12px; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .step-content a { color: var(--uae-green); text-decoration: none; }
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  .prompt-box-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(0,102,51,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: save-counter; }
+  .save-steps li { counter-increment: save-counter; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 760px; margin: 0 auto; }
+  .disclaimer { font-size: 11px; color: var(--text-faint); text-align: center; margin-top: 1rem; line-height: 1.6; }
+
+  @media (max-width: 600px) {
+    .tier-grid { grid-template-columns: repeat(3,1fr); }
+    .example-employee { grid-template-columns: repeat(2,1fr); }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="uae-flag-stripe">
+      <div class="stripe stripe-green"></div>
+      <div class="stripe stripe-white"></div>
+      <div class="stripe stripe-red"></div>
+      <div class="stripe stripe-black"></div>
+    </div>
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#4DB87A"/></svg>
+      UAE Labour Law · AI Agent
+    </div>
+    <h1>End of Service Gratuity <span>Guide</span></h1>
+    <p>Understand how UAE EOSB is calculated under Federal Decree-Law No. 33 of 2021 — with a worked example, edge case guidance, and a Claude prompt to calculate any employee's gratuity instantly.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>HR Leaders &amp; PRO Teams</strong></div>
+      <div class="hero-meta-item">Based on <strong>UAE Labour Law 2021</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo',this)">How EOSB works</button>
+    <button class="tab" onclick="showTab('build',this)">Calculate with Claude</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="section active" id="demo">
+
+    <div class="law-banner">
+      <div class="law-icon">⚖️</div>
+      <div class="law-text">
+        <strong>Federal Decree-Law No. 33 of 2021 — UAE Labour Law</strong>
+        End of Service Gratuity (EOSB) is a mandatory payment owed to employees upon termination of employment. It is calculated based on basic salary only — allowances are excluded.
+      </div>
+    </div>
+
+    <!-- STEP BY STEP FORMULA -->
+    <div class="formula-title">The EOSB formula — step by step</div>
+    <div class="step-cards">
+      <div class="step-card">
+        <div class="step-card-num">1</div>
+        <div class="step-card-content">
+          <h4>Calculate the daily basic salary rate</h4>
+          <p>Divide the employee's monthly basic salary by 30 days. This is your daily rate — the foundation of every EOSB calculation. Allowances (housing, transport, phone) are NOT included.</p>
+          <div class="formula-chip">Daily rate = Basic salary ÷ 30</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-num">2</div>
+        <div class="step-card-content">
+          <h4>Calculate total years of service</h4>
+          <p>Count the full years and partial months from the official start date to the last working day. Partial years are prorated — a 6-month partial year counts as 0.5 years.</p>
+          <div class="formula-chip">Tenure = End date − Start date (in years)</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-num">3</div>
+        <div class="step-card-content">
+          <h4>Apply the correct gratuity rate per year</h4>
+          <p>The rate depends on total tenure. The first 5 years are calculated at 21 days per year. Any service beyond 5 years is calculated at 30 days per year. These are calculated separately then added together.</p>
+          <div class="formula-chip">Years 1–5: 21 days/year · Years 5+: 30 days/year</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-num">4</div>
+        <div class="step-card-content">
+          <h4>Multiply days by daily rate</h4>
+          <p>Multiply the total gratuity days earned by the daily basic salary rate to get the gross EOSB amount before any deductions.</p>
+          <div class="formula-chip">EOSB = Total gratuity days × Daily rate</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-num">5</div>
+        <div class="step-card-content">
+          <h4>Apply resignation reduction (if applicable)</h4>
+          <p>If the employee resigned — rather than being terminated — a reduction may apply depending on tenure. Less than 1 year: no gratuity. 1–3 years: one third. 3–5 years: two thirds. Over 5 years: full gratuity regardless of resignation or termination.</p>
+          <div class="formula-chip">Termination = Full · Resignation varies by tenure</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TENURE TIERS -->
+    <div class="formula-title" style="margin-bottom:1rem;">Gratuity entitlement at a glance</div>
+    <div class="tier-grid">
+      <div class="tier-card no-pay">
+        <div class="tier-years">Less than 1 year</div>
+        <div class="tier-days red">0</div>
+        <div class="tier-label">days gratuity</div>
+        <div class="tier-note">No entitlement regardless of reason for leaving</div>
+      </div>
+      <div class="tier-card partial">
+        <div class="tier-years">1 – 5 years</div>
+        <div class="tier-days gold">21</div>
+        <div class="tier-label">days per year</div>
+        <div class="tier-note">Reduced if employee resigned in years 1–5</div>
+      </div>
+      <div class="tier-card full">
+        <div class="tier-years">Over 5 years</div>
+        <div class="tier-days green">30</div>
+        <div class="tier-label">days per year</div>
+        <div class="tier-note">Full entitlement — resignation or termination</div>
+      </div>
+    </div>
+
+    <!-- CAP -->
+    <div class="cap-box">
+      <div class="cap-icon">!</div>
+      <div class="cap-text"><strong>Important — EOSB is capped at 2 years total basic salary</strong> regardless of tenure length or calculation outcome. If the calculated EOSB exceeds 24 months of basic salary, it must be capped at that amount.</div>
+    </div>
+
+    <!-- WORKED EXAMPLE -->
+    <div class="example-box">
+      <div class="example-header">
+        <h3>Worked example — step by step calculation</h3>
+        <p>Senior HR Business Partner · NovaTech MENA · Resigned after 7 years 6 months</p>
+      </div>
+      <div class="example-body">
+        <div class="example-employee">
+          <div class="emp-field"><div class="emp-label">Basic salary</div><div class="emp-value">AED 22,000/month</div></div>
+          <div class="emp-field"><div class="emp-label">Tenure</div><div class="emp-value">7 years 6 months</div></div>
+          <div class="emp-field"><div class="emp-label">Reason for leaving</div><div class="emp-value">Resignation</div></div>
+        </div>
+        <div class="calc-steps">
+          <div class="calc-row active">
+            <div class="calc-step-num">1</div>
+            <div class="calc-label">Daily basic salary rate</div>
+            <div class="calc-formula">AED 22,000 ÷ 30</div>
+            <div class="calc-arrow">→</div>
+            <div class="calc-value">AED 733.33</div>
+          </div>
+          <div class="calc-row active">
+            <div class="calc-step-num">2</div>
+            <div class="calc-label">Gratuity for first 5 years (21 days × 5)</div>
+            <div class="calc-formula">105 days × AED 733.33</div>
+            <div class="calc-arrow">→</div>
+            <div class="calc-value">AED 76,999</div>
+          </div>
+          <div class="calc-row active">
+            <div class="calc-step-num">3</div>
+            <div class="calc-label">Gratuity for years 5–7.5 (30 days × 2.5)</div>
+            <div class="calc-formula">75 days × AED 733.33</div>
+            <div class="calc-arrow">→</div>
+            <div class="calc-value">AED 54,999</div>
+          </div>
+          <div class="calc-row active">
+            <div class="calc-step-num">4</div>
+            <div class="calc-label">Total gross EOSB (before resignation check)</div>
+            <div class="calc-formula">76,999 + 54,999</div>
+            <div class="calc-arrow">→</div>
+            <div class="calc-value">AED 131,998</div>
+          </div>
+          <div class="calc-row active">
+            <div class="calc-step-num">5</div>
+            <div class="calc-label">Resignation reduction — over 5 years = full entitlement</div>
+            <div class="calc-formula">No reduction applied</div>
+            <div class="calc-arrow">→</div>
+            <div class="calc-value">AED 131,998</div>
+          </div>
+          <div class="calc-row active">
+            <div class="calc-step-num">6</div>
+            <div class="calc-label">Cap check — 2 years basic salary maximum</div>
+            <div class="calc-formula">AED 22,000 × 24 = AED 528,000</div>
+            <div class="calc-arrow">→</div>
+            <div class="calc-value" style="color:var(--uae-green)">Below cap ✓</div>
+          </div>
+          <div class="calc-row result">
+            <div class="calc-step-num dark">✓</div>
+            <div class="calc-label white">Final EOSB payable</div>
+            <div class="calc-formula green">Full entitlement — resigned after 5+ years</div>
+            <div class="calc-arrow" style="color:rgba(255,255,255,0.3)">→</div>
+            <div class="calc-value white">AED 131,998</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDGE CASES -->
+    <div class="edge-cases">
+      <div class="edge-title">Edge cases to watch for</div>
+      <div class="edge-item">
+        <div class="edge-icon warn">⚠</div>
+        <div class="edge-content">
+          <h4>Unpaid leave deductions</h4>
+          <p>Days of unpaid leave must be subtracted from total service before calculating EOSB. Keep accurate records of all unpaid absence throughout employment.</p>
+        </div>
+      </div>
+      <div class="edge-item">
+        <div class="edge-icon info">i</div>
+        <div class="edge-content">
+          <h4>Salary changes during tenure</h4>
+          <p>EOSB is always calculated on the final basic salary at the time of termination — not an average. A recent salary increase benefits the employee significantly.</p>
+        </div>
+      </div>
+      <div class="edge-item">
+        <div class="edge-icon warn">⚠</div>
+        <div class="edge-content">
+          <h4>Limited vs unlimited contracts</h4>
+          <p>Under the 2021 law, all new contracts are effectively unlimited. However legacy limited contracts may carry different termination implications — always check the original contract type.</p>
+        </div>
+      </div>
+      <div class="edge-item">
+        <div class="edge-icon danger">!</div>
+        <div class="edge-content">
+          <h4>Termination for cause</h4>
+          <p>Under Article 44 of Federal Decree-Law No. 33 of 2021, an employer may terminate without EOSB in cases of gross misconduct. This requires proper documentation and due process — seek legal advice before withholding gratuity.</p>
+        </div>
+      </div>
+      <div class="edge-item">
+        <div class="edge-icon info">i</div>
+        <div class="edge-content">
+          <h4>Freezone employees</h4>
+          <p>Some freezones (DIFC, ADGM) have their own employment regulations which may differ from mainland UAE Labour Law. Always verify the applicable law for your entity type.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">This guide is for educational purposes only and does not constitute legal advice. Always verify calculations with a qualified UAE employment lawyer or licensed HR consultant for complex cases.</div>
+
+    <button class="next-btn" onclick="showTab('build',document.querySelectorAll('.tab')[1])">
+      Calculate a specific employee's EOSB with Claude →
+    </button>
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+    <div class="build-intro">
+      <p>Use the prompt below to walk Claude through any employee's specific EOSB situation. Claude will apply the correct UAE Labour Law formula, handle edge cases, and show you the full calculation with workings.</p>
+    </div>
+    <div class="build-note">
+      Claude will guide you through the calculation step by step and explain its reasoning — not just give you a number. This is especially useful for complex cases involving resignations, unpaid leave, or salary changes during tenure.
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Create a free Claude account</h3>
+          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free. No credit card needed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Copy the prompt and fill in the employee details</h3>
+          <p>Enter the employee's basic salary, start and end dates, reason for leaving, and any known edge cases. Delete lines that don't apply.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Get a full calculation with workings</h3>
+          <p>Claude calculates the EOSB step by step, flags any edge cases, and tells you the final amount payable — with full reasoning you can share with the employee or legal team.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">Your prompt — copy and fill in employee details</div>
+      <div class="prompt-text" id="promptText">Please fill in the employee details below before using this prompt.
+Delete any lines that are not applicable to your situation.
+
+---
+
+EMPLOYEE DETAILS:
+- Employee name: [e.g. Sarah Al-Mansouri — or use "Employee" for privacy]
+- Nationality: [e.g. UAE National, British, Indian]
+- Job title: [e.g. Senior HR Business Partner]
+- Entity type: [e.g. UAE Mainland / DIFC / ADGM / Abu Dhabi Freezone]
+
+EMPLOYMENT DETAILS:
+- Start date: [e.g. 1 March 2018]
+- Last working day: [e.g. 28 February 2026]
+- Reason for leaving: [Resignation / Termination by employer / Mutual agreement / Redundancy]
+- Contract type: [Unlimited / Limited — specify end date if limited]
+
+SALARY DETAILS:
+- Final basic monthly salary: [e.g. AED 22,000]
+- Were there any salary changes during employment? [Yes / No — if Yes, list dates and amounts]
+
+ADDITIONAL FACTORS (delete any that do not apply):
+- Total unpaid leave days during employment: [e.g. 15 days — delete if none]
+- Any periods of suspension without pay: [e.g. 5 days in 2023 — delete if none]
+- Was the employee terminated for gross misconduct? [Yes / No]
+- Any advance gratuity payments already made: [e.g. AED 10,000 paid in 2022 — delete if none]
+
+---
+
+Using UAE Federal Decree-Law No. 33 of 2021, please:
+
+1. Calculate the total years and months of service — accounting for any unpaid leave deductions
+2. Calculate the daily basic salary rate
+3. Apply the correct gratuity entitlement:
+   - First 5 years at 21 days per year
+   - Beyond 5 years at 30 days per year
+   - Partial years prorated accordingly
+4. Apply the resignation reduction if applicable (under 5 years service)
+5. Check against the 2-year cap (24 × monthly basic salary)
+6. State the final EOSB amount payable
+7. Show all workings clearly so the calculation can be verified and shared
+8. Flag any edge cases or areas where legal advice should be sought
+
+Present as a clear step-by-step calculation with the final amount clearly stated at the end.</div>
+      <button class="copy-btn" onclick="copyPrompt()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy prompt
+      </button>
+      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, paste it in, fill the employee details and hit send.</div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--uae-green)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Click <strong>New Project</strong> and name it "EOSB Calculator — UAE"</li>
+        <li>Click <strong>Set instructions</strong> and paste the prompt above</li>
+        <li>Every time an employee leaves, open this project, fill in their details, and get the full EOSB calculation instantly — no need to re-paste the prompt</li>
+      </ul>
+    </div>
+
+    <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+
+    <div class="disclaimer" style="margin-top:1.5rem;">This tool is for guidance only and does not constitute legal advice. For complex cases, terminations for cause, or freezone employees, always consult a qualified UAE employment lawyer.</div>
+  </div>
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': 'EOSB Calculator UAE' });
+    const c = document.getElementById('copyConfirm');
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+</script>
+</body>
+</html>

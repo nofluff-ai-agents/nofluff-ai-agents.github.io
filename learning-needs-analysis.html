@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Needs Analysis Summariser — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --violet: #5B2D8E; --violet-light: #F0EAF8; --violet-mid: #8B5FCF;
+    --teal: #0D7D6A; --teal-light: #E6F5F2;
+    --amber: #B87A1A; --amber-light: #FBF4E3;
+    --red: #C0392B; --red-light: #FDEEEC;
+    --green: #2A7A4A; --green-light: #E8F5EE;
+    --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08); --surface: #ffffff; --bg: #F6F4F1;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 780px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(91,45,142,0.25); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(91,45,142,0.4); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem,4.5vw,3rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; }
+  .hero h1 span { color: #CAFE48; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 780px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
+
+  .content { max-width: 780px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .sample-label { display: inline-flex; align-items: center; gap: 6px; background: var(--violet-light); color: var(--violet); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid rgba(91,45,142,0.2); margin-bottom: 1.25rem; }
+
+  /* INSIGHT STRIP */
+  .insight-strip { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .insight-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1rem; }
+  .insight-num { font-size: 26px; font-weight: 500; font-family: 'Poppins', sans-serif; }
+  .insight-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+
+  /* HEATMAP */
+  .heatmap-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; overflow-x: auto; }
+  .heatmap-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .heatmap-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 1.25rem; }
+  .heatmap-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  .heatmap-table th { font-size: 10px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 8px 8px; text-align: center; }
+  .heatmap-table th.row-header { text-align: left; padding-left: 0; }
+  .heatmap-table td { padding: 4px 4px; }
+  .heatmap-table td.dept-label { font-size: 12px; font-weight: 500; color: var(--text); padding-right: 12px; white-space: nowrap; }
+  .heat-cell { border-radius: 6px; padding: 8px 4px; text-align: center; font-size: 12px; font-weight: 500; font-family: 'Poppins', sans-serif; cursor: default; transition: transform 0.15s; }
+  .heat-cell:hover { transform: scale(1.08); }
+  .h1 { background: #FDEEEC; color: #C0392B; }
+  .h2 { background: #FBF0E8; color: #C0602B; }
+  .h3 { background: #FBF4E3; color: #B87A1A; }
+  .h4 { background: #EEF5E8; color: #4A7A2A; }
+  .h5 { background: #E8F5EE; color: #2A7A4A; }
+  .heatmap-legend { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; }
+
+  /* TOP GAPS */
+  .gaps-section { margin-bottom: 1.5rem; }
+  .gaps-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
+  .gap-bar-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem; margin-bottom: 8px; }
+  .gap-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .gap-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .gap-score { font-size: 12px; color: var(--text-muted); }
+  .gap-bar-track { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+  .gap-bar-fill { height: 100%; border-radius: 4px; }
+  .gap-meta { display: flex; gap: 12px; font-size: 11px; color: var(--text-faint); flex-wrap: wrap; }
+  .gap-tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 500; }
+  .tag-wide { background: var(--red-light); color: var(--red); }
+  .tag-targeted { background: var(--amber-light); color: var(--amber); }
+  .tag-blind { background: var(--violet-light); color: var(--violet); }
+
+  /* AUDIENCE SEGMENTS */
+  .segments-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .segment-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; position: relative; overflow: hidden; }
+  .segment-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .seg-stretch::before { background: var(--violet); }
+  .seg-core::before { background: var(--teal); }
+  .seg-found::before { background: var(--amber); }
+  .seg-icon { font-size: 22px; margin-bottom: 8px; }
+  .seg-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .seg-count { font-size: 11px; color: var(--text-faint); margin-bottom: 8px; }
+  .seg-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
+  .seg-needs { font-size: 11px; color: var(--text-faint); }
+  .seg-need-tag { display: inline-block; background: var(--bg); border-radius: 4px; padding: 2px 6px; margin: 2px 2px 2px 0; font-size: 10px; color: var(--text-muted); }
+
+  /* INTERVENTION TABLE */
+  .intervention-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .int-header { background: #134611; padding: 1rem 1.25rem; }
+  .int-header h3 { font-size: 14px; font-weight: 500; color: white; }
+  .int-header p { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+  .int-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 80px 90px; gap: 0; padding: 12px 1.25rem; border-bottom: 0.5px solid var(--border); align-items: start; }
+  .int-row:last-child { border-bottom: none; }
+  .int-row:hover { background: var(--bg); }
+  .int-th { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.75); text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 1.25rem; background: #134611; }
+  .int-header-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 80px 90px; }
+  .int-skill { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .int-audience { font-size: 11px; color: var(--text-faint); }
+  .int-type { font-size: 12px; color: var(--text-muted); }
+  .int-type-badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 20px; margin-top: 4px; }
+  .type-workshop { background: var(--violet-light); color: var(--violet); }
+  .type-mentoring { background: var(--teal-light); color: var(--teal); }
+  .type-elearning { background: var(--amber-light); color: var(--amber); }
+  .type-coaching { background: #FBF0E8; color: #C0602B; }
+  .type-otj { background: var(--green-light); color: var(--green); }
+  .int-timeline { font-size: 12px; color: var(--text-muted); }
+  .priority-badge { font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 20px; display: inline-block; }
+  .p-high { background: var(--red-light); color: var(--red); }
+  .p-med { background: var(--amber-light); color: var(--amber); }
+  .p-low { background: var(--green-light); color: var(--green); }
+
+  /* BLIND SPOT BOX */
+  .blindspot-box { display: flex; gap: 12px; background: var(--violet-light); border: 0.5px solid rgba(91,45,142,0.2); border-radius: 10px; padding: 14px 16px; margin-bottom: 1.5rem; }
+  .blindspot-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--violet); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .blindspot-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .blindspot-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
+
+  /* BUILD */
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .build-note { font-size: 13px; color: var(--text-muted); background: var(--violet-light); border: 0.5px solid rgba(91,45,142,0.15); border-radius: 8px; padding: 10px 14px; margin-bottom: 1.5rem; line-height: 1.6; }
+
+  /* CSV TEMPLATE */
+  .csv-preview { background: #134611; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; overflow-x: auto; }
+  .csv-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; font-weight: 500; }
+  .csv-table { border-collapse: collapse; font-size: 11px; font-family: 'DM Sans', monospace; white-space: nowrap; }
+  .csv-table th { color: rgba(255,255,255,0.4); padding: 4px 12px 4px 0; font-weight: 400; text-align: left; }
+  .csv-table td { color: rgba(255,255,255,0.7); padding: 4px 12px 4px 0; }
+  .csv-table tr:first-child td { color: #CAFE48; font-weight: 500; }
+
+  .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 1.5rem; }
+  .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .step:first-child { border-radius: 12px 12px 0 0; }
+  .step:last-child { border-radius: 0 0 12px 12px; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .step-content a { color: var(--violet); text-decoration: none; }
+
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  .prompt-box-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(91,45,142,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: save-counter; }
+  .save-steps li { counter-increment: save-counter; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 780px; margin: 0 auto; }
+
+  @media (max-width: 600px) {
+    .insight-strip { grid-template-columns: repeat(2,1fr); }
+    .segments-grid { grid-template-columns: 1fr; }
+    .int-header-row, .int-row { grid-template-columns: 1.5fr 1fr 80px; }
+    .int-header-row > *:nth-child(3), .int-row > *:nth-child(3), .int-header-row > *:nth-child(4), .int-row > *:nth-child(4) { display: none; }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#C39EE8"/></svg>
+      Learning &amp; Development · AI Agent
+    </div>
+    <h1>Learning Needs Analysis <span>Summariser</span></h1>
+    <p>Upload your L&D survey data and get prioritised skill gaps, audience segments, and recommended interventions — in seconds, not hours.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>L&D &amp; HR Leaders</strong></div>
+      <div class="hero-meta-item">Turns raw survey data into <strong>actionable insights</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo',this)">Live demo</button>
+    <button class="tab" onclick="showTab('build',this)">Build it yourself</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="section active" id="demo">
+
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#5B2D8E"/></svg>
+      Sample — NovaTech MENA HR Team · 24 employees · 8 skills assessed
+    </div>
+
+    <!-- INSIGHT STRIP -->
+    <div class="insight-strip">
+      <div class="insight-card">
+        <div class="insight-num" style="color:var(--violet)">8</div>
+        <div class="insight-label">Skills assessed across the team</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-num" style="color:var(--red)">3</div>
+        <div class="insight-label">Critical skill gaps requiring immediate action</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-num" style="color:var(--amber)">2</div>
+        <div class="insight-label">Blind spots — overconfidence vs manager rating</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-num" style="color:var(--teal)">5</div>
+        <div class="insight-label">Recommended interventions prioritised</div>
+      </div>
+    </div>
+
+    <!-- HEATMAP -->
+    <div class="heatmap-section">
+      <div class="heatmap-title">Skill gap heatmap — average score by department (1 = critical gap · 5 = proficient)</div>
+      <div class="heatmap-sub">Hover over any cell to see the score. Red = urgent gap. Green = strong.</div>
+      <table class="heatmap-table">
+        <thead>
+          <tr>
+            <th class="row-header">Department</th>
+            <th>Data<br>Analytics</th>
+            <th>Business<br>Partnering</th>
+            <th>L&D<br>Design</th>
+            <th>Employment<br>Law</th>
+            <th>Recruitment</th>
+            <th>Compensation</th>
+            <th>Change<br>Mgmt</th>
+            <th>Coaching</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="dept-label">HRBP (n=8)</td>
+            <td><div class="heat-cell h1" title="1.8">1.8</div></td>
+            <td><div class="heat-cell h5" title="4.2">4.2</div></td>
+            <td><div class="heat-cell h3" title="2.8">2.8</div></td>
+            <td><div class="heat-cell h4" title="3.5">3.5</div></td>
+            <td><div class="heat-cell h4" title="3.8">3.8</div></td>
+            <td><div class="heat-cell h1" title="1.5">1.5</div></td>
+            <td><div class="heat-cell h3" title="3.0">3.0</div></td>
+            <td><div class="heat-cell h4" title="4.0">4.0</div></td>
+          </tr>
+          <tr>
+            <td class="dept-label">L&D (n=6)</td>
+            <td><div class="heat-cell h3" title="3.0">3.0</div></td>
+            <td><div class="heat-cell h3" title="3.2">3.2</div></td>
+            <td><div class="heat-cell h5" title="4.5">4.5</div></td>
+            <td><div class="heat-cell h2" title="2.2">2.2</div></td>
+            <td><div class="heat-cell h2" title="2.0">2.0</div></td>
+            <td><div class="heat-cell h1" title="1.8">1.8</div></td>
+            <td><div class="heat-cell h4" title="3.5">3.5</div></td>
+            <td><div class="heat-cell h3" title="3.0">3.0</div></td>
+          </tr>
+          <tr>
+            <td class="dept-label">Recruitment (n=6)</td>
+            <td><div class="heat-cell h2" title="2.0">2.0</div></td>
+            <td><div class="heat-cell h2" title="2.5">2.5</div></td>
+            <td><div class="heat-cell h1" title="1.5">1.5</div></td>
+            <td><div class="heat-cell h3" title="2.8">2.8</div></td>
+            <td><div class="heat-cell h5" title="4.8">4.8</div></td>
+            <td><div class="heat-cell h1" title="1.5">1.5</div></td>
+            <td><div class="heat-cell h2" title="2.2">2.2</div></td>
+            <td><div class="heat-cell h2" title="2.5">2.5</div></td>
+          </tr>
+          <tr>
+            <td class="dept-label">Operations HR (n=4)</td>
+            <td><div class="heat-cell h3" title="2.8">2.8</div></td>
+            <td><div class="heat-cell h3" title="3.0">3.0</div></td>
+            <td><div class="heat-cell h2" title="2.0">2.0</div></td>
+            <td><div class="heat-cell h4" title="3.8">3.8</div></td>
+            <td><div class="heat-cell h3" title="3.2">3.2</div></td>
+            <td><div class="heat-cell h2" title="2.0">2.0</div></td>
+            <td><div class="heat-cell h4" title="3.5">3.5</div></td>
+            <td><div class="heat-cell h3" title="3.0">3.0</div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="heatmap-legend">
+        <div class="legend-item"><div class="legend-swatch" style="background:#FDEEEC"></div>1.0–1.9 Critical</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#FBF0E8"></div>2.0–2.4 Weak</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#FBF4E3"></div>2.5–3.4 Developing</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#EEF5E8"></div>3.5–4.4 Solid</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#E8F5EE"></div>4.5–5.0 Strong</div>
+      </div>
+    </div>
+
+    <!-- TOP GAPS -->
+    <div class="gaps-section">
+      <div class="gaps-title">Top 5 skill gaps — ranked by severity and breadth</div>
+
+      <div class="gap-bar-item">
+        <div class="gap-bar-header">
+          <div class="gap-name">Compensation &amp; Rewards</div>
+          <div class="gap-score">Avg 1.6 / 5 · <span class="gap-tag tag-wide">Organisation-wide gap</span></div>
+        </div>
+        <div class="gap-bar-track"><div class="gap-bar-fill" style="width:32%;background:#C0392B"></div></div>
+        <div class="gap-meta">All 4 departments score below 2.0 · 22 of 24 employees need development · Highest budget ROI if addressed centrally</div>
+      </div>
+
+      <div class="gap-bar-item">
+        <div class="gap-bar-header">
+          <div class="gap-name">Data Analytics for HR</div>
+          <div class="gap-score">Avg 2.4 / 5 · <span class="gap-tag tag-wide">Organisation-wide gap</span></div>
+        </div>
+        <div class="gap-bar-track"><div class="gap-bar-fill" style="width:48%;background:#C0602B"></div></div>
+        <div class="gap-meta">HRBP team critically low at 1.8 · Growing business expectation for data-driven HR decisions · Urgent upskilling needed</div>
+      </div>
+
+      <div class="gap-bar-item">
+        <div class="gap-bar-header">
+          <div class="gap-name">L&D Design</div>
+          <div class="gap-score">Avg 2.5 / 5 · <span class="gap-tag tag-targeted">Targeted gap</span></div>
+        </div>
+        <div class="gap-bar-track"><div class="gap-bar-fill" style="width:50%;background:#B87A1A"></div></div>
+        <div class="gap-meta">Critical only in HRBP and Recruitment — L&D team is strong · Targeted intervention, not company-wide training</div>
+      </div>
+
+      <div class="gap-bar-item">
+        <div class="gap-bar-header">
+          <div class="gap-name">Employment Law</div>
+          <div class="gap-score">Avg 2.9 / 5 · <span class="gap-tag tag-targeted">Targeted gap</span></div>
+        </div>
+        <div class="gap-bar-track"><div class="gap-bar-fill" style="width:58%;background:#B87A1A"></div></div>
+        <div class="gap-meta">L&D team scores 2.2 — concerning given they design compliance training · Recruitment also below benchmark</div>
+      </div>
+
+      <div class="gap-bar-item">
+        <div class="gap-bar-header">
+          <div class="gap-name">Business Partnering</div>
+          <div class="gap-score">Avg 3.2 / 5 · <span class="gap-tag tag-blind">Blind spot detected</span></div>
+        </div>
+        <div class="gap-bar-track"><div class="gap-bar-fill" style="width:64%;background:#5B2D8E"></div></div>
+        <div class="gap-meta">Recruitment team self-rates 3.8 · Manager rates them 2.1 · Overconfidence gap — awareness intervention needed first</div>
+      </div>
+    </div>
+
+    <!-- BLIND SPOT -->
+    <div class="blindspot-box">
+      <div class="blindspot-icon">👁</div>
+      <div class="blindspot-text">
+        <strong>2 blind spots detected — self vs manager rating discrepancy</strong>
+        Business Partnering and Change Management show significant gaps between how employees rate themselves and how their managers rate them. Standard e-learning won't work here — employees won't engage with training they think they don't need. Recommended first step: structured manager feedback conversations to close the perception gap before any formal training.
+      </div>
+    </div>
+
+    <!-- AUDIENCE SEGMENTS -->
+    <div class="gaps-title" style="margin-bottom:1rem;">Who needs what — audience segments</div>
+    <div class="segments-grid">
+      <div class="segment-card seg-stretch">
+        <div class="seg-icon">🚀</div>
+        <div class="seg-title">Stretch learners</div>
+        <div class="seg-count">6 employees · Senior HRBP team</div>
+        <div class="seg-desc">Strong core HR skills. Ready for advanced capability building. Will disengage from foundational content.</div>
+        <div class="seg-needs">Needs: <span class="seg-need-tag">Data analytics</span><span class="seg-need-tag">Strategic L&D</span><span class="seg-need-tag">Compensation design</span></div>
+      </div>
+      <div class="segment-card seg-core">
+        <div class="seg-icon">📈</div>
+        <div class="seg-title">Core builders</div>
+        <div class="seg-count">12 employees · Mid-level across all teams</div>
+        <div class="seg-desc">Solid foundation, clear development areas. Most responsive to structured learning programmes.</div>
+        <div class="seg-needs">Needs: <span class="seg-need-tag">Business partnering</span><span class="seg-need-tag">Employment law</span><span class="seg-need-tag">Data literacy</span></div>
+      </div>
+      <div class="segment-card seg-found">
+        <div class="seg-icon">🌱</div>
+        <div class="seg-title">Foundation builders</div>
+        <div class="seg-count">6 employees · Junior &amp; newer joiners</div>
+        <div class="seg-desc">Multiple gaps across core skills. Need structured onboarding-style learning before specialist development.</div>
+        <div class="seg-needs">Needs: <span class="seg-need-tag">HR fundamentals</span><span class="seg-need-tag">Coaching basics</span><span class="seg-need-tag">Mentoring</span></div>
+      </div>
+    </div>
+
+    <!-- INTERVENTIONS -->
+    <div class="intervention-box">
+      <div class="int-header">
+        <h3>Prioritised intervention plan</h3>
+        <p>Recommended by skill gap severity, audience breadth, and budget efficiency</p>
+      </div>
+      <div class="int-header-row">
+        <div class="int-th">Skill gap</div>
+        <div class="int-th">Intervention type</div>
+        <div class="int-th">Audience</div>
+        <div class="int-th">Timeline</div>
+        <div class="int-th">Priority</div>
+      </div>
+      <div class="int-row">
+        <div><div class="int-skill">Compensation &amp; Rewards</div><div class="int-audience">All 24 employees</div></div>
+        <div><div class="int-type">2-day external masterclass</div><div class="int-type-badge type-workshop">Workshop</div></div>
+        <div class="int-type">All departments — highest ROI if addressed centrally</div>
+        <div class="int-timeline">Q2 2026</div>
+        <div><span class="priority-badge p-high">High</span></div>
+      </div>
+      <div class="int-row">
+        <div><div class="int-skill">Data Analytics for HR</div><div class="int-audience">All teams — HRBP priority</div></div>
+        <div><div class="int-type">Online course + internal data project</div><div class="int-type-badge type-elearning">E-learning + OTJ</div></div>
+        <div class="int-type">Blended — self-paced course with a real data project to apply learning</div>
+        <div class="int-timeline">Q2–Q3 2026</div>
+        <div><span class="priority-badge p-high">High</span></div>
+      </div>
+      <div class="int-row">
+        <div><div class="int-skill">Business Partnering (blind spot)</div><div class="int-audience">Recruitment team</div></div>
+        <div><div class="int-type">Manager feedback → coaching</div><div class="int-type-badge type-coaching">Coaching</div></div>
+        <div class="int-type">Awareness first — structured 1:1 feedback sessions before any training</div>
+        <div class="int-timeline">Q2 2026</div>
+        <div><span class="priority-badge p-high">High</span></div>
+      </div>
+      <div class="int-row">
+        <div><div class="int-skill">L&D Design</div><div class="int-audience">HRBP + Recruitment only</div></div>
+        <div><div class="int-type">Peer learning from L&D team</div><div class="int-type-badge type-mentoring">Mentoring</div></div>
+        <div class="int-type">Internal knowledge transfer — L&D team are the experts, leverage them</div>
+        <div class="int-timeline">Q3 2026</div>
+        <div><span class="priority-badge p-med">Medium</span></div>
+      </div>
+      <div class="int-row">
+        <div><div class="int-skill">Employment Law</div><div class="int-audience">L&D + Recruitment</div></div>
+        <div><div class="int-type">Legal briefing + self-study</div><div class="int-type-badge type-elearning">E-learning</div></div>
+        <div class="int-type">Quarterly legal update briefings + recommended reading programme</div>
+        <div class="int-timeline">Q3 2026</div>
+        <div><span class="priority-badge p-med">Medium</span></div>
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="showTab('build',document.querySelectorAll('.tab')[1])">
+      Analyse your own team's learning needs →
+    </button>
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+    <div class="build-intro">
+      <p>Three simple steps. Collect your survey data, upload it to Claude, and get your full learning needs analysis — heatmap, gaps, segments, and intervention plan — in under a minute.</p>
+    </div>
+    <div class="build-note">
+      Claude does the heavy lifting — you just need to collect the data and paste the prompt. No Excel formulas, no manual analysis, no hours of sorting through responses.
+    </div>
+
+    <!-- CSV TEMPLATE -->
+    <div class="csv-preview">
+      <div class="csv-label">Step 1 — Your CSV should look like this</div>
+      <table class="csv-table">
+        <tr>
+          <td>Name</td><td>Department</td><td>Level</td><td>Skill 1</td><td>Skill 2</td><td>Skill 3</td><td>Manager rating: Skill 1</td>
+        </tr>
+        <tr>
+          <td>Sarah A.</td><td>HRBP</td><td>Senior</td><td>2</td><td>4</td><td>3</td><td>2</td>
+        </tr>
+        <tr>
+          <td>James O.</td><td>L&D</td><td>Mid</td><td>3</td><td>3</td><td>4</td><td>3</td>
+        </tr>
+        <tr>
+          <td>Priya S.</td><td>Recruitment</td><td>Junior</td><td>1</td><td>2</td><td>2</td><td>1</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Collect your survey data as a CSV or Excel file</h3>
+          <p>Each row = one employee. Columns = name, department, level, and one column per skill with a rating (1–5). Optionally add a manager rating column per skill for blind spot detection. Export from Google Forms, Tally, or any survey tool.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Open Claude and upload your file</h3>
+          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a>, start a new conversation, attach your CSV or Excel file, and paste the prompt below.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Get your written analysis — then optionally turn it into a visual</h3>
+          <p>Claude first returns a complete written report — gaps ranked, segments, blind spots, and intervention plan. Then use the second prompt below to turn it into an interactive visual dashboard like the one in the demo tab — with your real data inside it.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">Step 1 — Copy this prompt to get your written analysis</div>
+      <div class="prompt-text" id="promptText">Please fill in the details below before using this prompt.
+Delete any lines that are not applicable to your situation.
+
+---
+
+ABOUT MY ORGANISATION:
+- Company name: [your company name]
+- Function or team being analysed: [e.g. HR team / Sales team / All departments]
+- Total number of employees in the survey: [e.g. 24 employees]
+- Rating scale used: [e.g. 1–5 where 1 = no proficiency and 5 = expert]
+- Does the data include manager ratings alongside self-ratings? [Yes / No]
+- Required proficiency level for the role (if known): [e.g. All skills should be at 3.5 or above — delete if unknown]
+
+SKILLS ASSESSED IN THE SURVEY:
+[List the exact skill column names from your CSV so Claude can reference them correctly]
+- [Skill 1 name]
+- [Skill 2 name]
+- [Skill 3 name]
+- [Add more as needed]
+
+---
+
+I have uploaded a CSV file containing L&D survey responses from my team.
+
+Please analyse the data and provide a complete Learning Needs Analysis report including:
+
+1. SKILL GAP SUMMARY
+   - Average score per skill across the whole team
+   - Rank skills from most critical gap to strongest
+   - Flag which gaps are organisation-wide (everyone needs it) vs targeted (only some departments or levels)
+
+2. HEATMAP BREAKDOWN
+   - Average score per skill broken down by department and seniority level
+   - Highlight the most critical combinations (e.g. junior HRBP team on data analytics)
+
+3. BLIND SPOT DETECTION (if manager ratings are included)
+   - Identify skills where self-rating significantly exceeds manager rating
+   - Flag these as blind spots — employees who are overconfident will not respond to standard training
+   - Recommend awareness-first interventions for these skills
+
+4. AUDIENCE SEGMENTS
+   - Group employees into 2–3 learning profiles based on their gap patterns
+   - Name each segment and describe what they need and why
+   - Suggest a different learning approach for each segment
+
+5. PRIORITISED INTERVENTION PLAN
+   - For each skill gap, recommend the most appropriate intervention type: workshop, e-learning, coaching, mentoring, or on-the-job
+   - Explain why that intervention type suits this specific gap
+   - Suggest a timeline and flag whether this is individual coaching vs group training
+   - Note estimated relative effort: high / medium / low investment
+
+6. BUDGET GUIDANCE
+   - Which gaps offer the highest ROI if addressed centrally (organisation-wide training)
+   - Which gaps are better addressed individually (targeted coaching rather than group training)
+
+Present as a structured report with clear sections. Use plain language — this report will be shared with senior leadership who are not L&D specialists.</div>
+      <button class="copy-btn" onclick="copyPrompt('promptText','copyConfirm','LNA - Step 1 Text Analysis')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy Step 1 prompt — written analysis
+      </button>
+      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, attach your CSV and paste this prompt. You'll get your written report first.</div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">Step 2 — Copy this prompt to turn your analysis into a visual dashboard</div>
+      <div class="prompt-text" id="promptText2">Use this prompt immediately after Step 1 — in the same Claude conversation, without uploading anything again.
+
+---
+
+Now take the analysis you just produced and turn it into an interactive visual dashboard. Build it as a clean, presentation-ready artifact that includes:
+
+1. A summary strip showing total employees, number of critical gaps, blind spots detected, and interventions recommended
+2. A skill gap heatmap — colour coded from red (critical) to green (strong) — broken down by department
+3. Top skill gaps as horizontal bar charts ranked by severity — with tags showing whether each is organisation-wide, targeted, or a blind spot
+4. Audience segment cards — one card per segment with icon, description, and recommended learning approach
+5. An intervention plan table with skill, intervention type, audience, timeline, and priority badge
+
+Use the exact data from the analysis above. Make it clean, colour coded, and ready to present to leadership or share with the team.</div>
+      <button class="copy-btn" onclick="copyPrompt('promptText2','copyConfirm2','LNA - Step 2 Visual Dashboard')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy Step 2 prompt — visual dashboard
+      </button>
+      <div class="copy-confirm" id="copyConfirm2">Copied! Paste this in the same Claude conversation right after your written analysis appears.</div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--violet)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Click <strong>New Project</strong> and name it "Learning Needs Analysis"</li>
+        <li>Click <strong>Set instructions</strong> and paste the prompt above</li>
+        <li>Run your LNA annually or after any major org change — open the project, upload the latest survey CSV, and get a fresh analysis every time with zero re-setup</li>
+      </ul>
+    </div>
+
+    <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+  </div>
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function copyPrompt(textId, confirmId, agentName) {
+  const text = document.getElementById(textId).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': agentName });
+    const c = document.getElementById(confirmId);
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+</script>
+</body>
+</html>

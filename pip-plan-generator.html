@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIP Plan Generator — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --slate: #2C3E50; --slate-light: #EAF0F6;
+    --amber: #B87A1A; --amber-light: #FBF4E3;
+    --green: #2A7A4A; --green-light: #E8F5EE;
+    --red: #C0392B; --red-light: #FDEEEC;
+    --blue: #1A5276; --blue-light: #EAF2F8;
+    --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08); --surface: #ffffff; --bg: #F5F4F0;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -50px; right: -50px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 760px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(184,122,26,0.2); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(184,122,26,0.3); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem,4.5vw,3rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; }
+  .hero h1 span { color: #CAFE48; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 760px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
+
+  .content { max-width: 760px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .sample-label { display: inline-flex; align-items: center; gap: 6px; background: var(--amber-light); color: var(--amber); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid rgba(184,122,26,0.25); margin-bottom: 1.25rem; }
+
+  /* EMPLOYEE CARD */
+  .emp-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .emp-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--slate); color: white; font-size: 18px; font-family: 'Poppins', sans-serif; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .emp-info h3 { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .emp-info p { font-size: 13px; color: var(--text-muted); }
+  .emp-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .emp-badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+  .badge-role { background: var(--slate-light); color: var(--slate); }
+  .badge-tenure { background: var(--blue-light); color: var(--blue); }
+  .badge-status { background: var(--amber-light); color: var(--amber); }
+
+  /* CONCERNS */
+  .concerns-box { background: var(--red-light); border: 0.5px solid rgba(192,57,43,0.2); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .concerns-title { font-size: 13px; font-weight: 500; color: var(--red); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .concern-item { display: flex; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--text); line-height: 1.5; }
+  .concern-item:last-child { margin-bottom: 0; }
+  .concern-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--red); margin-top: 7px; flex-shrink: 0; }
+
+  /* TIMELINE */
+  .timeline { position: relative; margin-bottom: 1.5rem; }
+  .timeline::before { content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .phase { position: relative; padding-left: 52px; margin-bottom: 1rem; }
+  .phase-dot { position: absolute; left: 12px; top: 16px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--surface); z-index: 1; }
+  .phase-dot.d30 { background: var(--amber); }
+  .phase-dot.d60 { background: #134611; }
+  .phase-dot.d90 { background: var(--green); }
+  .phase-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .phase-header { padding: 12px 1.25rem; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .phase-label { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .label-30 { background: var(--amber-light); color: var(--amber); }
+  .label-60 { background: var(--blue-light); color: var(--blue); }
+  .label-90 { background: var(--green-light); color: var(--green); }
+  .phase-title { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; }
+  .phase-toggle { font-size: 16px; color: var(--text-faint); transition: transform 0.2s; }
+  .phase-toggle.open { transform: rotate(45deg); }
+  .phase-body { padding: 0 1.25rem 1.25rem; display: none; }
+  .phase-body.open { display: block; }
+  .objective-item { display: flex; gap: 10px; margin-bottom: 10px; }
+  .obj-check { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .obj-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .obj-text .metric { font-size: 11px; background: var(--bg); border-radius: 4px; padding: 1px 6px; color: var(--text-muted); margin-left: 6px; display: inline-block; }
+  .checkin-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); padding: 8px 0; border-top: 0.5px solid var(--border); margin-top: 10px; }
+  .checkin-icon { width: 24px; height: 24px; border-radius: 6px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+
+  /* SUPPORT & CONSEQUENCE */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .support-box { background: var(--green-light); border: 0.5px solid rgba(42,122,74,0.2); border-radius: 12px; padding: 1.25rem; }
+  .support-title { font-size: 13px; font-weight: 500; color: var(--green); margin-bottom: 10px; }
+  .support-item { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; color: var(--text); line-height: 1.5; }
+  .support-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); margin-top: 6px; flex-shrink: 0; }
+  .consequence-box { background: var(--slate-light); border: 0.5px solid rgba(44,62,80,0.15); border-radius: 12px; padding: 1.25rem; }
+  .consequence-title { font-size: 13px; font-weight: 500; color: var(--slate); margin-bottom: 10px; }
+  .consequence-text { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+
+  /* SIGNATURE */
+  .signature-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .sig-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 12px; }
+  .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .sig-field { border-bottom: 0.5px solid var(--text); padding-bottom: 4px; }
+  .sig-label { font-size: 10px; color: var(--text-faint); margin-top: 4px; }
+
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
+
+  /* BUILD */
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .build-note { font-size: 13px; color: var(--text-muted); background: var(--amber-light); border: 0.5px solid rgba(184,122,26,0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 1.5rem; line-height: 1.6; }
+  .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 1.5rem; }
+  .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; }
+  .step:first-child { border-radius: 12px 12px 0 0; }
+  .step:last-child { border-radius: 0 0 12px 12px; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .step-content a { color: var(--amber); text-decoration: none; }
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+  .prompt-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(184,122,26,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: s; }
+  .save-steps li { counter-increment: s; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(s); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 760px; margin: 0 auto; }
+  .disclaimer { font-size: 11px; color: var(--text-faint); text-align: center; margin-top: 1rem; line-height: 1.6; }
+
+  @media (max-width: 600px) {
+    .two-col { grid-template-columns: 1fr; }
+    .sig-grid { grid-template-columns: 1fr; }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#E8A83A"/></svg>
+      Performance Management · AI Agent
+    </div>
+    <h1>PIP Plan <span>Generator</span></h1>
+    <p>Input the role, performance concerns, and context — get a structured 30/60/90 day Performance Improvement Plan that is fair, measurable, and ready to use.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>HR Leaders &amp; Managers</strong></div>
+      <div class="hero-meta-item">Supports not exits — <strong>employee-first approach</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo',this)">Live demo</button>
+    <button class="tab" onclick="showTab('build',this)">Build it yourself</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="section active" id="demo">
+
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#B87A1A"/></svg>
+      Sample — Senior Sales Manager · NovaTech MENA · Dubai
+    </div>
+
+    <!-- EMPLOYEE CARD -->
+    <div class="emp-card">
+      <div class="emp-avatar">A</div>
+      <div class="emp-info">
+        <h3>Ahmed Al-Farsi</h3>
+        <p>Senior Sales Manager · NovaTech MENA · Dubai</p>
+        <div class="emp-badges">
+          <span class="emp-badge badge-role">Sales · Individual Contributor</span>
+          <span class="emp-badge badge-tenure">3 years tenure</span>
+          <span class="emp-badge badge-status">Previously strong performer</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONCERNS -->
+    <div class="concerns-box">
+      <div class="concerns-title">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#C0392B" stroke-width="1.5"/><path d="M7 4v3M7 9.5v.5" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Performance concerns identified
+      </div>
+      <div class="concern-item"><div class="concern-dot"></div>Missed quarterly revenue target by 35% for two consecutive quarters (Q3 and Q4 2025)</div>
+      <div class="concern-item"><div class="concern-dot"></div>CRM not updated consistently — 12 deals stale for 60+ days with no activity logged</div>
+      <div class="concern-item"><div class="concern-dot"></div>Two enterprise accounts lost due to lack of follow-up — clients raised concerns directly with leadership</div>
+      <div class="concern-item"><div class="concern-dot"></div>Reduced engagement in weekly team meetings — contributions have dropped significantly since Q2</div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:1rem;">90-day improvement plan — click each phase to expand</div>
+    <div class="timeline">
+
+      <!-- 30 DAYS -->
+      <div class="phase">
+        <div class="phase-dot d30"></div>
+        <div class="phase-card">
+          <div class="phase-header" onclick="togglePhase(this)">
+            <span class="phase-label label-30">Day 1–30</span>
+            <span class="phase-title">Reset &amp; Foundation</span>
+            <span class="phase-toggle open">+</span>
+          </div>
+          <div class="phase-body open">
+            <div class="objective-item">
+              <div class="obj-check">✓</div>
+              <div class="obj-text">Update CRM within 24 hours of every client interaction — zero exceptions <span class="metric">Measured weekly</span></div>
+            </div>
+            <div class="objective-item">
+              <div class="obj-check">✓</div>
+              <div class="obj-text">Clear all 12 stale deals — either progress, close, or mark as lost with documented reason <span class="metric">By day 14</span></div>
+            </div>
+            <div class="objective-item">
+              <div class="obj-check">✓</div>
+              <div class="obj-text">Add minimum 5 new qualified opportunities to pipeline per week <span class="metric">Tracked in CRM</span></div>
+            </div>
+            <div class="objective-item">
+              <div class="obj-check">✓</div>
+              <div class="obj-text">Attend and contribute actively in all weekly team meetings — share at least one update per session <span class="metric">Manager observed</span></div>
+            </div>
+            <div class="checkin-row">
+              <div class="checkin-icon">📅</div>
+              Check-in: Every Friday at 9am with direct manager — 30 minutes. Review CRM compliance and pipeline activity.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 60 DAYS -->
+      <div class="phase">
+        <div class="phase-dot d60"></div>
+        <div class="phase-card">
+          <div class="phase-header" onclick="togglePhase(this)">
+            <span class="phase-label label-60">Day 31–60</span>
+            <span class="phase-title">Momentum &amp; Recovery</span>
+            <span class="phase-toggle">+</span>
+          </div>
+          <div class="phase-body">
+            <div class="objective-item">
+              <div class="obj-check"></div>
+              <div class="obj-text">Pipeline value reaches 80% of target level — with a clear path to 100% by day 90 <span class="metric">CRM report</span></div>
+            </div>
+            <div class="objective-item">
+              <div class="obj-check"></div>
+              <div class="obj-text">Zero client escalations related to follow-up delays — proactive outreach evidenced <span class="metric">Client feedback</span></div>
+            </div>
+            <div class="objective-item">
+              <div class="obj-check"></div>
+              <div class="obj-text">Monthly revenue at minimum 70% of individual target <span class="metric">Sales dashboard</span></div>
+            </div>
+            <div class="objective-item">
+              <div class="obj-check"></div>
+              <div class="obj-text">Lead one team meeting agenda item — share a client win or learning <span class="metric">By day 50</span></div>
+            </div>
+            <div class="checkin-row">
+              <div class="checkin-icon">📅</div>
+              Check-in: Bi-weekly with manager + formal mid-point review at day 45 with HR present.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 90 DAYS -->
+      <div class="phase">
+        <div class="phase-dot d90"></div>
+        <div class="phase-card">
+          <div class="phase-header" onclick="togglePhase(this)">
+            <span class="phase-label label-90">Day 61–90</span>
+            <span class="phase-title">Target &amp; Sustain</span>
+            <span class="phase-toggle">+</span>
+          </div>
+          <div class="phase-body">
+            <div class="objective-item">
+              <div class="obj-check"></div>
+              <div class="obj-text">Monthly revenue target achieved at 85% or above <span class="metric">Sales dashboard</span></div>
+            </div>
+            <div class="objective-item">
+              <div class="obj-check"></div>
+              <div class="obj-text">CRM 100% up to date — no manager prompting required for 30 consecutive days <span class="metric">CRM audit</span></div>
+            </div>
+            <div class="objective-item">
+              <div class="obj-check"></div>
+              <div class="obj-text">Peer feedback from two team members shows improved engagement and collaboration <span class="metric">Manager collected</span></div>
+            </div>
+            <div class="objective-item">
+              <div class="obj-check"></div>
+              <div class="obj-text">No client complaints or escalations in final 30 days <span class="metric">CRM + leadership log</span></div>
+            </div>
+            <div class="checkin-row">
+              <div class="checkin-icon">📅</div>
+              Final review: Day 90 — formal conclusion meeting with manager and HR. Three outcomes: plan complete, extend, or escalate.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPORT & CONSEQUENCE -->
+    <div class="two-col">
+      <div class="support-box">
+        <div class="support-title">What the company commits to</div>
+        <div class="support-item"><div class="support-dot"></div>Weekly coaching sessions with direct manager throughout the 90 days</div>
+        <div class="support-item"><div class="support-dot"></div>Access to sales training resources and coaching on pipeline management</div>
+        <div class="support-item"><div class="support-dot"></div>Clear, timely feedback at every check-in — no surprises at the 90-day review</div>
+        <div class="support-item"><div class="support-dot"></div>HR available as a neutral resource if employee wishes to discuss the process</div>
+      </div>
+      <div class="consequence-box">
+        <div class="consequence-title">Outcome at day 90</div>
+        <div class="consequence-text">If all objectives are met — the PIP concludes successfully and is noted as complete in the employee's record. If objectives are not met at the conclusion of this plan, the company reserves the right to take further action up to and including termination of employment, in accordance with UAE Labour Law Federal Decree-Law No. 33 of 2021.</div>
+      </div>
+    </div>
+
+    <!-- SIGNATURE -->
+    <div class="signature-box">
+      <div class="sig-title">Acknowledgement — both parties</div>
+      <div class="sig-grid">
+        <div>
+          <div class="sig-field"></div>
+          <div class="sig-label">Employee signature &amp; date</div>
+        </div>
+        <div>
+          <div class="sig-field"></div>
+          <div class="sig-label">Manager signature &amp; date</div>
+        </div>
+        <div>
+          <div class="sig-field"></div>
+          <div class="sig-label">HR representative signature &amp; date</div>
+        </div>
+        <div>
+          <div class="sig-field"></div>
+          <div class="sig-label">Plan start date</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">Signing this document confirms the employee has received and understood the plan. It does not constitute an admission of fault.</div>
+
+    <button class="next-btn" onclick="showTab('build',document.querySelectorAll('.tab')[1])">
+      Generate a PIP plan for your own employee →
+    </button>
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+    <div class="build-intro">
+      <p>Fill in the details below. Claude generates a complete, structured 30/60/90 day PIP — fair, measurable, and ready to present to the employee.</p>
+    </div>
+    <div class="build-note">
+      A good PIP supports the employee, not just protects the company. The more context you give Claude — including what's gone well previously and what support has already been offered — the more balanced and defensible the plan will be.
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Create a free Claude account</h3>
+          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free. No credit card needed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Copy the prompt, fill in your details, and send</h3>
+          <p>Complete each section honestly. The more specific your concerns and examples, the more actionable the PIP objectives will be.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Review, adjust, and present</h3>
+          <p>Claude gives you a complete draft. Ask it to tighten any objective, adjust the tone, or add a specific clause before you present it to the employee.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-label">Your prompt — copy and fill in your details</div>
+      <div class="prompt-text" id="promptText">Please fill in ALL sections below before sending.
+Delete any lines that are not applicable.
+
+---
+
+EMPLOYEE & ROLE:
+- Employee name (or use "Employee" for privacy): [name]
+- Job title: [e.g. Senior Sales Manager]
+- Department: [e.g. Sales]
+- Manager name: [e.g. VP Sales]
+- Tenure with company: [e.g. 3 years]
+- Location: [e.g. Dubai, UAE]
+- Previous performance: [e.g. Strong performer until Q2 2025 / Consistently below expectations]
+
+PERFORMANCE CONCERNS:
+List 3–5 specific concerns with examples. Be factual, not emotional.
+- Concern 1: [e.g. Missed Q3 and Q4 revenue target by 35%]
+- Concern 2: [e.g. CRM not updated — 12 deals stale for 60+ days]
+- Concern 3: [e.g. Two client escalations due to lack of follow-up]
+- Concern 4: [add or delete]
+- Concern 5: [add or delete]
+
+CONTEXT:
+- Has formal feedback been given before this PIP? [Yes / No — if Yes, briefly describe]
+- Has any support already been offered? [e.g. Coaching, training, adjusted targets — or None]
+- Is the intent to support improvement or manage exit? [Support improvement / Manage exit — be honest, it affects the tone]
+- Any mitigating factors to consider? [e.g. personal circumstances, team changes, market conditions — or None]
+
+COMPANY DETAILS:
+- Company name: [your company name]
+- Governing law: [e.g. UAE Labour Law — Federal Decree-Law No. 33 of 2021]
+
+---
+
+Using the above, please generate a complete 30/60/90 day Performance Improvement Plan that includes:
+
+1. A brief opening statement — purpose of the PIP, supportive tone
+2. Summary of performance concerns — factual, specific, non-emotional
+3. 30-day objectives — foundational behaviours and quick wins, each with a clear measurement method
+4. 60-day objectives — building momentum, measurable progress toward targets
+5. 90-day objectives — sustained performance at or near expected standard
+6. Check-in schedule — frequency, format, who attends
+7. Company support commitments — what the employer will provide
+8. Consequence statement — clear, fair, legally appropriate language
+9. Signature block — employee, manager, HR, and plan start date
+
+Make objectives SMART — Specific, Measurable, Achievable, Relevant, Time-bound. Write in plain professional language. Tone should be firm but supportive — this is a support plan, not a punishment document.</div>
+      <button class="copy-btn" onclick="copyPrompt('promptText','copyConfirm','PIP Plan Generator')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy prompt
+      </button>
+      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, paste it in, fill your details and hit send.</div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--amber)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Click <strong>New Project</strong> and name it "PIP Plan Generator"</li>
+        <li>Click <strong>Set instructions</strong> and paste the prompt above</li>
+        <li>Every time you need a PIP, open this project, fill in the employee details, and get a complete plan instantly — consistent format every time</li>
+      </ul>
+    </div>
+
+    <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+    <div class="disclaimer" style="margin-top:1.5rem;">This tool generates a draft plan for HR professional review. Always have your legal team or a qualified UAE employment lawyer review any PIP before presenting it to an employee.</div>
+  </div>
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function togglePhase(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.phase-toggle');
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+function copyPrompt(textId, confirmId, agentName) {
+  const text = document.getElementById(textId).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': agentName });
+    const c = document.getElementById(confirmId);
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+</script>
+</body>
+</html>

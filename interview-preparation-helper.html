@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Preparation Helper — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue: #1A5276; --blue-light: #EAF2F8;
+    --green: #2A7A4A; --green-light: #E8F5EE;
+    --amber: #B87A1A; --amber-light: #FBF4E3;
+    --red: #C0392B; --red-light: #FDEEEC;
+    --violet: #5B2D8E; --violet-light: #F0EAF8;
+    --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08); --surface: #ffffff; --bg: #F5F4F0;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -50px; right: -50px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 780px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(26,82,118,0.25); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(26,82,118,0.35); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem,4.5vw,3rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; }
+  .hero h1 span { color: #CAFE48; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 780px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
+
+  .content { max-width: 780px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .sample-label { display: inline-flex; align-items: center; gap: 6px; background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid rgba(26,82,118,0.2); margin-bottom: 1.5rem; }
+
+  /* PROCESS WALKTHROUGH */
+  .walkthrough { display: flex; flex-direction: column; gap: 1px; margin-bottom: 2rem; }
+  .walk-step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem 1.25rem 1.25rem 1rem; display: flex; gap: 1rem; align-items: flex-start; position: relative; }
+  .walk-step:first-child { border-radius: 12px 12px 0 0; }
+  .walk-step:last-child { border-radius: 0 0 12px 12px; }
+  .walk-step::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px; }
+  .ws-1::before { background: #134611; }
+  .ws-2::before { background: var(--violet); }
+  .ws-3::before { background: var(--amber); }
+  .ws-4::before { background: var(--green); }
+  .walk-num { width: 32px; height: 32px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .wn-1 { background: #134611; }
+  .wn-2 { background: var(--violet); }
+  .wn-3 { background: var(--amber); }
+  .wn-4 { background: var(--green); }
+  .walk-content h4 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .walk-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .walk-visual { margin-top: 10px; }
+
+  /* JD PREVIEW */
+  .jd-preview { background: var(--bg); border: 0.5px solid var(--border); border-radius: 8px; padding: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+  .jd-preview strong { color: var(--text); font-size: 13px; display: block; margin-bottom: 4px; }
+  .jd-tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .jd-tag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+  .tag-b { background: var(--blue-light); color: var(--blue); }
+  .tag-v { background: var(--violet-light); color: var(--violet); }
+  .tag-g { background: var(--green-light); color: var(--green); }
+
+  /* CV UPLOAD VISUAL */
+  .upload-visual { background: var(--bg); border: 1.5px dashed rgba(91,45,142,0.3); border-radius: 8px; padding: 16px; text-align: center; margin-top: 10px; }
+  .upload-icon { font-size: 24px; margin-bottom: 6px; }
+  .upload-text { font-size: 12px; color: var(--text-muted); }
+  .upload-text strong { color: var(--violet); }
+  .upload-note { font-size: 11px; color: var(--text-faint); margin-top: 4px; }
+
+  /* PROCESSING VISUAL */
+  .processing-visual { background: #134611; border-radius: 8px; padding: 12px; margin-top: 10px; }
+  .proc-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12px; color: rgba(255,255,255,0.6); }
+  .proc-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .pd-done { background: #4DB87A; }
+  .pd-doing { background: var(--amber); animation: blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+  .pd-wait { background: rgba(255,255,255,0.2); }
+
+  /* SAMPLE OUTPUT */
+  .output-section { margin-bottom: 1.5rem; }
+  .output-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+  .output-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+  .ob-preview { background: var(--amber-light); color: var(--amber); }
+
+  /* CV GAP */
+  .gap-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+  .gap-header { display: flex; align-items: center; gap: 10px; padding: 12px 1.25rem; border-bottom: 0.5px solid var(--border); }
+  .gap-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .gi-gap { background: var(--red-light); color: var(--red); font-weight: 600; }
+  .gi-strong { background: var(--green-light); color: var(--green); font-weight: 600; }
+  .gi-tip { background: var(--amber-light); color: var(--amber); font-weight: 600; }
+  .gap-label { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+  .gap-type { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+  .gt-gap { background: var(--red-light); color: var(--red); }
+  .gt-strong { background: var(--green-light); color: var(--green); }
+  .gt-tip { background: var(--amber-light); color: var(--amber); }
+  .gap-body { padding: 1rem 1.25rem; font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .gap-body strong { color: var(--text); }
+  .gap-suggestion { background: var(--bg); border-radius: 6px; padding: 10px 12px; margin-top: 8px; font-size: 12px; color: var(--text-muted); line-height: 1.6; border-left: 3px solid var(--amber); }
+  .gap-suggestion strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* INTERVIEW Q SAMPLE */
+  .iq-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+  .iq-header { padding: 12px 1.25rem; border-bottom: 0.5px solid var(--border); display: flex; gap: 10px; align-items: flex-start; }
+  .iq-num { width: 24px; height: 24px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .iq-question { font-size: 14px; font-weight: 500; color: var(--text); font-style: italic; line-height: 1.5; }
+  .iq-body { padding: 1rem 1.25rem; }
+  .iq-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); margin-bottom: 6px; }
+  .iq-talking { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .iq-talking strong { color: var(--text); }
+  .iq-tip { display: flex; gap: 8px; background: var(--blue-light); border-radius: 6px; padding: 8px 12px; margin-top: 10px; font-size: 12px; color: var(--blue); line-height: 1.5; }
+
+  .more-note { text-align: center; background: var(--bg); border: 0.5px dashed var(--border); border-radius: 10px; padding: 14px; font-size: 13px; color: var(--text-faint); margin-bottom: 1.5rem; line-height: 1.6; }
+  .more-note strong { color: var(--text-muted); }
+
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
+
+  /* BUILD */
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .build-note { font-size: 13px; color: var(--text-muted); background: var(--blue-light); border: 0.5px solid rgba(26,82,118,0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 1.5rem; line-height: 1.6; }
+  .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 1.5rem; }
+  .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; }
+  .step:first-child { border-radius: 12px 12px 0 0; }
+  .step:last-child { border-radius: 0 0 12px 12px; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .step-content a { color: var(--blue); text-decoration: none; }
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  .prompt-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(26,82,118,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: s; }
+  .save-steps li { counter-increment: s; display: flex; gap: 10px; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(s); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 780px; margin: 0 auto; }
+
+  @media (max-width: 600px) { .content { padding: 1.25rem; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#5DADE2"/></svg>
+      Career Development · AI Agent
+    </div>
+    <h1>Interview <span>Preparation Helper</span></h1>
+    <p>Upload a job posting and your CV — get a personalised preparation pack with CV fit analysis, tailored suggestions, likely interview questions, and talking points built from your own experience.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>Job seekers &amp; HR professionals</strong></div>
+      <div class="hero-meta-item"><strong>Personalised</strong> to your CV and the role</div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo',this)">How it works</button>
+    <button class="tab" onclick="showTab('build',this)">Prepare for your interview</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="section active" id="demo">
+
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#1A5276"/></svg>
+      Sample — Senior HR Business Partner role · Candidate: Sarah Al-Mansouri
+    </div>
+
+    <!-- WALKTHROUGH -->
+    <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:1rem;">How the process works — 4 steps</div>
+    <div class="walkthrough">
+
+      <div class="walk-step ws-1">
+        <div class="walk-num wn-1">1</div>
+        <div class="walk-content">
+          <h4>Paste the job description or link</h4>
+          <p>Copy the full job posting text or paste the URL. Claude reads the role requirements, competencies, must-haves, and company context.</p>
+          <div class="walk-visual">
+            <div class="jd-preview">
+              <strong>Senior HR Business Partner — NovaTech MENA · Dubai</strong>
+              6+ years HRBP experience · Data-driven · Org design · Coaching leaders · GCC experience preferred
+              <div class="jd-tag-row">
+                <span class="jd-tag tag-b">Strategic Influence</span>
+                <span class="jd-tag tag-v">Data Analytics</span>
+                <span class="jd-tag tag-g">Coaching</span>
+                <span class="jd-tag tag-b">Org Design</span>
+                <span class="jd-tag tag-v">GCC Experience</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="walk-step ws-2">
+        <div class="walk-num wn-2">2</div>
+        <div class="walk-content">
+          <h4>Upload your CV directly in Claude</h4>
+          <p>Attach your CV file (PDF or Word) directly in Claude alongside the prompt. Claude reads your full experience, skills, and background — no copy-pasting needed.</p>
+          <div class="walk-visual">
+            <div class="upload-visual">
+              <div class="upload-icon">📎</div>
+              <div class="upload-text">Attach <strong>CV.pdf</strong> or <strong>CV.docx</strong> directly in Claude</div>
+              <div class="upload-note">PDF, Word, or plain text — Claude reads them all</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="walk-step ws-3">
+        <div class="walk-num wn-3">3</div>
+        <div class="walk-content">
+          <h4>Claude analyses both in seconds</h4>
+          <p>Claude cross-references your CV against the JD — identifying what matches strongly, what's missing, and where you can reframe existing experience to land better.</p>
+          <div class="walk-visual">
+            <div class="processing-visual">
+              <div class="proc-row"><div class="proc-dot pd-done"></div>Reading job description — competencies and requirements extracted</div>
+              <div class="proc-row"><div class="proc-dot pd-done"></div>Reading CV — experience, skills and achievements mapped</div>
+              <div class="proc-row"><div class="proc-dot pd-done"></div>Running fit analysis — gaps and strengths identified</div>
+              <div class="proc-row"><div class="proc-dot pd-done"></div>Generating interview questions based on JD competencies</div>
+              <div class="proc-row"><div class="proc-dot pd-done"></div>Building talking points from your actual CV experience</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="walk-step ws-4">
+        <div class="walk-num wn-4">4</div>
+        <div class="walk-content">
+          <h4>You receive your personalised preparation pack</h4>
+          <p>A complete, structured output — CV fit score, gap analysis, CV tweaks, likely interview questions, and talking points drawn from your own background. See a sample below.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAMPLE OUTPUT -->
+    <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;">Sample output — what you actually receive</div>
+    <div style="font-size:12px;color:var(--text-faint);margin-bottom:1rem;">Based on the HRBP role above and Sarah's CV. Two examples shown — the full output covers all gaps and questions.</div>
+
+    <!-- GAP ANALYSIS SAMPLES -->
+    <div class="output-section">
+      <div class="output-title">CV fit analysis — gaps and strengths <span class="output-badge ob-preview">2 of 6 shown</span></div>
+
+      <div class="gap-card">
+        <div class="gap-header">
+          <div class="gap-icon gi-gap">!</div>
+          <div class="gap-label">Data Analytics — gap identified</div>
+          <div class="gap-type gt-gap">Gap</div>
+        </div>
+        <div class="gap-body">
+          The JD requires data-driven decision making and people analytics capability. Your CV mentions "reporting" and "HR metrics" but does not demonstrate specific data tools, dashboard building, or a case where data drove a business recommendation.
+          <div class="gap-suggestion">
+            <strong>Suggested CV tweak</strong>
+            Replace "Produced monthly HR reports for leadership" with "Built a monthly people dashboard tracking attrition, engagement, and hiring velocity — used to secure 2 additional headcount approvals in Q3 2024." Specificity transforms a weak line into compelling evidence.
+          </div>
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-header">
+          <div class="gap-icon gi-strong">✓</div>
+          <div class="gap-label">Organisational Design — strong match</div>
+          <div class="gap-type gt-strong">Strong</div>
+        </div>
+        <div class="gap-body">
+          Your CV clearly demonstrates org design experience — you led a restructure of the Operations function in 2023 affecting 45 people, with a documented 18% improvement in span of control. This directly addresses one of the JD's key competencies and should be prominent in your first interview response.
+          <div class="gap-suggestion">
+            <strong>Interview tip</strong>
+            Lead with this example when asked about strategic impact. Frame it as: situation → your approach → measurable outcome. Don't wait for them to ask — volunteer it early as proof of business partnering at scale.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERVIEW Q SAMPLES -->
+    <div class="output-section">
+      <div class="output-title">Likely interview questions with your talking points <span class="output-badge ob-preview">2 of 8 shown</span></div>
+
+      <div class="iq-card">
+        <div class="iq-header">
+          <div class="iq-num">Q1</div>
+          <div class="iq-question">"Tell me about a time you used people data to influence a senior business decision. What did you find and what happened as a result?"</div>
+        </div>
+        <div class="iq-body">
+          <div class="iq-label">Your talking point — drawn from your CV</div>
+          <div class="iq-talking">Reference your Q3 2024 attrition analysis — you identified that 68% of voluntary leavers in Engineering had been in role for less than 18 months and had not received a development conversation in their first year. You presented this to the VP Engineering with a proposed onboarding enhancement. The initiative was approved and attrition in the cohort dropped by <strong>22% over the following two quarters.</strong></div>
+          <div class="iq-tip">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="7" cy="7" r="6" stroke="#1A5276" stroke-width="1.5"/><path d="M7 6v4M7 4.5v.5" stroke="#1A5276" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Acknowledge the data gap on your CV upfront — "My CV understates this, so let me give you the context directly." Interviewers respect candidates who self-correct confidently.
+          </div>
+        </div>
+      </div>
+
+      <div class="iq-card">
+        <div class="iq-header">
+          <div class="iq-num">Q2</div>
+          <div class="iq-question">"This role requires working closely with Engineering and Product leadership. How do you build credibility quickly with technical stakeholders who may be sceptical of HR?"</div>
+        </div>
+        <div class="iq-body">
+          <div class="iq-label">Your talking point — drawn from your CV</div>
+          <div class="iq-talking">Your CV shows 2 years embedded with the Technology function at your previous employer. Draw on your approach there — you spent the first 30 days in listening mode, attending sprint retrospectives and engineering all-hands before making any recommendations. Your first proposal was presented in their language — headcount ROI, velocity impact — not HR language. This approach led to being described as a "business partner who actually understands how we work" in your last 360 feedback.</div>
+          <div class="iq-tip">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="7" cy="7" r="6" stroke="#1A5276" stroke-width="1.5"/><path d="M7 6v4M7 4.5v.5" stroke="#1A5276" stroke-width="1.5" stroke-linecap="round"/></svg>
+            End with a question back: "Can you tell me what the Engineering VP's biggest people challenge is right now?" — shows strategic curiosity and signals you're already thinking like a business partner.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="more-note">
+      <strong>The full preparation pack includes:</strong> complete CV fit score · all gap analysis with specific CV tweaks · 6–8 interview questions with personalised talking points · competency mapping · questions to ask the interviewer · a one-page preparation summary
+    </div>
+
+    <button class="next-btn" onclick="showTab('build',document.querySelectorAll('.tab')[1])">
+      Prepare for your own interview →
+    </button>
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+    <div class="build-intro">
+      <p>Three steps. Paste the job description, upload your CV directly in Claude, and get your personalised preparation pack — fit analysis, CV tweaks, interview questions, and talking points from your own experience.</p>
+    </div>
+    <div class="build-note">
+      The more complete your CV, the more personalised the output. Claude reads your actual experience and maps it to the specific role — this is not generic interview advice.
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Create a free Claude account</h3>
+          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free. No credit card needed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Copy the prompt below and open Claude</h3>
+          <p>Paste the prompt into Claude. Then attach your CV file directly — PDF or Word both work. Paste the job description into the prompt where indicated.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Hit send and get your preparation pack</h3>
+          <p>Claude analyses both your CV and the JD together and returns your personalised pack. Ask it to go deeper on any section or generate more questions.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-label">Your prompt — copy this, paste into Claude, attach your CV, and add the JD</div>
+      <div class="prompt-text" id="promptText">I have attached my CV to this message. I am preparing for an interview and need a personalised preparation pack.
+
+PASTE THE JOB DESCRIPTION BELOW:
+[Paste the full job description here — or paste the job posting URL if you have it]
+
+---
+
+Please analyse my CV against the job description above and produce a complete interview preparation pack including:
+
+1. CV FIT SUMMARY
+   - Overall fit assessment — how well does my CV match this role?
+   - Top 3 strengths from my CV that directly match the JD
+   - Top 3 gaps — what the JD requires that my CV does not clearly demonstrate
+
+2. CV TAILORING SUGGESTIONS
+   - For each gap identified, suggest a specific rewrite of an existing CV line that better demonstrates the required competency
+   - Use my actual experience — do not invent things I haven't done
+   - Show the before and after for each suggested change
+
+3. LIKELY INTERVIEW QUESTIONS
+   - Generate 6–8 competency-based questions the interviewer is likely to ask based on the JD
+   - For each question, identify which competency it is testing
+
+4. PERSONALISED TALKING POINTS
+   - For each interview question, suggest a talking point drawn directly from my CV
+   - Structure each using STAR format — Situation, Task, Action, Result
+   - Where my CV has a gap for a question, suggest how to address it honestly
+
+5. QUESTIONS TO ASK THE INTERVIEWER
+   - Suggest 3–4 smart questions I can ask at the end — ones that show strategic thinking and genuine preparation
+
+6. ONE-PAGE PREP SUMMARY
+   - A concise summary I can review the morning of the interview — key strengths to lead with, gaps to address proactively, and the two or three most important things to land
+
+Be specific and draw from my actual CV throughout. Do not give generic advice.</div>
+      <button class="copy-btn" onclick="copyPrompt()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy prompt
+      </button>
+      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, attach your CV file, paste the JD into the prompt and hit send.</div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--blue)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Create a project called <strong>"Interview Preparation"</strong> and paste the prompt above as the standing instruction</li>
+        <li>Every time you apply for a new role, open the project, attach your latest CV, paste the new JD — Claude generates a fresh prep pack tailored to that specific role</li>
+        <li>Keep your CV updated in the project — Claude will reference it automatically each time</li>
+      </ul>
+    </div>
+
+    <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+  </div>
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': 'Interview Preparation Helper' });
+    const c = document.getElementById('copyConfirm');
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+</script>
+</body>
+</html>

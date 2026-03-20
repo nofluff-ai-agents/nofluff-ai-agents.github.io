@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Communications Writer — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --indigo: #3D4DA8; --indigo-light: #EEF0FB;
+    --teal: #0D7D6A; --teal-light: #E6F5F2;
+    --amber: #B87A1A; --amber-light: #FBF4E3;
+    --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08); --surface: #ffffff; --bg: #F5F4F0;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 780px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(61,77,168,0.2); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(61,77,168,0.3); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem,4.5vw,3rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; }
+  .hero h1 span { color: #CAFE48; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 780px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
+
+  .content { max-width: 780px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .sample-label { display: inline-flex; align-items: center; gap: 6px; background: var(--indigo-light); color: var(--indigo); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid rgba(61,77,168,0.2); margin-bottom: 1.25rem; }
+
+  .tone-switcher { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .tone-btn { padding: 8px 18px; font-size: 12px; font-weight: 500; border: 1.5px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+  .tone-btn.active-formal { border-color: var(--indigo); background: var(--indigo-light); color: var(--indigo); }
+  .tone-btn.active-warm { border-color: var(--teal); background: var(--teal-light); color: var(--teal); }
+  .tone-btn.active-conversational { border-color: var(--amber); background: var(--amber-light); color: var(--amber); }
+  .tone-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-formal { background: #134611; }
+  .dot-warm { background: var(--teal); }
+  .dot-conversational { background: var(--amber); }
+
+  .tone-explainer { border-radius: 8px; padding: 10px 14px; margin-bottom: 1.25rem; font-size: 12px; line-height: 1.6; display: none; }
+  .tone-explainer.show { display: block; }
+  .te-formal { background: var(--indigo-light); color: var(--indigo); border: 0.5px solid rgba(61,77,168,0.2); }
+  .te-warm { background: var(--teal-light); color: var(--teal); border: 0.5px solid rgba(13,125,106,0.2); }
+  .te-conversational { background: var(--amber-light); color: var(--amber); border: 0.5px solid rgba(184,122,26,0.2); }
+
+  .example-selector { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .example-chip { padding: 6px 12px; font-size: 11px; font-weight: 500; border: 0.5px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+  .example-chip.active { background: #134611; color: white; border-color: #12151F; }
+
+  .email-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .email-toolbar { background: #f8f9fa; border-bottom: 0.5px solid var(--border); padding: 10px 1.25rem; display: flex; align-items: center; gap: 6px; }
+  .email-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .email-title-bar { font-size: 12px; color: var(--text-faint); margin-left: 6px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .email-body { padding: 1.5rem; }
+  .email-meta { margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); }
+  .email-field { display: flex; gap: 8px; margin-bottom: 5px; font-size: 13px; }
+  .email-field-label { color: var(--text-faint); width: 50px; flex-shrink: 0; }
+  .email-subject-val { font-size: 15px; font-weight: 500; color: var(--text); }
+  .email-content { display: none; }
+  .email-content.active { display: block; }
+  .tone-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 1rem; }
+  .tb-formal { background: var(--indigo-light); color: var(--indigo); }
+  .tb-warm { background: var(--teal-light); color: var(--teal); }
+  .tb-conversational { background: var(--amber-light); color: var(--amber); }
+  .ep { font-size: 14px; color: var(--text); line-height: 1.8; margin-bottom: 1rem; }
+  .ep:last-child { margin-bottom: 0; }
+  .esign { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 0.5px solid var(--border); font-size: 13px; color: var(--text-muted); line-height: 1.8; }
+
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
+
+  /* BUILD */
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .build-note { font-size: 13px; color: var(--text-muted); background: var(--indigo-light); border: 0.5px solid rgba(61,77,168,0.15); border-radius: 8px; padding: 10px 14px; margin-bottom: 1.5rem; line-height: 1.6; }
+  .step-lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .sn { width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 10px; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+  .comm-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+  .comm-chip { padding: 7px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-weight: 500; }
+  .comm-chip:hover { border-color: #134611; color: #134611; background: rgba(19,70,17,0.04); }
+  .tone-cards { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .tone-card { flex: 1; min-width: 130px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; cursor: pointer; transition: all 0.2s; }
+  .tone-card.sel-formal { border-color: var(--indigo); background: var(--indigo-light); }
+  .tone-card.sel-warm { border-color: var(--teal); background: var(--teal-light); }
+  .tone-card.sel-conv { border-color: var(--amber); background: var(--amber-light); }
+  .tc-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .tc-desc { font-size: 11px; color: var(--text-faint); line-height: 1.4; }
+  .draft-area { width: 100%; border: 0.5px solid var(--border); border-radius: 10px; padding: 12px; font-size: 13px; font-family: 'Poppins', sans-serif; color: var(--text); background: var(--surface); resize: vertical; min-height: 120px; outline: none; margin-bottom: 1rem; line-height: 1.7; }
+  .draft-area:focus { border-color: var(--indigo); }
+  .det-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .inf { display: flex; flex-direction: column; gap: 4px; }
+  .il { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+  .inf input { border: 0.5px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; font-family: 'Poppins', sans-serif; color: var(--text); background: var(--surface); outline: none; }
+  .inf input:focus { border-color: var(--indigo); }
+  .inf input::placeholder { color: var(--text-faint); }
+  .gen-btn { display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 11px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; margin-bottom: 1rem; }
+  .gen-btn:hover { opacity: 0.88; }
+  .gen-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; display: none; }
+  .prompt-box.show { display: block; }
+  .pl { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .prd { width: 8px; height: 8px; border-radius: 50%; background: #CAFE48; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+  .pt { font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .cc { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(61,77,168,0.15); border-radius: 12px; padding: 1.25rem; margin: 1.5rem 0 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: s; }
+  .save-steps li { counter-increment: s; display: flex; gap: 10px; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(s); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 780px; margin: 0 auto; }
+
+  @media (max-width: 600px) {
+    .tone-cards { flex-direction: column; }
+    .det-grid { grid-template-columns: 1fr; }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#9BA8E8"/></svg>
+      HR Communications · AI Agent
+    </div>
+    <h1>HR Communications <span>Writer</span></h1>
+    <p>Turn rough notes into polished HR communications — holiday advisories, policy updates, announcements and more. In your tone, ready to send.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>HR Leaders &amp; Managers</strong></div>
+      <div class="hero-meta-item"><strong>3 tone styles</strong> to match your culture</div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo',this)">Live demo</button>
+    <button class="tab" onclick="showTab('build',this)">Build it yourself</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="section active" id="demo">
+
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#3D4DA8"/></svg>
+      Same message · three completely different tones — switch to see the difference
+    </div>
+
+    <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;">Choose an example</div>
+    <div class="example-selector">
+      <div class="example-chip active" onclick="switchEx('ramadan',this)">Ramadan Hours</div>
+      <div class="example-chip" onclick="switchEx('training',this)">Mandatory Training</div>
+      <div class="example-chip" onclick="switchEx('policy',this)">Policy Update</div>
+      <div class="example-chip" onclick="switchEx('welcome',this)">New Joiner</div>
+    </div>
+
+    <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;">Switch tone</div>
+    <div class="tone-switcher">
+      <button class="tone-btn active-formal" onclick="switchTone('formal',this)"><div class="tone-dot dot-formal"></div>Formal</button>
+      <button class="tone-btn" onclick="switchTone('warm',this)"><div class="tone-dot dot-warm"></div>Warm &amp; Professional</button>
+      <button class="tone-btn" onclick="switchTone('conversational',this)"><div class="tone-dot dot-conversational"></div>Conversational</button>
+    </div>
+
+    <div class="tone-explainer te-formal show" id="te-formal">Traditional corporate tone. Clear, authoritative, structured. Works well for regulated industries, formal announcements, and disciplinary matters.</div>
+    <div class="tone-explainer te-warm" id="te-warm">The sweet spot. Professional enough to be taken seriously, human enough not to sound like a policy document. Works for most companies and most situations.</div>
+    <div class="tone-explainer te-conversational" id="te-conversational">Friendly, direct, modern. Feels like it came from a real person. Works well for startups, culture-first companies, and internal communications.</div>
+
+    <div class="email-card">
+      <div class="email-toolbar">
+        <div class="email-dot" style="background:#FF5F57"></div>
+        <div class="email-dot" style="background:#FFBD2E"></div>
+        <div class="email-dot" style="background:#28CA41"></div>
+        <div class="email-title-bar" id="etb">—</div>
+      </div>
+      <div class="email-body">
+        <div class="email-meta">
+          <div class="email-field"><span class="email-field-label">From</span><span style="font-size:13px;font-weight:500;color:var(--text)">HR Department — NovaTech MENA</span></div>
+          <div class="email-field"><span class="email-field-label">To</span><span style="font-size:13px;font-weight:500;color:var(--text)">All Employees</span></div>
+          <div class="email-field"><span class="email-field-label">Subject</span><span class="email-subject-val" id="esubj">—</span></div>
+        </div>
+
+        <div class="email-content active" id="ramadan-formal">
+          <div class="tone-badge tb-formal"><div class="tone-dot dot-formal"></div>Formal</div>
+          <div class="ep">Dear All,</div>
+          <div class="ep">We write to advise that in observance of the Holy Month of Ramadan, NovaTech MENA will be implementing revised working hours effective 1 March 2026 in accordance with UAE Labour Law Article 65.</div>
+          <div class="ep">Working hours will be reduced by two hours per day. The revised schedule will be Sunday to Thursday, 09:00 to 15:00. All employees are expected to adhere to these hours for the duration of the Holy Month.</div>
+          <div class="ep">Employees are reminded that eating, drinking, and smoking in public areas is prohibited in accordance with UAE law. Please conduct yourselves with appropriate respect throughout Ramadan.</div>
+          <div class="ep">Direct any queries to the HR Department.</div>
+          <div class="esign">Regards,<br><strong>Human Resources Department</strong><br>NovaTech MENA LLC</div>
+        </div>
+
+        <div class="email-content" id="ramadan-warm">
+          <div class="tone-badge tb-warm"><div class="tone-dot dot-warm"></div>Warm &amp; Professional</div>
+          <div class="ep">Dear Team,</div>
+          <div class="ep">Ramadan Mubarak to all who are observing. As we welcome the Holy Month, we wanted to share the updated working hours in effect from 1 March 2026.</div>
+          <div class="ep">In line with UAE Labour Law, working hours will be reduced by two hours daily throughout Ramadan. Our revised schedule is Sunday to Thursday, 09:00 to 15:00. We appreciate your flexibility in making this a smooth transition for everyone.</div>
+          <div class="ep">A gentle reminder to be considerate of colleagues who are fasting — please avoid eating, drinking, or smoking in shared spaces during working hours. Small gestures go a long way in building the inclusive environment we all value.</div>
+          <div class="ep">Any questions? The HR team is happy to help.</div>
+          <div class="esign">Warm regards,<br><strong>The HR Team</strong><br>NovaTech MENA</div>
+        </div>
+
+        <div class="email-content" id="ramadan-conversational">
+          <div class="tone-badge tb-conversational"><div class="tone-dot dot-conversational"></div>Conversational</div>
+          <div class="ep">Hi everyone,</div>
+          <div class="ep">Ramadan Mubarak! 🌙 As we head into the Holy Month, here's what you need to know about working hours starting 1 March.</div>
+          <div class="ep">We're on reduced hours — Sunday to Thursday, 09:00 to 15:00. That's two hours less per day, in line with UAE Labour Law. Update your calendars accordingly!</div>
+          <div class="ep">Quick heads-up — please be thoughtful around colleagues who are fasting. Keep shared spaces food and drink free during work hours. It's a small thing that makes a big difference.</div>
+          <div class="ep">Questions? Just drop us a note.</div>
+          <div class="esign">Cheers,<br><strong>HR @ NovaTech</strong></div>
+        </div>
+
+        <div class="email-content" id="training-formal">
+          <div class="tone-badge tb-formal"><div class="tone-dot dot-formal"></div>Formal</div>
+          <div class="ep">Dear All,</div>
+          <div class="ep">This communication serves as a mandatory reminder that the Data Protection & Compliance Training module must be completed by all employees no later than 31 March 2026. Completion is a contractual obligation and forms part of your annual compliance requirements.</div>
+          <div class="ep">Employees who have not completed the training by the stated deadline will be flagged to their line manager and may be subject to further action in accordance with company policy.</div>
+          <div class="ep">The training is accessible via the company LMS. Estimated completion time is 45 minutes. Please ensure your completion is registered in the system.</div>
+          <div class="ep">For technical difficulties contact IT Support. For queries regarding the deadline contact HR.</div>
+          <div class="esign">Regards,<br><strong>Human Resources Department</strong><br>NovaTech MENA LLC</div>
+        </div>
+
+        <div class="email-content" id="training-warm">
+          <div class="tone-badge tb-warm"><div class="tone-dot dot-warm"></div>Warm &amp; Professional</div>
+          <div class="ep">Dear Team,</div>
+          <div class="ep">A friendly but important reminder — the Data Protection & Compliance Training needs to be completed by everyone before 31 March 2026. This is a mandatory annual requirement that helps protect both you and the company.</div>
+          <div class="ep">The module takes about 45 minutes and is available on the LMS. We'd encourage you to carve out time this week rather than leaving it to the last minute — it's genuinely useful content.</div>
+          <div class="ep">Technical issues? Contact IT. Questions about the content? We're here.</div>
+          <div class="ep">Thank you for staying on top of this — it matters.</div>
+          <div class="esign">Best,<br><strong>The HR Team</strong><br>NovaTech MENA</div>
+        </div>
+
+        <div class="email-content" id="training-conversational">
+          <div class="tone-badge tb-conversational"><div class="tone-dot dot-conversational"></div>Conversational</div>
+          <div class="ep">Hey team,</div>
+          <div class="ep">Quick nudge — if you haven't done the Data Protection & Compliance Training yet, now's the time. Deadline is 31 March and it's mandatory for everyone.</div>
+          <div class="ep">It's on the LMS, takes about 45 minutes, and it's actually pretty relevant stuff. Do it this week and tick it off your list.</div>
+          <div class="ep">Can't access the platform? Ping IT. Questions? We've got you.</div>
+          <div class="ep">Don't leave it to the last day — you know how it goes 😅</div>
+          <div class="esign">Thanks,<br><strong>HR @ NovaTech</strong></div>
+        </div>
+
+        <div class="email-content" id="policy-formal">
+          <div class="tone-badge tb-formal"><div class="tone-dot dot-formal"></div>Formal</div>
+          <div class="ep">Dear All,</div>
+          <div class="ep">We write to advise that the Company's Remote Work Policy has been updated with effect from 1 April 2026. All employees are required to review the revised policy, as it contains material changes to eligibility criteria and the application process.</div>
+          <div class="ep">Key changes include: a formal remote work application form, a revised eligibility period of six months' continuous employment, and updated data security obligations for employees working outside the office.</div>
+          <div class="ep">The updated policy is available on the company intranet. Employees must acknowledge receipt by completing the acknowledgement form no later than 15 April 2026.</div>
+          <div class="esign">Regards,<br><strong>Human Resources Department</strong><br>NovaTech MENA LLC</div>
+        </div>
+
+        <div class="email-content" id="policy-warm">
+          <div class="tone-badge tb-warm"><div class="tone-dot dot-warm"></div>Warm &amp; Professional</div>
+          <div class="ep">Dear Team,</div>
+          <div class="ep">We've updated our Remote Work Policy and wanted to make sure everyone has the key information before the changes take effect on 1 April 2026.</div>
+          <div class="ep">The main updates: a new application form for remote work requests, an updated eligibility period of six months' service, and clearer guidance on data security when working outside the office. We've tried to make the process simpler and more transparent.</div>
+          <div class="ep">Please find the full policy on the intranet. Take 10 minutes to read it and complete the acknowledgement form by 15 April — this simply confirms you've seen the changes.</div>
+          <div class="ep">Questions about how this affects you? We're happy to walk you through it.</div>
+          <div class="esign">Best regards,<br><strong>The HR Team</strong><br>NovaTech MENA</div>
+        </div>
+
+        <div class="email-content" id="policy-conversational">
+          <div class="tone-badge tb-conversational"><div class="tone-dot dot-conversational"></div>Conversational</div>
+          <div class="ep">Hi everyone,</div>
+          <div class="ep">We've updated the Remote Work Policy — effective 1 April. Here's what changed and what you need to do.</div>
+          <div class="ep">The main changes: there's now a simple application form to request remote work, you need 6 months of service to be eligible, and we've added clearer guidance on keeping data secure at home. Nothing dramatic — just cleaner and clearer.</div>
+          <div class="ep">Head to the intranet, read the updated policy, and sign the acknowledgement form before 15 April. That's it!</div>
+          <div class="ep">Any questions? Just ask 😊</div>
+          <div class="esign">Cheers,<br><strong>HR @ NovaTech</strong></div>
+        </div>
+
+        <div class="email-content" id="welcome-formal">
+          <div class="tone-badge tb-formal"><div class="tone-dot dot-formal"></div>Formal</div>
+          <div class="ep">Dear All,</div>
+          <div class="ep">We write to formally announce the appointment of Ms. Sarah Al-Mansouri to the position of Senior HR Business Partner, effective 1 April 2026. Ms. Al-Mansouri brings eight years of progressive HR experience across the technology and financial services sectors in the UAE and GCC.</div>
+          <div class="ep">Ms. Al-Mansouri will report to the Chief Human Resources Officer and will partner with the Engineering and Product functions, focusing on talent management, organisational effectiveness, and leadership development.</div>
+          <div class="ep">All employees are asked to extend a professional welcome to Ms. Al-Mansouri as she assumes her responsibilities.</div>
+          <div class="esign">Regards,<br><strong>Human Resources Department</strong><br>NovaTech MENA LLC</div>
+        </div>
+
+        <div class="email-content" id="welcome-warm">
+          <div class="tone-badge tb-warm"><div class="tone-dot dot-warm"></div>Warm &amp; Professional</div>
+          <div class="ep">Dear Team,</div>
+          <div class="ep">We are delighted to welcome Sarah Al-Mansouri to NovaTech MENA as our new Senior HR Business Partner, joining us on 1 April 2026.</div>
+          <div class="ep">Sarah brings eight years of HR experience across technology and financial services in the UAE and GCC. She will partner with our Engineering and Product teams, focusing on talent, people strategy, and leadership development. We are confident she will make a meaningful contribution from day one.</div>
+          <div class="ep">Sarah is based in our Dubai Marina office — please do introduce yourself when you see her. She is looking forward to meeting the team.</div>
+          <div class="esign">Warm regards,<br><strong>The HR Team</strong><br>NovaTech MENA</div>
+        </div>
+
+        <div class="email-content" id="welcome-conversational">
+          <div class="tone-badge tb-conversational"><div class="tone-dot dot-conversational"></div>Conversational</div>
+          <div class="ep">Hi everyone,</div>
+          <div class="ep">Exciting news — we have a brilliant new team member joining us! 🎉</div>
+          <div class="ep">Sarah Al-Mansouri is joining as Senior HR Business Partner on 1 April. She's got 8 years of HR experience across tech and finance in the UAE and GCC, and she'll be working closely with Engineering and Product on all things people-related.</div>
+          <div class="ep">She'll be in the Dubai Marina office — say hi when you see her around. We're really glad to have her.</div>
+          <div class="ep">Welcome aboard, Sarah! 👋</div>
+          <div class="esign">The HR Team<br>NovaTech MENA</div>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="showTab('build',document.querySelectorAll('.tab')[1])">
+      Write a communication for your own team →
+    </button>
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+    <div class="build-intro">
+      <p>Select your communication type, choose a tone, add your draft or bullet points — get a polished ready-to-send email with subject line in seconds.</p>
+    </div>
+    <div class="build-note">Even rough bullet points work. The more context you give about your company and audience, the better the output matches your voice.</div>
+
+    <div class="step-lbl"><div class="sn">1</div>What type of communication?</div>
+    <div class="comm-grid">
+      <div class="comm-chip" onclick="selComm(this,'Holiday Advisory')">Holiday Advisory</div>
+      <div class="comm-chip" onclick="selComm(this,'Ramadan Hours Notice')">Ramadan Hours</div>
+      <div class="comm-chip" onclick="selComm(this,'Policy Update')">Policy Update</div>
+      <div class="comm-chip" onclick="selComm(this,'Mandatory Training Reminder')">Mandatory Training</div>
+      <div class="comm-chip" onclick="selComm(this,'New Joiner Announcement')">New Joiner</div>
+      <div class="comm-chip" onclick="selComm(this,'Town Hall Invitation')">Town Hall Invite</div>
+      <div class="comm-chip" onclick="selComm(this,'Company Announcement')">Company Announcement</div>
+      <div class="comm-chip" onclick="selComm(this,'Redundancy / Restructure Notice')">Redundancy Notice</div>
+      <div class="comm-chip" onclick="selComm(this,'Performance Review Reminder')">Performance Review</div>
+      <div class="comm-chip" onclick="selComm(this,'Benefits Update')">Benefits Update</div>
+      <div class="comm-chip" onclick="selComm(this,'Office Move / Location Change')">Office Move</div>
+      <div class="comm-chip" onclick="selComm(this,'Farewell Announcement')">Farewell</div>
+      <div class="comm-chip" onclick="selComm(this,'Health & Safety Notice')">Health & Safety</div>
+      <div class="comm-chip" onclick="selComm(this,'Survey / Feedback Request')">Survey Request</div>
+    </div>
+
+    <div class="step-lbl"><div class="sn">2</div>Choose your tone</div>
+    <div class="tone-cards">
+      <div class="tone-card" onclick="selTone(this,'Formal','formal')"><div class="tc-title">Formal</div><div class="tc-desc">Traditional corporate. Clear and authoritative.</div></div>
+      <div class="tone-card" onclick="selTone(this,'Warm & Professional','warm')"><div class="tc-title">Warm &amp; Professional</div><div class="tc-desc">The sweet spot. Most companies, most situations.</div></div>
+      <div class="tone-card" onclick="selTone(this,'Conversational','conv')"><div class="tc-title">Conversational</div><div class="tc-desc">Friendly and direct. Modern, startup-style.</div></div>
+    </div>
+
+    <div class="step-lbl"><div class="sn">3</div>Your draft or bullet points</div>
+    <textarea class="draft-area" id="draftIn" placeholder="Paste your rough draft or bullet points here. For example:
+• Ramadan starts 1 March
+• Working hours 9am–3pm Sunday to Thursday
+• Be respectful of colleagues fasting
+• Questions to HR"></textarea>
+
+    <div class="step-lbl"><div class="sn">4</div>Company details</div>
+    <div class="det-grid">
+      <div class="inf"><label class="il">Company name</label><input type="text" id="bComp" placeholder="e.g. NovaTech MENA"></div>
+      <div class="inf"><label class="il">Who is this going to?</label><input type="text" id="bAud" placeholder="e.g. All employees / UAE team only"></div>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="buildPrompt()" disabled>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Build my communication prompt
+    </button>
+
+    <div class="prompt-box" id="pBox">
+      <div class="pl"><div class="prd"></div>Your prompt is ready — copy and paste into Claude</div>
+      <div class="pt" id="pText"></div>
+      <button class="copy-btn" onclick="copyPr()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy prompt
+      </button>
+      <div class="cc" id="cc">Copied! Open Claude and paste to get your polished communication.</div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--indigo)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Create a project called <strong>"HR Communications"</strong> — your dedicated writing assistant</li>
+        <li>Every communication you need, open the project, describe what you need and paste your bullet points — Claude writes it in your chosen tone instantly</li>
+        <li>Build a library of past communications inside the project — Claude can match the style of previous emails you've approved</li>
+      </ul>
+    </div>
+    <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+  </div>
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+
+<script>
+const subjects = {
+  ramadan: { formal: 'Revised Working Hours — Ramadan 2026', warm: 'Ramadan Working Hours — Effective 1 March 2026', conversational: 'Ramadan Hours — Starting 1 March 🌙' },
+  training: { formal: 'Mandatory Completion Notice — Data Protection & Compliance Training', warm: 'Reminder: Compliance Training Deadline — 31 March', conversational: 'Don\'t forget — compliance training due 31 March!' },
+  policy: { formal: 'Notification of Policy Amendment — Remote Work Policy', warm: 'Updated Remote Work Policy — Effective 1 April 2026', conversational: 'Remote Work Policy update — here\'s what\'s changed' },
+  welcome: { formal: 'Appointment Announcement — Senior HR Business Partner', warm: 'Welcome Sarah Al-Mansouri — Senior HR Business Partner', conversational: 'New team member alert! 🎉 Meet Sarah' }
+};
+let curEx = 'ramadan', curTone = 'formal';
+let selCommType = '', selToneLabel = '', selToneKey = '';
+
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function switchEx(key, el) {
+  document.querySelectorAll('.example-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  curEx = key;
+  updateEmail();
+}
+
+function switchTone(tone, el) {
+  document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active-formal','active-warm','active-conversational'));
+  el.classList.add('active-' + tone);
+  curTone = tone;
+  ['formal','warm','conversational'].forEach(t => {
+    const el = document.getElementById('te-' + t);
+    el.classList.toggle('show', t === tone);
+  });
+  updateEmail();
+}
+
+function updateEmail() {
+  document.querySelectorAll('.email-content').forEach(e => e.classList.remove('active'));
+  const t = document.getElementById(`${curEx}-${curTone}`);
+  if (t) t.classList.add('active');
+  const s = subjects[curEx]?.[curTone] || '';
+  document.getElementById('esubj').textContent = s;
+  document.getElementById('etb').textContent = s;
+}
+
+function selComm(el, type) {
+  document.querySelectorAll('.comm-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selCommType = type;
+  checkReady();
+}
+
+function selTone(el, label, key) {
+  document.querySelectorAll('.tone-card').forEach(c => c.classList.remove('sel-formal','sel-warm','sel-conv'));
+  el.classList.add('sel-' + key);
+  selToneLabel = label;
+  selToneKey = key;
+  checkReady();
+}
+
+function checkReady() {
+  document.getElementById('genBtn').disabled = !(selCommType && selToneKey);
+}
+
+const toneGuides = {
+  formal: 'Formal and authoritative. Use full names and titles. No contractions. No exclamation marks. Professional distance maintained throughout.',
+  warm: 'Warm and professional — the sweet spot between formal and friendly. Approachable but credible. Avoid being overly casual or overly stiff.',
+  conv: 'Friendly, direct, and conversational. Write like a real person. Use contractions. Short sentences. Light emoji where appropriate. Zero corporate jargon.'
+};
+
+function buildPrompt() {
+  const draft = document.getElementById('draftIn').value.trim() || '[No draft — please write from scratch based on the details above]';
+  const company = document.getElementById('bComp').value.trim() || '[Your company name]';
+  const audience = document.getElementById('bAud').value.trim() || 'All employees';
+  const prompt = `You are an experienced HR communications specialist. Please write a polished ${selCommType} for the following company.
+
+DETAILS:
+- Type: ${selCommType}
+- Company: ${company}
+- Audience: ${audience}
+- Tone: ${selToneLabel}
+
+TONE GUIDANCE:
+${toneGuides[selToneKey]}
+
+MY DRAFT / BULLET POINTS:
+${draft}
+
+PLEASE PRODUCE:
+1. A subject line — clear, specific, and appropriate to the tone
+2. The full email body — polished, complete, and ready to send
+3. A sign-off appropriate to the tone
+
+Every sentence should earn its place. No padding. Write like a senior HR professional who communicates clearly and with confidence.`;
+
+  document.getElementById('pText').textContent = prompt;
+  document.getElementById('pBox').classList.add('show');
+  document.getElementById('pBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyPr() {
+  navigator.clipboard.writeText(document.getElementById('pText').textContent).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': `HR Comms - ${selCommType} - ${selToneLabel}` });
+    const c = document.getElementById('cc');
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+
+updateEmail();
+</script>
+</body>
+</html>

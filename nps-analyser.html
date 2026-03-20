@@ -11,7 +11,7 @@
   gtag('js', new Date());
   gtag('config', 'G-WFCVJL0P5T');
 </script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +32,7 @@
   }
 
   body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -51,7 +51,7 @@
     top: -60px; right: -60px;
     width: 300px; height: 300px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(29,158,117,0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%);
   }
   .hero-inner { max-width: 720px; margin: 0 auto; position: relative; }
   .agent-badge {
@@ -64,13 +64,13 @@
     margin-bottom: 1.25rem;
   }
   .hero h1 {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Poppins', sans-serif;
     font-size: clamp(2rem, 5vw, 3rem);
     color: #ffffff;
     line-height: 1.15;
     margin-bottom: 1rem;
   }
-  .hero h1 span { color: #5DCAA5; }
+  .hero h1 span { color: #CAFE48; }
   .hero p {
     font-size: 16px; color: rgba(255,255,255,0.6);
     line-height: 1.7; max-width: 520px;
@@ -99,7 +99,7 @@
     transition: all 0.2s;
     white-space: nowrap;
   }
-  .tab.active { color: var(--text); border-bottom-color: var(--green); }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
   .tab:hover:not(.active) { color: var(--text); }
 
   /* CONTENT */
@@ -190,7 +190,7 @@
     background: #0f1a14; border-radius: 12px;
     padding: 1.5rem; margin-bottom: 2rem; position: relative;
   }
-  .prompt-box-label { font-size: 11px; color: #5DCAA5; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-box-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
   .prompt-text {
     font-family: 'DM Sans', monospace;
     font-size: 13px; color: rgba(255,255,255,0.75);
@@ -203,10 +203,10 @@
     border: none; border-radius: 8px;
     padding: 10px 20px; font-size: 13px; font-weight: 500;
     cursor: pointer; transition: opacity 0.2s;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
   }
   .copy-btn:hover { opacity: 0.88; }
-  .copy-confirm { font-size: 12px; color: var(--green); margin-top: 8px; display: none; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
 
   .open-claude-btn {
     display: block; width: 100%;
@@ -215,7 +215,7 @@
     border-radius: 10px; padding: 14px;
     font-size: 14px; font-weight: 500; text-align: center;
     cursor: pointer; transition: background 0.2s;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;
   }
   .open-claude-btn:hover { background: #1a2e1f; }
@@ -240,6 +240,7 @@
 
 <div class="hero">
   <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
     <div class="agent-badge">
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" fill="#5DCAA5"/></svg>
       HR &amp; People Analytics · AI Agent
@@ -391,14 +392,14 @@
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-content">
-          <h3>Upload your NPS data file</h3>
-          <p>Attach your Excel or CSV file alongside the prompt and hit send. Claude will analyse your data and generate your dashboard instantly.</p>
+          <h3>Get your written analysis — then optionally turn it into a visual</h3>
+          <p>Claude first returns a complete written NPS report. Then use the second prompt below in the same conversation to turn it into an interactive visual dashboard like the one in the demo tab — with your real data inside it.</p>
         </div>
       </div>
     </div>
 
     <div class="prompt-box">
-      <div class="prompt-box-label">Your prompt — copy this</div>
+      <div class="prompt-box-label">Step 1 — Copy this prompt to get your written analysis</div>
       <div class="prompt-text" id="promptText">You are an NPS analysis expert. I will upload an Excel or CSV file containing NPS survey data.
 
 Please analyse it and provide:
@@ -409,11 +410,34 @@ Please analyse it and provide:
 5. 3-5 specific, actionable recommendations based on what the data reveals
 
 Present everything in a clean dashboard format with clear sections, key numbers highlighted, and insights written in plain language for an HR leader audience.</div>
-      <button class="copy-btn" onclick="copyPrompt()">
+      <button class="copy-btn" onclick="copyPrompt('promptText','copyConfirm','NPS Analyser - Step 1')">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Copy prompt
+        Copy Step 1 prompt — written analysis
       </button>
-      <div class="copy-confirm" id="copyConfirm">Copied! Now open Claude and paste it in.</div>
+      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, attach your file and paste this prompt. You'll get your written report first.</div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">Step 2 — Copy this prompt to turn your analysis into a visual dashboard</div>
+      <div class="prompt-text" id="promptText2">Use this prompt immediately after Step 1 — in the same Claude conversation, without uploading anything again.
+
+---
+
+Now take the NPS analysis you just produced and turn it into an interactive visual dashboard. Build it as a clean, presentation-ready artifact that includes:
+
+1. A summary strip showing overall NPS score, promoters %, passives %, and detractors %
+2. A trend line chart if multiple time periods exist in the data
+3. A score distribution bar chart showing responses across all scores 0–10
+4. A promoter vs detractor segment bar showing the split visually
+5. Two columns of key themes — top positives and key concerns from open-ended comments
+6. A prioritised recommendations section
+
+Use the exact data from the analysis above. Make it clean, colour coded, and ready to present to leadership.</div>
+      <button class="copy-btn" onclick="copyPrompt('promptText2','copyConfirm2','NPS Analyser - Step 2')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 12.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy Step 2 prompt — visual dashboard
+      </button>
+      <div class="copy-confirm" id="copyConfirm2">Copied! Paste this in the same Claude conversation right after your written analysis appears.</div>
     </div>
 
     <a href="https://claude.ai" target="_blank" class="open-claude-btn">
@@ -423,7 +447,7 @@ Present everything in a clean dashboard format with clear sections, key numbers 
   </div>
 </div>
 
-<div class="footer">
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">
   Part of the AI Agents Library · Built with Claude · Free to use and share
 </div>
 
@@ -435,11 +459,11 @@ function showTab(id, btn) {
   btn.classList.add('active');
 }
 
-function copyPrompt() {
-  const text = document.getElementById('promptText').innerText;
+function copyPrompt(textId, confirmId, agentName) {
+  const text = document.getElementById(textId).innerText;
   navigator.clipboard.writeText(text).then(() => {
-    gtag('event', 'copy_prompt', { 'agent_name': 'NPS Analyser' });
-    const c = document.getElementById('copyConfirm');
+    gtag('event', 'copy_prompt', { 'agent_name': agentName });
+    const c = document.getElementById(confirmId);
     c.style.display = 'block';
     setTimeout(() => c.style.display = 'none', 4000);
   });

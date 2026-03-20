@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emirates ID & Visa Renewal Tracker — UAE · AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --red: #C0392B; --red-light: #FDEEEC; --red-mid: #E74C3C;
+    --amber: #B87A1A; --amber-light: #FBF4E3;
+    --green: #2A7A4A; --green-light: #E8F5EE;
+    --blue: #1A5276; --blue-light: #EAF2F8;
+    --uae-green: #006633;
+    --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08); --surface: #ffffff; --bg: #F5F4F0;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 780px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(26,82,118,0.25); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(26,82,118,0.35); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem,4.5vw,2.8rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; font-weight: 500; }
+  .hero h1 span { color: #CAFE48; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 780px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
+
+  .content { max-width: 780px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .sample-label { display: inline-flex; align-items: center; gap: 6px; background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid rgba(26,82,118,0.2); margin-bottom: 1.25rem; }
+
+  /* SUMMARY STRIP */
+  .summary-strip { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .summary-card { border-radius: 12px; padding: 1rem; text-align: center; }
+  .summary-card.total { background: var(--surface); border: 0.5px solid var(--border); }
+  .summary-card.critical { background: var(--red-light); border: 0.5px solid rgba(192,57,43,0.2); }
+  .summary-card.upcoming { background: var(--amber-light); border: 0.5px solid rgba(184,122,26,0.2); }
+  .summary-card.safe { background: var(--green-light); border: 0.5px solid rgba(42,122,74,0.2); }
+  .summary-num { font-size: 28px; font-weight: 500; font-family: 'Poppins', sans-serif; }
+  .summary-num.red { color: var(--red); }
+  .summary-num.amber { color: var(--amber); }
+  .summary-num.green { color: var(--green); }
+  .summary-num.blue { color: var(--blue); }
+  .summary-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  /* BUFFER LEGEND */
+  .buffer-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 1rem; font-size: 12px; }
+  .buffer-item { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+  .buffer-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* TRACKER TABLE */
+  .tracker-wrap { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .tracker-header { display: grid; grid-template-columns: 2fr 1fr 100px 100px 90px 100px; gap: 0; background: #134611; padding: 10px 1.25rem; }
+  .th { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.06em; }
+  .tracker-row { display: grid; grid-template-columns: 2fr 1fr 100px 100px 90px 100px; gap: 0; padding: 12px 1.25rem; border-bottom: 0.5px solid var(--border); align-items: center; transition: background 0.15s; }
+  .tracker-row:last-child { border-bottom: none; }
+  .tracker-row:hover { background: var(--bg); }
+  .tracker-row.critical-row { border-left: 3px solid var(--red); }
+  .tracker-row.upcoming-row { border-left: 3px solid var(--amber); }
+  .tracker-row.safe-row { border-left: 3px solid var(--green); }
+  .emp-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .emp-dept { font-size: 11px; color: var(--text-faint); margin-top: 2px; }
+  .emp-nat { font-size: 12px; color: var(--text-muted); }
+  .date-cell { font-size: 12px; font-family: 'Poppins', sans-serif; color: var(--text); }
+  .days-cell { font-size: 13px; font-family: 'Poppins', sans-serif; font-weight: 500; }
+  .days-cell.red { color: var(--red); }
+  .days-cell.amber { color: var(--amber); }
+  .days-cell.green { color: var(--green); }
+  .status-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; }
+  .badge-critical { background: var(--red-light); color: var(--red); }
+  .badge-upcoming { background: var(--amber-light); color: var(--amber); }
+  .badge-safe { background: var(--green-light); color: var(--green); }
+  .badge-expired { background: #2C0A0A; color: #FF6B6B; }
+
+  /* BUFFER NOTE */
+  .buffer-note { background: var(--blue-light); border: 0.5px solid rgba(26,82,118,0.2); border-radius: 10px; padding: 12px 14px; margin-bottom: 1.5rem; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .buffer-note strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+  /* ACTION LIST */
+  .action-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .action-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
+  .action-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+  .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .action-priority { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 500; }
+  .priority-1 { background: var(--red-light); color: var(--red); }
+  .priority-2 { background: var(--red-light); color: var(--red); }
+  .priority-3 { background: var(--amber-light); color: var(--amber); }
+  .priority-4 { background: var(--amber-light); color: var(--amber); }
+  .action-content h4 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .action-content p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .action-due { font-size: 11px; font-family: 'Poppins', sans-serif; color: var(--text-faint); white-space: nowrap; margin-left: auto; padding-top: 2px; }
+
+  /* REMINDER SETUP */
+  .reminder-box { background: #134611; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .reminder-title { font-size: 13px; font-weight: 500; color: white; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .reminder-badge { font-size: 10px; background: rgba(93,173,226,0.2); color: #CAFE48; padding: 2px 8px; border-radius: 20px; border: 0.5px solid rgba(93,173,226,0.3); }
+  .reminder-steps { display: flex; flex-direction: column; gap: 8px; }
+  .reminder-step { display: flex; gap: 10px; align-items: flex-start; }
+  .r-num { width: 20px; height: 20px; border-radius: 50%; background: rgba(93,173,226,0.2); color: #CAFE48; font-size: 10px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .r-text { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+  .r-text strong { color: rgba(255,255,255,0.85); }
+
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
+
+  /* BUILD */
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .build-note { font-size: 13px; color: var(--text-muted); background: var(--blue-light); border: 0.5px solid rgba(26,82,118,0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 1.5rem; line-height: 1.6; }
+  .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 1.5rem; }
+  .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .step:first-child { border-radius: 12px 12px 0 0; }
+  .step:last-child { border-radius: 0 0 12px 12px; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .step-content a { color: var(--blue); text-decoration: none; }
+
+  .prompt-section-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 8px; margin-top: 1.5rem; }
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+  .prompt-box-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(26,82,118,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: save-counter; }
+  .save-steps li { counter-increment: save-counter; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
+
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 780px; margin: 0 auto; }
+
+  @media (max-width: 640px) {
+    .summary-strip { grid-template-columns: repeat(2,1fr); }
+    .tracker-header { grid-template-columns: 1.5fr 80px 80px 70px; }
+    .tracker-header .th:nth-child(2), .tracker-header .th:nth-child(5) { display: none; }
+    .tracker-row { grid-template-columns: 1.5fr 80px 80px 70px; }
+    .tracker-row > *:nth-child(2), .tracker-row > *:nth-child(5) { display: none; }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#5DADE2"/></svg>
+      UAE Government Relations · AI Agent
+    </div>
+    <h1>Emirates ID &amp; Visa <span>Renewal Tracker</span></h1>
+    <p>Upload your employee visa data and get a prioritised renewal schedule — colour coded by urgency, sorted by days remaining, with customisable alert buffers per employee.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>HR &amp; PRO Teams</strong></div>
+      <div class="hero-meta-item">Customisable <strong>alert buffers</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo',this)">Live demo</button>
+    <button class="tab" onclick="showTab('build',this)">Build it yourself</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="section active" id="demo">
+
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#1A5276"/></svg>
+      Sample — NovaTech MENA · 12 employees · Alert buffers applied
+    </div>
+
+    <!-- SUMMARY STRIP -->
+    <div class="summary-strip">
+      <div class="summary-card total">
+        <div class="summary-num blue">12</div>
+        <div class="summary-label">Total employees tracked</div>
+      </div>
+      <div class="summary-card critical">
+        <div class="summary-num red">3</div>
+        <div class="summary-label">Critical — action now</div>
+      </div>
+      <div class="summary-card upcoming">
+        <div class="summary-num amber">4</div>
+        <div class="summary-label">Upcoming — within buffer</div>
+      </div>
+      <div class="summary-card safe">
+        <div class="summary-num green">5</div>
+        <div class="summary-label">Safe — no action needed</div>
+      </div>
+    </div>
+
+    <!-- BUFFER NOTE -->
+    <div class="buffer-note">
+      <strong>Customisable alert buffers — because one size doesn't fit all</strong>
+      Some employees need renewal started 7 days in advance (simple renewals, UAE nationals). Others need 30–60 days (complex visa types, overseas processing, visa change). The tracker applies each employee's individual buffer to calculate when action is actually required — not just when the document expires.
+    </div>
+
+    <!-- LEGEND -->
+    <div class="buffer-legend">
+      <div class="buffer-item"><div class="buffer-dot" style="background:var(--red)"></div>Critical — expired or within buffer period</div>
+      <div class="buffer-item"><div class="buffer-dot" style="background:var(--amber)"></div>Upcoming — expiring within 60 days</div>
+      <div class="buffer-item"><div class="buffer-dot" style="background:var(--green)"></div>Safe — more than 60 days remaining</div>
+    </div>
+
+    <!-- TRACKER TABLE -->
+    <div class="tracker-wrap">
+      <div class="tracker-header">
+        <div class="th">Employee</div>
+        <div class="th">Nationality</div>
+        <div class="th">Visa expiry</div>
+        <div class="th">EID expiry</div>
+        <div class="th">Days left</div>
+        <div class="th">Status</div>
+      </div>
+
+      <div class="tracker-row critical-row">
+        <div><div class="emp-name">Mohammed Al-Rashidi</div><div class="emp-dept">Operations · Buffer: 30 days</div></div>
+        <div class="emp-nat">UAE National</div>
+        <div class="date-cell">12 Mar 2026</div>
+        <div class="date-cell">12 Mar 2026</div>
+        <div class="days-cell red">-4</div>
+        <div><span class="status-badge badge-expired">Expired</span></div>
+      </div>
+
+      <div class="tracker-row critical-row">
+        <div><div class="emp-name">Priya Sharma</div><div class="emp-dept">HR · Buffer: 45 days</div></div>
+        <div class="emp-nat">Indian</div>
+        <div class="date-cell">28 Mar 2026</div>
+        <div class="date-cell">28 Mar 2026</div>
+        <div class="days-cell red">12</div>
+        <div><span class="status-badge badge-critical">Within buffer</span></div>
+      </div>
+
+      <div class="tracker-row critical-row">
+        <div><div class="emp-name">James Okonkwo</div><div class="emp-dept">People · Buffer: 60 days</div></div>
+        <div class="emp-nat">Nigerian</div>
+        <div class="date-cell">10 Apr 2026</div>
+        <div class="date-cell">10 Apr 2026</div>
+        <div class="days-cell red">25</div>
+        <div><span class="status-badge badge-critical">Within buffer</span></div>
+      </div>
+
+      <div class="tracker-row upcoming-row">
+        <div><div class="emp-name">Sarah Al-Mansouri</div><div class="emp-dept">HR · Buffer: 30 days</div></div>
+        <div class="emp-nat">Lebanese</div>
+        <div class="date-cell">15 May 2026</div>
+        <div class="date-cell">15 May 2026</div>
+        <div class="days-cell amber">60</div>
+        <div><span class="status-badge badge-upcoming">Upcoming</span></div>
+      </div>
+
+      <div class="tracker-row upcoming-row">
+        <div><div class="emp-name">Chen Wei</div><div class="emp-dept">Engineering · Buffer: 45 days</div></div>
+        <div class="emp-nat">Chinese</div>
+        <div class="date-cell">20 May 2026</div>
+        <div class="date-cell">20 May 2026</div>
+        <div class="days-cell amber">65</div>
+        <div><span class="status-badge badge-upcoming">Upcoming</span></div>
+      </div>
+
+      <div class="tracker-row upcoming-row">
+        <div><div class="emp-name">Fatima Al-Hassan</div><div class="emp-dept">Finance · Buffer: 15 days</div></div>
+        <div class="emp-nat">UAE National</div>
+        <div class="date-cell">1 Jun 2026</div>
+        <div class="date-cell">1 Jun 2026</div>
+        <div class="days-cell amber">77</div>
+        <div><span class="status-badge badge-upcoming">Upcoming</span></div>
+      </div>
+
+      <div class="tracker-row upcoming-row">
+        <div><div class="emp-name">Ravi Patel</div><div class="emp-dept">Sales · Buffer: 30 days</div></div>
+        <div class="emp-nat">Indian</div>
+        <div class="date-cell">5 Jun 2026</div>
+        <div class="date-cell">5 Jun 2026</div>
+        <div class="days-cell amber">81</div>
+        <div><span class="status-badge badge-upcoming">Upcoming</span></div>
+      </div>
+
+      <div class="tracker-row safe-row">
+        <div><div class="emp-name">Ana Rodrigues</div><div class="emp-dept">Marketing · Buffer: 30 days</div></div>
+        <div class="emp-nat">Portuguese</div>
+        <div class="date-cell">15 Aug 2026</div>
+        <div class="date-cell">15 Aug 2026</div>
+        <div class="days-cell green">152</div>
+        <div><span class="status-badge badge-safe">Safe</span></div>
+      </div>
+
+      <div class="tracker-row safe-row">
+        <div><div class="emp-name">Khalid Al-Nuaimi</div><div class="emp-dept">Legal · Buffer: 7 days</div></div>
+        <div class="emp-nat">UAE National</div>
+        <div class="date-cell">20 Sep 2026</div>
+        <div class="date-cell">20 Sep 2026</div>
+        <div class="days-cell green">188</div>
+        <div><span class="status-badge badge-safe">Safe</span></div>
+      </div>
+
+      <div class="tracker-row safe-row">
+        <div><div class="emp-name">Layla Al-Hassan</div><div class="emp-dept">Executive · Buffer: 60 days</div></div>
+        <div class="emp-nat">Jordanian</div>
+        <div class="date-cell">1 Nov 2026</div>
+        <div class="date-cell">1 Nov 2026</div>
+        <div class="days-cell green">230</div>
+        <div><span class="status-badge badge-safe">Safe</span></div>
+      </div>
+
+    </div>
+
+    <!-- ACTION LIST -->
+    <div class="action-box">
+      <div class="action-title">This week's action list — prioritised</div>
+      <div class="action-item">
+        <div class="action-priority priority-1">P1</div>
+        <div class="action-content">
+          <h4>Mohammed Al-Rashidi — Visa &amp; EID expired</h4>
+          <p>Escalate immediately. Employee cannot legally work until renewed. Contact GDRFA and ICP today. UAE National — EID renewal via ICP app may be possible same day.</p>
+        </div>
+        <div class="action-due">Overdue −4 days</div>
+      </div>
+      <div class="action-item">
+        <div class="action-priority priority-2">P2</div>
+        <div class="action-content">
+          <h4>Priya Sharma — Visa &amp; EID expiring 28 Mar</h4>
+          <p>Within 45-day buffer. Initiate renewal process immediately. Indian national — allow additional time for medical and Emirates Post delivery.</p>
+        </div>
+        <div class="action-due">12 days remaining</div>
+      </div>
+      <div class="action-item">
+        <div class="action-priority priority-2">P2</div>
+        <div class="action-content">
+          <h4>James Okonkwo — Visa &amp; EID expiring 10 Apr</h4>
+          <p>Within 60-day buffer. Start renewal this week. Nigerian national — allow 3–4 weeks for processing. Confirm medical and insurance are in order.</p>
+        </div>
+        <div class="action-due">25 days remaining</div>
+      </div>
+      <div class="action-item">
+        <div class="action-priority priority-3">P3</div>
+        <div class="action-content">
+          <h4>Sarah Al-Mansouri — Visa &amp; EID expiring 15 May</h4>
+          <p>Not yet within 30-day buffer but approaching. Schedule renewal for early April. Lebanese national — standard processing time.</p>
+        </div>
+        <div class="action-due">60 days remaining</div>
+      </div>
+    </div>
+
+    <!-- GOOGLE SHEETS REMINDER SETUP -->
+    <div class="reminder-box">
+      <div class="reminder-title">
+        Set up automatic Monday morning alerts
+        <span class="reminder-badge">Google Sheets + Apps Script · Free</span>
+      </div>
+      <div class="reminder-steps">
+        <div class="reminder-step">
+          <div class="r-num">1</div>
+          <div class="r-text">Paste your employee data into Google Sheets — name, visa expiry, EID expiry, nationality, and <strong>individual alert buffer per employee</strong></div>
+        </div>
+        <div class="reminder-step">
+          <div class="r-num">2</div>
+          <div class="r-text">Use the Claude prompt in the next tab to generate a <strong>Google Apps Script</strong> — paste it into your sheet in under 2 minutes</div>
+        </div>
+        <div class="reminder-step">
+          <div class="r-num">3</div>
+          <div class="r-text">Set the trigger to run every Monday morning — <strong>automated emails arrive in your inbox</strong> listing only the employees who need action that week</div>
+        </div>
+        <div class="reminder-step">
+          <div class="r-num">4</div>
+          <div class="r-text">Update the sheet when visas are renewed or new employees join — <strong>zero other ongoing effort required</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="showTab('build',document.querySelectorAll('.tab')[1])">
+      Build this tracker for your own team →
+    </button>
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+    <div class="build-intro">
+      <p>Two prompts below. The first generates your renewal schedule from a CSV upload. The second generates a Google Apps Script that sends you automatic Monday morning alerts — so you never have to remember to check.</p>
+    </div>
+    <div class="build-note">
+      The alert buffer is per employee — not a global setting. A UAE national might need 7 days notice while a visa change for an overseas hire might need 60 days. Claude applies each employee's individual buffer when calculating urgency.
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Prepare your employee data as a CSV or Excel file</h3>
+          <p>Include columns for: employee name, nationality, department, visa expiry date, EID expiry date, and alert buffer days. Save as CSV.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Upload to Claude and use Prompt 1</h3>
+          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a>, attach your CSV, paste Prompt 1 below. Get your prioritised renewal schedule instantly.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Set up automatic alerts using Prompt 2 (optional)</h3>
+          <p>Use Prompt 2 to generate a Google Apps Script. Paste it into your Google Sheet and set a weekly trigger — Monday morning alerts arrive automatically forever.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 1 -->
+    <div class="prompt-section-title">Prompt 1 — Upload CSV for instant renewal schedule</div>
+    <div class="prompt-box">
+      <div class="prompt-box-label">Copy and use with your CSV upload</div>
+      <div class="prompt-text" id="promptText1">I have uploaded a CSV file containing employee visa and Emirates ID data.
+
+Each row includes: employee name, nationality, department, visa expiry date, EID expiry date, and an individual alert buffer (in days) for each employee.
+
+Please note — the alert buffer varies per employee and should be respected individually:
+- Some employees have a 7-day buffer (simple renewals, UAE nationals with ICP app access)
+- Others have a 15, 30, 45, or 60-day buffer (complex visa types, overseas processing, visa changes)
+- Use each employee's specific buffer to determine whether action is required NOW — not just whether the document has expired
+
+Please analyse the data and provide:
+
+1. A summary count — how many employees are: expired, within their alert buffer (critical), approaching within 60 days (upcoming), and safe
+2. A prioritised renewal schedule sorted by urgency — most critical first, showing:
+   - Employee name and nationality
+   - Visa expiry date and EID expiry date
+   - Days remaining until expiry
+   - Their individual alert buffer
+   - Whether they are currently within their buffer period
+   - Recommended action and suggested start date for renewal
+3. Flag any employees where both visa and EID expire on the same date — these can often be processed together to save time and cost
+4. Flag any employees where the visa and EID expiry dates differ significantly — these may need separate processing timelines
+5. A concise this-week action list — only the employees requiring immediate action
+
+Format as a clean, structured report the PRO team or HR manager can act on immediately.</div>
+      <button class="copy-btn" onclick="copyPrompt('promptText1','copyConfirm1','Visa Tracker - Prompt 1')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy Prompt 1
+      </button>
+      <div class="copy-confirm" id="copyConfirm1">Copied! Open Claude, attach your CSV and paste this prompt.</div>
+    </div>
+
+    <!-- PROMPT 2 -->
+    <div class="prompt-section-title">Prompt 2 — Generate automatic Monday morning alerts (Google Sheets)</div>
+    <div class="prompt-box">
+      <div class="prompt-box-label">Copy and use to set up automated weekly reminders</div>
+      <div class="prompt-text" id="promptText2">Please fill in your details below before using this prompt.
+Delete any lines that are not applicable.
+
+---
+
+MY SETUP:
+- My Google Sheet has these columns: [e.g. Column A: Name, B: Nationality, C: Department, D: Visa Expiry, E: EID Expiry, F: Alert Buffer Days]
+- My email address for alerts: [e.g. <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="640c1624091d070b0914050a1d4a070b09">[email&#160;protected]</a>]
+- Day to receive alerts: [e.g. Every Monday at 8am]
+- My timezone: [e.g. Gulf Standard Time, UTC+4]
+
+---
+
+Please write a complete Google Apps Script for my Google Sheet that:
+
+1. Runs automatically every Monday morning at 8am Gulf Standard Time
+2. Reads each employee row and checks today's date against their visa and EID expiry dates
+3. Applies each employee's INDIVIDUAL alert buffer (from the buffer column) — not a global setting. An employee with a 7-day buffer should only appear when within 7 days. An employee with a 60-day buffer should appear when within 60 days.
+4. Sends me an automated email with:
+   - Subject line: "Visa & EID Renewal Alert — [date] — [X] employees need action"
+   - A clear section for EXPIRED documents (immediate escalation needed)
+   - A section for employees WITHIN their individual buffer (action required this week)
+   - A section for employees approaching in the next 60 days (plan ahead)
+   - Each employee listed with: name, nationality, expiry date, days remaining, and recommended action
+5. Colour codes the Google Sheet rows automatically: red for expired/within buffer, amber for upcoming 60 days, green for safe
+6. Does NOT send an email if there are zero employees requiring attention that week
+
+Please write the complete script with clear comments explaining each section, and provide step-by-step instructions for how to paste it into Google Sheets and set the weekly trigger.</div>
+      <button class="copy-btn" onclick="copyPrompt('promptText2','copyConfirm2','Visa Tracker - Prompt 2')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy Prompt 2
+      </button>
+      <div class="copy-confirm" id="copyConfirm2">Copied! Open Claude, paste this prompt, and get your Apps Script.</div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--blue)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Click <strong>New Project</strong> and name it "Visa & EID Renewal Tracker"</li>
+        <li>Save both prompts above inside the project instructions</li>
+        <li>Every time you need a fresh renewal schedule, open the project, upload your latest CSV, and get an updated prioritised list instantly</li>
+      </ul>
+    </div>
+
+    <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+  </div>
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function copyPrompt(textId, confirmId, agentName) {
+  const text = document.getElementById(textId).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    g

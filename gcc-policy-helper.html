@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCC Policy Helper — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #0A6640; --green-light: #E6F2EC; --green-mid: #0D8050;
+    --gold: #9A7B3A; --gold-light: #FBF6E8;
+    --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08); --surface: #ffffff; --bg: #F5F4F0;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 780px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(10,102,64,0.25); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(10,102,64,0.35); margin-bottom: 1.25rem; }
+  .hero h1 { font-size: clamp(1.8rem,4.5vw,2.8rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; font-weight: 500; }
+  .hero h1 span { color: #CAFE48; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .content { max-width: 780px; margin: 0 auto; padding: 2rem; }
+
+  /* INTRO */
+  .how-it-works { display: flex; gap: 10px; background: #134611; border: 0.5px solid rgba(10,102,64,0.2); border-radius: 10px; padding: 12px 14px; margin-bottom: 1.5rem; font-size: 13px; color: var(--text-muted); line-height: 1.6; align-items: flex-start; }
+  .how-it-works strong { color: var(--text); display: block; margin-bottom: 2px; }
+  .how-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--green); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+
+  /* STEP LABELS */
+  .step-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .step-num-small { width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 10px; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+
+  /* COUNTRY SELECTOR */
+  .country-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .country-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 1rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .country-card:hover { border-color: #134611; background: rgba(19,70,17,0.04); }
+  .country-card.selected { border-color: #134611; background: rgba(19,70,17,0.06); }
+  .country-flag { font-size: 28px; margin-bottom: 6px; }
+  .country-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .country-law { font-size: 10px; color: var(--text-faint); line-height: 1.4; }
+
+  /* POLICY SELECTOR */
+  .policy-categories { margin-bottom: 1.5rem; }
+  .policy-cat-title { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; margin-top: 12px; }
+  .policy-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .policy-chip { padding: 7px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-weight: 500; }
+  .policy-chip:hover { border-color: var(--green); color: var(--green); background: var(--green-light); }
+  .policy-chip.selected { border-color: #134611; color: #134611; background: rgba(19,70,17,0.06); }
+
+  /* COMPANY DETAILS */
+  .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .input-field { display: flex; flex-direction: column; gap: 4px; }
+  .input-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+  .input-field input, .input-field select { border: 0.5px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; font-family: 'Poppins', sans-serif; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.2s; }
+  .input-field input:focus, .input-field select:focus { border-color: var(--green); }
+  .input-field input::placeholder { color: var(--text-faint); }
+
+  /* GENERATED PROMPT */
+  .prompt-preview { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; display: none; }
+  .prompt-preview.visible { display: block; }
+  .prompt-preview-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .prompt-preview-label .ready-dot { width: 8px; height: 8px; border-radius: 50%; background: #CAFE48; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .prompt-preview-text { font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+
+  /* BUTTONS */
+  .action-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .generate-btn { display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 11px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; transition: opacity 0.2s; }
+  .generate-btn:hover { opacity: 0.88; }
+  .generate-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .copy-btn { display: none; align-items: center; gap: 6px; background: var(--green); color: white; border: none; border-radius: 8px; padding: 11px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn.visible { display: inline-flex; }
+  .copy-btn:hover { opacity: 0.88; }
+  .open-btn-small { display: none; align-items: center; gap: 6px; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border: 0.5px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 11px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; text-decoration: none; }
+  .open-btn-small.visible { display: inline-flex; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align: center; padding: 2rem; background: var(--surface); border: 0.5px dashed var(--border); border-radius: 12px; margin-bottom: 1rem; }
+  .empty-state p { font-size: 13px; color: var(--text-faint); line-height: 1.6; }
+
+  /* SAVE BOX */
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(10,102,64,0.15); border-radius: 12px; padding: 1.25rem; margin-top: 1.5rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: s; }
+  .save-steps li { counter-increment: s; display: flex; gap: 10px; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(s); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  .disclaimer { font-size: 11px; color: var(--text-faint); text-align: center; margin-top: 1.5rem; line-height: 1.6; }
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 780px; margin: 0 auto; }
+
+  @media (max-width: 600px) {
+    .country-grid { grid-template-columns: repeat(2,1fr); }
+    .details-grid { grid-template-columns: 1fr; }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#4DB87A"/></svg>
+      HR Policy · GCC · AI Agent
+    </div>
+    <h1>GCC Policy <span>Helper</span></h1>
+    <p>Select your country and policy type, add your company details — get a tailored, law-aligned policy prompt ready to run in Claude instantly.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Covers <strong>6 GCC countries</strong></div>
+      <div class="hero-meta-item">Aligned to <strong>local labour law</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="how-it-works">
+    <div class="how-icon">⚡</div>
+    <div>
+      <strong>How this works — 3 steps</strong>
+      Select your country and policy type below. Fill in your company details. The artifact builds a law-specific prompt for you — copy it into Claude and get your complete policy instantly.
+    </div>
+  </div>
+
+  <!-- STEP 1 — COUNTRY -->
+  <div class="step-label">
+    <div class="step-num-small">1</div>
+    Select your country
+  </div>
+  <div class="country-grid">
+    <div class="country-card" onclick="selectCountry(this,'UAE','Federal Decree-Law No. 33 of 2021')">
+      <div class="country-flag">🇦🇪</div>
+      <div class="country-name">UAE</div>
+      <div class="country-law">Federal Decree-Law No. 33 of 2021</div>
+    </div>
+    <div class="country-card" onclick="selectCountry(this,'Saudi Arabia','Saudi Labour Law — Royal Decree No. M/51')">
+      <div class="country-flag">🇸🇦</div>
+      <div class="country-name">Saudi Arabia</div>
+      <div class="country-law">Saudi Labour Law — Royal Decree No. M/51</div>
+    </div>
+    <div class="country-card" onclick="selectCountry(this,'Qatar','Qatar Labour Law No. 14 of 2004')">
+      <div class="country-flag">🇶🇦</div>
+      <div class="country-name">Qatar</div>
+      <div class="country-law">Qatar Labour Law No. 14 of 2004</div>
+    </div>
+    <div class="country-card" onclick="selectCountry(this,'Kuwait','Kuwait Labour Law No. 6 of 2010')">
+      <div class="country-flag">🇰🇼</div>
+      <div class="country-name">Kuwait</div>
+      <div class="country-law">Kuwait Labour Law No. 6 of 2010</div>
+    </div>
+    <div class="country-card" onclick="selectCountry(this,'Bahrain','Bahrain Labour Law No. 36 of 2012')">
+      <div class="country-flag">🇧🇭</div>
+      <div class="country-name">Bahrain</div>
+      <div class="country-law">Bahrain Labour Law No. 36 of 2012</div>
+    </div>
+    <div class="country-card" onclick="selectCountry(this,'Oman','Oman Labour Law — Royal Decree No. 53 of 2023')">
+      <div class="country-flag">🇴🇲</div>
+      <div class="country-name">Oman</div>
+      <div class="country-law">Royal Decree No. 53 of 2023</div>
+    </div>
+  </div>
+
+  <!-- STEP 2 — POLICY TYPE -->
+  <div class="step-label">
+    <div class="step-num-small">2</div>
+    Select policy type
+  </div>
+  <div class="policy-categories">
+    <div class="policy-cat-title">Leave & Time</div>
+    <div class="policy-grid">
+      <div class="policy-chip" onclick="selectPolicy(this,'Annual Leave Policy')">Annual Leave</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Sick Leave Policy')">Sick Leave</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Maternity & Paternity Leave Policy')">Maternity & Paternity</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Remote Work & Flexible Working Policy')">Remote Work</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Public Holidays Policy')">Public Holidays</div>
+    </div>
+    <div class="policy-cat-title">Conduct & Discipline</div>
+    <div class="policy-grid">
+      <div class="policy-chip" onclick="selectPolicy(this,'Disciplinary Policy')">Disciplinary</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Grievance Policy')">Grievance</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Code of Conduct Policy')">Code of Conduct</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Anti-Harassment & Discrimination Policy')">Anti-Harassment</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Social Media Policy')">Social Media</div>
+    </div>
+    <div class="policy-cat-title">Compensation & Benefits</div>
+    <div class="policy-grid">
+      <div class="policy-chip" onclick="selectPolicy(this,'Expense Reimbursement Policy')">Expenses</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Overtime Policy')">Overtime</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Travel Policy')">Travel</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'End of Service Gratuity Policy')">End of Service</div>
+    </div>
+    <div class="policy-cat-title">Workplace & Safety</div>
+    <div class="policy-grid">
+      <div class="policy-chip" onclick="selectPolicy(this,'Health & Safety Policy')">Health & Safety</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Dress Code Policy')">Dress Code</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Data Protection & Confidentiality Policy')">Data Protection</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'IT & Device Usage Policy')">IT & Devices</div>
+    </div>
+    <div class="policy-cat-title">Recruitment & Onboarding</div>
+    <div class="policy-grid">
+      <div class="policy-chip" onclick="selectPolicy(this,'Recruitment & Selection Policy')">Recruitment</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Probation Policy')">Probation</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Onboarding Policy')">Onboarding</div>
+      <div class="policy-chip" onclick="selectPolicy(this,'Visa & Work Permit Policy')">Visa & Work Permit</div>
+    </div>
+  </div>
+
+  <!-- STEP 3 — COMPANY DETAILS -->
+  <div class="step-label">
+    <div class="step-num-small">3</div>
+    Your company details
+  </div>
+  <div class="details-grid">
+    <div class="input-field">
+      <label class="input-label">Company name</label>
+      <input type="text" id="companyName" placeholder="e.g. NovaTech MENA LLC">
+    </div>
+    <div class="input-field">
+      <label class="input-label">Industry</label>
+      <input type="text" id="industry" placeholder="e.g. Technology, Healthcare, Retail">
+    </div>
+    <div class="input-field">
+      <label class="input-label">Workforce size</label>
+      <select id="workforce">
+        <option value="">Select size</option>
+        <option>1–50 employees</option>
+        <option>51–200 employees</option>
+        <option>201–500 employees</option>
+        <option>500+ employees</option>
+      </select>
+    </div>
+    <div class="input-field">
+      <label class="input-label">Any specific requirements (optional)</label>
+      <input type="text" id="requirements" placeholder="e.g. hybrid model, multinational workforce">
+    </div>
+  </div>
+
+  <!-- GENERATE -->
+  <div class="action-row" style="margin-bottom:1.5rem;">
+    <button class="generate-btn" id="generateBtn" onclick="generatePrompt()" disabled>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Build my policy prompt
+    </button>
+  </div>
+
+  <!-- PROMPT OUTPUT -->
+  <div class="empty-state" id="emptyState">
+    <p>Select a country and policy type above, fill in your details, and click <strong>Build my policy prompt</strong> — your tailored prompt will appear here ready to copy into Claude.</p>
+  </div>
+
+  <div class="prompt-preview" id="promptPreview">
+    <div class="prompt-preview-label">
+      <div class="ready-dot"></div>
+      Your policy prompt is ready — copy and paste into Claude
+    </div>
+    <div class="prompt-preview-text" id="generatedPrompt"></div>
+    <div style="margin-top:1rem;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="copy-btn visible" onclick="copyGeneratedPrompt()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy prompt
+      </button>
+      <a href="https://claude.ai" target="_blank" class="open-btn-small visible">Open Claude →</a>
+    </div>
+    <div class="copy-confirm" id="copyConfirm">Copied! Open Claude and paste this prompt to generate your policy.</div>
+  </div>
+
+  <div class="save-box">
+    <h3>Save this for your policy library</h3>
+    <ul class="save-steps">
+      <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--green)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+      <li>Create a project called <strong>"GCC Policy Library"</strong> — use it for all future policy drafts</li>
+      <li>Each policy Claude generates can be saved inside the project — building your company's complete policy handbook over time</li>
+      <li>Ask Claude to review any existing policy for compliance with the latest labour law amendments — paste the policy and ask it to flag gaps</li>
+    </ul>
+  </div>
+
+  <div class="disclaimer">Policies generated by this tool are drafts for HR professional review. Always have your legal counsel or a qualified employment lawyer review any policy before publishing or distributing to employees.</div>
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+
+<script>
+let selectedCountry = '';
+let selectedCountryLaw = '';
+let selectedPolicy = '';
+
+function selectCountry(el, country, law) {
+  document.querySelectorAll('.country-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedCountry = country;
+  selectedCountryLaw = law;
+  clearPrompt();
+  checkReady();
+}
+
+function selectPolicy(el, policy) {
+  document.querySelectorAll('.policy-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPolicy = policy;
+  clearPrompt();
+  checkReady();
+}
+
+function clearPrompt() {
+  document.getElementById('promptPreview').classList.remove('visible');
+  document.getElementById('emptyState').style.display = 'block';
+  document.getElementById('copyConfirm').style.display = 'none';
+}
+
+function checkReady() {
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = !(selectedCountry && selectedPolicy);
+}
+
+function generatePrompt() {
+  const company = document.getElementById('companyName').value.trim() || '[Your company name]';
+  const industry = document.getElementById('industry').value.trim() || '[Your industry]';
+  const workforce = document.getElementById('workforce').value || '[Your workforce size]';
+  const requirements = document.getElementById('requirements').value.trim();
+
+  const extraLine = requirements ? `- Any specific requirements: ${requirements}` : '';
+
+  const countryNotes = {
+    'UAE': `- Reference Federal Decree-Law No. 33 of 2021 and its executive regulations throughout\n- Include relevant article numbers where applicable\n- Note any DIFC or ADGM freezone variations if relevant`,
+    'Saudi Arabia': `- Reference Saudi Labour Law Royal Decree No. M/51 throughout\n- Include relevant article numbers where applicable\n- Consider Nitaqat (Saudisation) requirements where relevant\n- Note any gender-specific workplace requirements applicable to the industry`,
+    'Qatar': `- Reference Qatar Labour Law No. 14 of 2004 and any recent amendments\n- Include relevant article numbers where applicable\n- Note any Qatar Financial Centre (QFC) variations if relevant`,
+    'Kuwait': `- Reference Kuwait Labour Law No. 6 of 2010 throughout\n- Include relevant article numbers where applicable\n- Note any Kuwait City freezone considerations if relevant`,
+    'Bahrain': `- Reference Bahrain Labour Law No. 36 of 2012 and amendments\n- Include relevant article numbers where applicable\n- Note any Bahrain International Investment Park (BIIP) variations if relevant`,
+    'Oman': `- Reference Oman Labour Law Royal Decree No. 53 of 2023 throughout\n- Include relevant article numbers where applicable\n- Note any Special Economic Zone (SEZ) variations if relevant`
+  };
+
+  const prompt = `You are an expert in ${selectedCountry} employment law — ${selectedCountryLaw}.
+
+Please write a complete, professional ${selectedPolicy} for my company that is fully compliant with ${selectedCountry} labour law.
+
+COMPANY DETAILS:
+- Company name: ${company}
+- Industry: ${industry}
+- Workforce size: ${workforce}${extraLine ? '\n- ' + extraLine : ''}
+
+LEGAL REQUIREMENTS:
+${countryNotes[selectedCountry]}
+
+POLICY STRUCTURE — please include all of the following sections:
+1. Purpose & Scope — who this policy applies to and why it exists
+2. Definitions — key terms used in this policy
+3. Policy Statement — the company's position and commitment
+4. Entitlements & Procedures — the core rules, entitlements, and processes in clear numbered steps
+5. Employee Responsibilities — what employees must do
+6. Manager Responsibilities — what managers must do
+7. Non-Compliance — consequences of not following this policy
+8. Review & Updates — how often the policy is reviewed
+9. Acknowledgement — employee signature block
+
+TONE & FORMAT:
+- Professional, clear, and plain language — avoid legal jargon
+- Numbered sections and sub-sections for easy navigation
+- Ready to publish in a company handbook or share with employees
+- Include a document control section at the top: version number, effective date, approved by, next review date`;
+
+  document.getElementById('generatedPrompt').textContent = prompt;
+  document.getElementById('promptPreview').classList.add('visible');
+  document.getElementById('emptyState').style.display = 'none';
+
+  document.getElementById('promptPreview').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyGeneratedPrompt() {
+  const text = document.getElementById('generatedPrompt').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', {
+      'agent_name': `GCC Policy Helper - ${selectedCountry} - ${selectedPolicy}`
+    });
+    const c = document.getElementById('copyConfirm');
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offer Letter Drafting Assistant — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #9A7B3A; --gold-light: #FBF6E8; --gold-mid: #C4A052;
+    --navy: #1C2B45; --navy-light: #E8ECF2;
+    --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08); --surface: #ffffff; --bg: #F7F5EF;
+    --paper: #FDFCF8;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; bottom: -40px; left: -40px; width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 760px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(154,123,58,0.2); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(154,123,58,0.3); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(2rem,5vw,3.2rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; font-weight: 500; }
+  .hero h1 span { color: #CAFE48; font-style: italic; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 760px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
+
+  .content { max-width: 760px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .sample-label { display: inline-flex; align-items: center; gap: 6px; background: var(--gold-light); color: var(--gold); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid rgba(154,123,58,0.25); margin-bottom: 0.75rem; }
+
+  .scroll-hint { text-align: center; font-size: 12px; color: var(--text-faint); margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .scroll-hint svg { animation: bounce 1.5s infinite; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+
+  .scroll-wrap { max-height: 580px; overflow-y: auto; border-radius: 6px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+  .scroll-wrap::-webkit-scrollbar { width: 5px; }
+  .scroll-wrap::-webkit-scrollbar-track { background: transparent; }
+  .scroll-wrap::-webkit-scrollbar-thumb { background: rgba(154,123,58,0.25); border-radius: 3px; }
+
+  /* PAPER */
+  .paper { background: var(--paper); padding: 2.5rem; font-family: 'Poppins', sans-serif; position: relative; }
+  .paper-letterhead { border-bottom: 2px solid var(--gold); padding-bottom: 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; }
+  .company-name-doc { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 600; color: var(--navy); }
+  .company-tagline { font-size: 11px; color: var(--text-faint); margin-top: 3px; font-family: 'Poppins', sans-serif; }
+  .doc-date { font-size: 12px; color: var(--text-muted); font-family: 'Poppins', sans-serif; text-align: right; }
+  .doc-ref { font-size: 11px; color: var(--text-faint); font-family: 'Poppins', sans-serif; margin-top: 2px; }
+  .doc-subject { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 1.25rem; font-family: 'Poppins', sans-serif; }
+  .doc-salutation { font-size: 15px; color: var(--text); margin-bottom: 1rem; }
+  .doc-para { font-size: 14px; color: var(--text); line-height: 1.8; margin-bottom: 1rem; }
+  .doc-section-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--gold); margin: 1.5rem 0 0.75rem; font-family: 'Poppins', sans-serif; padding-bottom: 6px; border-bottom: 0.5px solid rgba(154,123,58,0.2); }
+  .doc-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; font-size: 13px; }
+  .doc-table td { padding: 8px 10px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+  .doc-table td:first-child { color: var(--text-muted); width: 48%; font-family: 'Poppins', sans-serif; font-size: 12px; }
+  .doc-table td:last-child { font-weight: 500; color: var(--text); font-family: 'Poppins', sans-serif; }
+  .editable-hint { display: inline-block; background: #FFF8DC; border: 0.5px solid #E8C840; border-radius: 3px; padding: 1px 6px; font-size: 10px; color: #7A5F00; font-family: 'Poppins', sans-serif; margin-left: 6px; vertical-align: middle; font-style: normal; }
+  .delete-hint { display: inline-block; background: #FFE8E6; border: 0.5px solid #FFBCB8; border-radius: 3px; padding: 1px 6px; font-size: 10px; color: #8B2020; font-family: 'Poppins', sans-serif; margin-left: 6px; vertical-align: middle; font-style: normal; }
+  .doc-signature { margin-top: 2rem; padding-top: 1.25rem; border-top: 0.5px solid var(--border); }
+  .sig-line { width: 160px; height: 1px; background: var(--text); margin: 1.5rem 0 6px; }
+  .sig-name { font-size: 14px; font-weight: 500; color: var(--text); font-family: 'Poppins', sans-serif; }
+  .sig-title { font-size: 12px; color: var(--text-muted); font-family: 'Poppins', sans-serif; margin-top: 2px; }
+  .acceptance-block { background: var(--gold-light); border: 0.5px solid rgba(154,123,58,0.2); border-radius: 6px; padding: 1rem; margin-top: 1.5rem; }
+  .acceptance-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 10px; font-family: 'Poppins', sans-serif; }
+  .acceptance-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .acceptance-field { border-bottom: 0.5px solid rgba(154,123,58,0.3); padding-bottom: 4px; }
+  .acceptance-label { font-size: 10px; color: var(--text-faint); font-family: 'Poppins', sans-serif; margin-bottom: 8px; }
+  .confidential-stamp { position: absolute; top: 2rem; right: 2rem; border: 1.5px solid rgba(154,123,58,0.25); border-radius: 3px; padding: 3px 10px; font-size: 9px; font-weight: 500; color: rgba(154,123,58,0.4); letter-spacing: 0.12em; text-transform: uppercase; font-family: 'Poppins', sans-serif; transform: rotate(3deg); }
+
+  /* SCROLL REVEAL ANIMATIONS */
+  #scroll-paper .doc-para,
+  #scroll-paper .doc-section-title,
+  #scroll-paper .doc-salutation,
+  #scroll-paper .doc-subject,
+  #scroll-paper .doc-table,
+  #scroll-paper .doc-signature,
+  #scroll-paper .acceptance-block { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  #scroll-paper .doc-para.scroll-in,
+  #scroll-paper .doc-section-title.scroll-in,
+  #scroll-paper .doc-salutation.scroll-in,
+  #scroll-paper .doc-subject.scroll-in,
+  #scroll-paper .doc-table.scroll-in,
+  #scroll-paper .doc-signature.scroll-in,
+  #scroll-paper .acceptance-block.scroll-in { opacity: 1; transform: translateY(0); }
+
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
+
+  /* BUILD */
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+  .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 2rem; }
+  .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .step:first-child { border-radius: 12px 12px 0 0; }
+  .step:last-child { border-radius: 0 0 12px 12px; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .step-content a { color: var(--gold); text-decoration: none; }
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  .prompt-box-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(154,123,58,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: save-counter; }
+  .save-steps li { counter-increment: save-counter; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 760px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#D4A84B"/></svg>
+      Recruitment · AI Agent
+    </div>
+    <h1>Offer Letter <span>Drafting Assistant</span></h1>
+    <p>Input candidate and role details and get a professional, UAE-compliant offer letter instantly — with all allowances, benefits, and legal clauses included.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>HR Leaders &amp; Recruiters</strong></div>
+      <div class="hero-meta-item">UAE-specific <strong>clauses included</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo',this)">Live demo</button>
+    <button class="tab" onclick="showTab('build',this)">Build it yourself</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="section active" id="demo">
+
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#9A7B3A"/></svg>
+      Sample — Senior HR Business Partner · NovaTech MENA · Dubai
+    </div>
+
+    <div class="scroll-hint">
+      Scroll down to reveal the offer letter
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M3 8l4 4 4-4" stroke="#9E9E99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div class="scroll-wrap" id="scroll-container">
+      <div class="paper" id="scroll-paper">
+        <div class="confidential-stamp">Confidential</div>
+
+        <div class="paper-letterhead">
+          <div>
+            <div class="company-name-doc">NovaTech MENA</div>
+            <div class="company-tagline">Technology · Dubai, UAE</div>
+          </div>
+          <div>
+            <div class="doc-date">10 March 2026</div>
+            <div class="doc-ref">Ref: NT-HRBP-2026-047</div>
+          </div>
+        </div>
+
+        <div class="doc-subject">Letter of Offer — Senior HR Business Partner</div>
+        <div class="doc-salutation">Dear Sarah,</div>
+
+        <div class="doc-para">We are delighted to extend this offer of employment for the position of <strong>Senior HR Business Partner</strong> at NovaTech MENA LLC. This offer is subject to the terms and conditions outlined below and is conditional upon successful completion of reference checks and visa processing.</div>
+
+        <div class="doc-para">You will report directly to the Chief Human Resources Officer and will be based at our Dubai Marina office on a hybrid working arrangement. <span class="editable-hint">edit reporting line</span></div>
+
+        <div class="doc-section-title">Compensation &amp; Allowances</div>
+        <table class="doc-table">
+          <tr><td>Basic Salary</td><td>AED 22,000 per month <span class="editable-hint">edit amount</span></td></tr>
+          <tr><td>Housing Allowance</td><td>AED 8,000 per month <span class="editable-hint">edit or delete</span></td></tr>
+          <tr><td>Transport Allowance</td><td>AED 2,000 per month <span class="editable-hint">edit or delete</span></td></tr>
+          <tr><td>Telephone Allowance</td><td>AED 500 per month <span class="delete-hint">delete if not applicable</span></td></tr>
+          <tr><td>Total Monthly Package</td><td><strong>AED 32,500 per month</strong></td></tr>
+          <tr><td>Annual Package</td><td><strong>AED 390,000 per annum</strong></td></tr>
+        </table>
+
+        <div class="doc-para" style="font-size:12px;color:var(--text-muted);">Your salary will be processed via the UAE Wages Protection System (WPS) and paid on the last working day of each calendar month. <span class="editable-hint">edit if non-WPS</span></div>
+
+        <div class="doc-section-title">Benefits Package</div>
+        <table class="doc-table">
+          <tr><td>Health Insurance</td><td>Comprehensive — employee + dependents <span class="editable-hint">specify tier</span></td></tr>
+          <tr><td>Annual Leave</td><td>30 calendar days per annum</td></tr>
+          <tr><td>Public Holidays</td><td>As per UAE Federal Government calendar</td></tr>
+          <tr><td>Annual Air Ticket</td><td>Economy return to country of origin <span class="delete-hint">delete if not applicable</span></td></tr>
+          <tr><td>Visa &amp; Emirates ID</td><td>Sponsored and processed by NovaTech MENA LLC</td></tr>
+          <tr><td>End of Service Gratuity</td><td>As per UAE Labour Law — Federal Decree-Law No. 33 of 2021</td></tr>
+          <tr><td>Learning &amp; Development Budget</td><td>AED 8,000 per annum <span class="delete-hint">delete if not applicable</span></td></tr>
+        </table>
+
+        <div class="doc-section-title">Terms &amp; Conditions</div>
+        <table class="doc-table">
+          <tr><td>Proposed Start Date</td><td>1 April 2026 <span class="editable-hint">edit date</span></td></tr>
+          <tr><td>Probation Period</td><td>6 months from date of joining <span class="editable-hint">edit or delete</span></td></tr>
+          <tr><td>Notice Period — Probation</td><td>30 calendar days <span class="editable-hint">edit</span></td></tr>
+          <tr><td>Notice Period — Post Probation</td><td>90 calendar days <span class="editable-hint">edit</span></td></tr>
+          <tr><td>Work Location</td><td>Dubai Marina Office — Hybrid (3 days onsite) <span class="editable-hint">edit</span></td></tr>
+          <tr><td>Contract Type</td><td>Full-time, Limited Contract — 2 years, renewable <span class="delete-hint">change to Unlimited if applicable</span></td></tr>
+          <tr><td>Governing Law</td><td>UAE Federal Labour Law — Federal Decree-Law No. 33 of 2021</td></tr>
+        </table>
+
+        <div class="doc-para">This offer letter does not constitute a binding employment contract. A formal employment contract will be issued upon acceptance of this offer and before your commencement date. <span class="editable-hint">edit or delete</span></div>
+
+        <div class="doc-para">This offer is valid for <strong>7 days</strong> from the date of this letter. Please sign and return the acceptance copy below to confirm your acceptance of these terms and conditions. <span class="editable-hint">edit validity period</span></div>
+
+        <div class="doc-para">We look forward to welcoming you to the NovaTech MENA family and are genuinely excited about the contribution you will make to our People function and the organisation as a whole.</div>
+
+        <div class="doc-signature">
+          <div class="sig-line"></div>
+          <div class="sig-name">Layla Al-Hassan <span class="editable-hint">edit signatory name</span></div>
+          <div class="sig-title">Chief Human Resources Officer · NovaTech MENA LLC <span class="editable-hint">edit title</span></div>
+        </div>
+
+        <div class="acceptance-block">
+          <div class="acceptance-title">Candidate Acceptance</div>
+          <div class="acceptance-fields">
+            <div class="acceptance-field"><div class="acceptance-label">Candidate signature</div></div>
+            <div class="acceptance-field"><div class="acceptance-label">Date</div></div>
+            <div class="acceptance-field"><div class="acceptance-label">Printed name</div></div>
+            <div class="acceptance-field"><div class="acceptance-label">Proposed start date confirmation</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="showTab('build',document.querySelectorAll('.tab')[1])">
+      Draft an offer letter for your own candidate →
+    </button>
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+    <div class="build-intro">
+      <p>Fill in your candidate and role details in the prompt below. Claude generates a complete, professional, UAE-compliant offer letter with all allowances, benefits, and legal clauses — with clear markers throughout showing what to edit or delete before sending.</p>
+      <p style="font-size:13px;color:var(--text-muted);background:var(--gold-light);border:0.5px solid rgba(154,123,58,0.2);border-radius:8px;padding:10px 14px;margin-top:-0.5rem;">Claude outputs the offer letter as formatted text — ready to copy and paste directly into your own company Word template or Google Doc. Add your letterhead, logo, and final formatting before sending.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Create a free Claude account</h3>
+          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free. No credit card needed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Copy the prompt and fill in your details</h3>
+          <p>Complete all fields in brackets. Delete any lines that don't apply to your company's compensation structure.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Get your offer letter instantly</h3>
+          <p>Claude generates a complete formatted letter. Ask it to adjust tone, add specific clauses, or translate to Arabic if needed.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">Your prompt — copy and fill in your details</div>
+      <div class="prompt-text" id="promptText">Please fill in ALL details below before using this prompt.
+Delete any lines or sections that are not applicable to your company.
+
+---
+
+CANDIDATE DETAILS:
+- Full name: [e.g. Sarah Al-Mansouri]
+- Nationality: [e.g. UAE National, British, Indian]
+- Current location: [e.g. Dubai / relocating from London]
+
+ROLE DETAILS:
+- Job title: [e.g. Senior HR Business Partner]
+- Department: [e.g. People & Culture]
+- Reports to: [e.g. Chief Human Resources Officer]
+- Work location: [e.g. Dubai Marina Office]
+- Work model: [e.g. On-site / Hybrid 3 days / Remote]
+- Start date: [e.g. 1 April 2026]
+- Contract type: [Limited — specify duration / Unlimited]
+- Probation period: [e.g. 6 months — delete line if not applicable]
+
+COMPENSATION:
+- Basic salary: [e.g. AED 22,000 per month]
+- Housing allowance: [e.g. AED 8,000 per month — delete if not applicable]
+- Transport allowance: [e.g. AED 2,000 per month — delete if not applicable]
+- Telephone allowance: [e.g. AED 500 per month — delete if not applicable]
+- Other allowances: [list any others or delete this line]
+
+BENEFITS:
+- Health insurance: [e.g. Comprehensive, employee only / employee + dependents]
+- Annual leave: [e.g. 30 calendar days]
+- Annual air ticket: [e.g. Economy return to country of origin — delete if not applicable]
+- Visa sponsorship: [Yes / No]
+- Learning & development budget: [e.g. AED 8,000 per annum — delete if not applicable]
+- Other benefits: [list or delete this line]
+
+NOTICE PERIOD:
+- During probation: [e.g. 30 calendar days]
+- After probation: [e.g. 90 calendar days]
+
+OFFER VALIDITY:
+- Valid for: [e.g. 7 days from date of letter]
+
+COMPANY DETAILS:
+- Company legal name: [e.g. NovaTech MENA LLC]
+- Signatory full name: [e.g. Layla Al-Hassan]
+- Signatory title: [e.g. Chief Human Resources Officer]
+- Letter date: [e.g. 10 March 2026]
+- Reference number (optional): [e.g. NT-HRBP-2026-047 — delete if not used]
+
+---
+
+Using the above, please draft a complete, professional offer letter that:
+
+1. Follows UAE employment standards and references Federal Decree-Law No. 33 of 2021 where relevant
+2. Opens warmly — reflects a positive, welcoming candidate experience
+3. Presents compensation and allowances in a structured, easy-to-read format
+4. Includes standard UAE clauses: WPS salary payment, visa sponsorship, end of service gratuity
+5. Marks every section the HR team should review with [EDIT: reason] and sections to consider removing with [DELETE IF NOT APPLICABLE]
+6. Includes a candidate acceptance block at the end with signature, date, and printed name fields
+7. Closes professionally and warmly
+
+Format as a clean, formal business letter. Tone: professional, warm, and welcoming. Ready to personalise and send.</div>
+      <button class="copy-btn" onclick="copyPrompt()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy prompt
+      </button>
+      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, paste it in, fill your details and hit send.</div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--gold)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Click <strong>New Project</strong> and name it "Offer Letter Drafting Assistant"</li>
+        <li>Click <strong>Set instructions</strong> and paste the prompt above</li>
+        <li>Every new hire, open this project, fill in the candidate details, and Claude generates a fresh offer letter instantly — same structure and quality every time</li>
+      </ul>
+    </div>
+    <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+  </div>
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'demo') initScrollReveal();
+}
+
+function initScrollReveal() {
+  const container = document.getElementById('scroll-container');
+  const paper = document.getElementById('scroll-paper');
+  if (!container || !paper) return;
+  const elements = paper.querySelectorAll('.doc-para, .doc-section-title, .doc-salutation, .doc-subject, .doc-table, .doc-signature, .acceptance-block');
+  elements.forEach(el => el.classList.remove('scroll-in'));
+  function checkVisible() {
+    const containerRect = container.getBoundingClientRect();
+    elements.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < containerRect.bottom - 30) el.classList.add('scroll-in');
+    });
+  }
+  container.addEventListener('scroll', checkVisible);
+  setTimeout(checkVisible, 200);
+}
+
+window.addEventListener('load', initScrollReveal);
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': 'Offer Letter Drafting Assistant' });
+    const c = document.getElementById('copyConfirm');
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+</script>
+</body>
+</html>

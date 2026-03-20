@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Question Builder — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --purple: #5B4FBE;
+    --purple-light: #EEEDFB;
+    --purple-mid: #7B71CC;
+    --gold: #B8860B;
+    --gold-light: #FBF6E3;
+    --green: #2A7A5A;
+    --green-light: #E8F5EF;
+    --text: #1A1A18;
+    --text-muted: #6B6B67;
+    --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08);
+    --surface: #ffffff;
+    --bg: #F6F5F0;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; bottom: -60px; right: -60px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 740px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(91,79,190,0.2); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(91,79,190,0.3); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem, 4.5vw, 2.8rem); color: #ffffff; line-height: 1.2; margin-bottom: 1rem; }
+  .hero h1 span { color: #CAFE48; font-style: italic; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 740px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  .content { max-width: 740px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .sample-label { display: inline-flex; align-items: center; gap: 6px; background: var(--gold-light); color: var(--gold); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid rgba(184,134,11,0.25); margin-bottom: 1.25rem; }
+
+  .guide-meta { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .meta-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1rem; }
+  .meta-label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+  .meta-value { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+
+  .star-banner { display: flex; align-items: center; gap: 10px; background: var(--purple-light); border: 0.5px solid rgba(91,79,190,0.2); border-radius: 10px; padding: 10px 14px; margin-bottom: 1.5rem; font-size: 13px; color: var(--purple); }
+
+  .competency-block { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; margin-bottom: 1rem; overflow: hidden; }
+  .competency-header { display: flex; align-items: center; gap: 12px; padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--border); cursor: pointer; }
+  .comp-num { width: 28px; height: 28px; border-radius: 50%; background: var(--purple-light); color: var(--purple); font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .comp-info { flex: 1; }
+  .comp-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .comp-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .comp-toggle { font-size: 18px; color: var(--text-faint); transition: transform 0.2s; }
+  .comp-toggle.open { transform: rotate(45deg); }
+  .competency-body { padding: 1.25rem; display: none; }
+  .competency-body.open { display: block; }
+
+  .question-item { margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); }
+  .question-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .question-type { display: inline-block; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 20px; margin-bottom: 8px; }
+  .type-main { background: var(--purple-light); color: var(--purple); }
+  .type-follow { background: var(--gold-light); color: var(--gold); }
+  .question-text { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 8px; font-family: 'Poppins', sans-serif; font-style: italic; }
+  .question-look { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .question-look strong { color: var(--text); font-weight: 500; font-style: normal; font-family: 'Poppins', sans-serif; }
+
+  .scoring-box { background: var(--green-light); border: 0.5px solid rgba(42,122,90,0.2); border-radius: 10px; padding: 1rem; margin-top: 1rem; }
+  .scoring-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--green); margin-bottom: 8px; }
+  .scoring-row { display: flex; gap: 8px; margin-bottom: 6px; font-size: 12px; }
+  .score-badge { width: 20px; height: 20px; border-radius: 4px; background: var(--green); color: white; font-size: 10px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .score-desc { color: var(--text-muted); line-height: 1.5; }
+
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
+
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+  .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 2rem; }
+  .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .step:first-child { border-radius: 12px 12px 0 0; }
+  .step:last-child { border-radius: 0 0 12px 12px; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .step-content a { color: var(--purple); text-decoration: none; }
+
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  .prompt-box-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+
+  .save-box { background: var(--purple-light); border: 0.5px solid rgba(91,79,190,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: save-counter; }
+  .save-steps li { counter-increment: save-counter; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
+
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 740px; margin: 0 auto; }
+
+  @media (max-width: 600px) {
+    .guide-meta { grid-template-columns: repeat(2, 1fr); }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#A89EE8"/></svg>
+      Recruitment · AI Agent
+    </div>
+    <h1>Interview Question <span>Builder</span></h1>
+    <p>Paste your job description and get a structured, competency-based interview guide with STAR-format questions, follow-up probes, and scoring criteria — ready to use immediately.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>Hiring Managers &amp; Recruiters</strong></div>
+      <div class="hero-meta-item">Powered by <strong>Claude AI</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo', this)">Live demo</button>
+    <button class="tab" onclick="showTab('build', this)">Build it yourself</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- DEMO -->
+  <div class="section active" id="demo">
+
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#B8860B"/></svg>
+      Sample output — Senior HR Business Partner · Final Round Interview
+    </div>
+
+    <div class="guide-meta">
+      <div class="meta-card">
+        <div class="meta-label">Role</div>
+        <div class="meta-value">Senior HR Business Partner</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Stage</div>
+        <div class="meta-value">Final Round</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Competencies</div>
+        <div class="meta-value">4 identified</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Duration</div>
+        <div class="meta-value">60 min recommended</div>
+      </div>
+    </div>
+
+    <div class="star-banner">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><polygon points="7,1 8.8,5.2 13.5,5.5 10,8.5 11.1,13 7,10.5 2.9,13 4,8.5 0.5,5.5 5.2,5.2" fill="#5B4FBE"/></svg>
+      All questions use the STAR framework — Situation, Task, Action, Result. Follow-up probes help surface deeper evidence.
+    </div>
+
+    <!-- COMPETENCY 1 -->
+    <div class="competency-block">
+      <div class="competency-header" onclick="toggleComp(this)">
+        <div class="comp-num">1</div>
+        <div class="comp-info">
+          <div class="comp-name">Strategic Influence</div>
+          <div class="comp-desc">Ability to shape business decisions through people strategy</div>
+        </div>
+        <div class="comp-toggle open">+</div>
+      </div>
+      <div class="competency-body open">
+        <div class="question-item">
+          <div class="question-type type-main">Main question</div>
+          <div class="question-text">"Tell me about a time you influenced a senior business leader to change their approach to a people-related decision. What was the situation and how did you bring them around?"</div>
+          <div class="question-look"><strong>What to look for:</strong> Evidence of data-driven persuasion, comfort challenging authority, outcome focus, and ability to build trust with senior stakeholders.</div>
+        </div>
+        <div class="question-item">
+          <div class="question-type type-follow">Follow-up probe</div>
+          <div class="question-text">"What would have happened if you hadn't intervened? How did you measure the impact of your influence?"</div>
+          <div class="question-look"><strong>What to look for:</strong> Commercial awareness, accountability for outcomes, ability to quantify people impact.</div>
+        </div>
+        <div class="scoring-box">
+          <div class="scoring-title">Scoring guide</div>
+          <div class="scoring-row"><div class="score-badge">4</div><div class="score-desc">Clear example, measurable outcome, influenced at C-suite level, data-backed approach</div></div>
+          <div class="scoring-row"><div class="score-badge">3</div><div class="score-desc">Good example, positive outcome, influenced at VP level, some data used</div></div>
+          <div class="scoring-row"><div class="score-badge">2</div><div class="score-desc">Vague example, unclear outcome, limited stakeholder seniority</div></div>
+          <div class="scoring-row"><div class="score-badge">1</div><div class="score-desc">No clear example, theoretical answer, no evidence of influence</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPETENCY 2 -->
+    <div class="competency-block">
+      <div class="competency-header" onclick="toggleComp(this)">
+        <div class="comp-num">2</div>
+        <div class="comp-info">
+          <div class="comp-name">Organisational Design</div>
+          <div class="comp-desc">Experience shaping team structures to support business growth</div>
+        </div>
+        <div class="comp-toggle">+</div>
+      </div>
+      <div class="competency-body">
+        <div class="question-item">
+          <div class="question-type type-main">Main question</div>
+          <div class="question-text">"Describe a situation where you led or contributed to a significant organisational redesign. What triggered it, how did you approach it, and what was the result?"</div>
+          <div class="question-look"><strong>What to look for:</strong> Structured methodology, stakeholder management, change management skills, commercial rationale, and ability to manage ambiguity.</div>
+        </div>
+        <div class="question-item">
+          <div class="question-type type-follow">Follow-up probe</div>
+          <div class="question-text">"How did you handle the people who were negatively affected by the redesign? What would you do differently next time?"</div>
+          <div class="question-look"><strong>What to look for:</strong> Empathy, fairness, legal awareness, and genuine reflection on lessons learned.</div>
+        </div>
+        <div class="scoring-box">
+          <div class="scoring-title">Scoring guide</div>
+          <div class="scoring-row"><div class="score-badge">4</div><div class="score-desc">Led full redesign, clear methodology, measured business impact, handled people sensitively</div></div>
+          <div class="scoring-row"><div class="score-badge">3</div><div class="score-desc">Contributed significantly, good process, positive outcome, some people challenges managed</div></div>
+          <div class="scoring-row"><div class="score-badge">2</div><div class="score-desc">Limited involvement, unclear process, outcome not well articulated</div></div>
+          <div class="scoring-row"><div class="score-badge">1</div><div class="score-desc">No direct experience, theoretical answer only</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPETENCY 3 -->
+    <div class="competency-block">
+      <div class="competency-header" onclick="toggleComp(this)">
+        <div class="comp-num">3</div>
+        <div class="comp-info">
+          <div class="comp-name">Data-Driven Decision Making</div>
+          <div class="comp-desc">Using people analytics to drive informed recommendations</div>
+        </div>
+        <div class="comp-toggle">+</div>
+      </div>
+      <div class="competency-body">
+        <div class="question-item">
+          <div class="question-type type-main">Main question</div>
+          <div class="question-text">"Give me an example of a time you used people data to identify a problem that wasn't yet visible to leadership. What did you find and what action did it lead to?"</div>
+          <div class="question-look"><strong>What to look for:</strong> Proactive use of data, ability to translate numbers into narrative, courage to surface uncomfortable findings, and commercial impact.</div>
+        </div>
+        <div class="question-item">
+          <div class="question-type type-follow">Follow-up probe</div>
+          <div class="question-text">"What tools or methods did you use? How did you present the findings to make them compelling to a non-HR audience?"</div>
+          <div class="question-look"><strong>What to look for:</strong> Technical competence with data tools, storytelling ability, audience awareness.</div>
+        </div>
+        <div class="scoring-box">
+          <div class="scoring-title">Scoring guide</div>
+          <div class="scoring-row"><div class="score-badge">4</div><div class="score-desc">Proactively identified trend, presented compelling narrative, drove measurable business change</div></div>
+          <div class="scoring-row"><div class="score-badge">3</div><div class="score-desc">Used data reactively but effectively, good presentation, positive outcome</div></div>
+          <div class="scoring-row"><div class="score-badge">2</div><div class="score-desc">Basic data use, limited storytelling, outcome unclear</div></div>
+          <div class="scoring-row"><div class="score-badge">1</div><div class="score-desc">Minimal data experience, gut-feel approach only</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPETENCY 4 -->
+    <div class="competency-block">
+      <div class="competency-header" onclick="toggleComp(this)">
+        <div class="comp-num">4</div>
+        <div class="comp-info">
+          <div class="comp-name">Coaching &amp; Leadership Development</div>
+          <div class="comp-desc">Developing leaders and building management capability</div>
+        </div>
+        <div class="comp-toggle">+</div>
+      </div>
+      <div class="competency-body">
+        <div class="question-item">
+          <div class="question-type type-main">Main question</div>
+          <div class="question-text">"Tell me about a leader you coached who was struggling. What was the situation, how did you approach the coaching, and what changed as a result?"</div>
+          <div class="question-look"><strong>What to look for:</strong> Coaching methodology, ability to build trust quickly, patience, measurable behaviour change, and appropriate escalation when needed.</div>
+        </div>
+        <div class="question-item">
+          <div class="question-type type-follow">Follow-up probe</div>
+          <div class="question-text">"Was there ever a case where coaching wasn't enough and you had to take a different approach? How did you handle that?"</div>
+          <div class="question-look"><strong>What to look for:</strong> Judgement, commercial pragmatism, courage to have difficult conversations, and HR process knowledge.</div>
+        </div>
+        <div class="scoring-box">
+          <div class="scoring-title">Scoring guide</div>
+          <div class="scoring-row"><div class="score-badge">4</div><div class="score-badge" style="background:transparent;color:var(--text-muted);width:auto;height:auto;border-radius:0;font-size:12px;">Sustained behaviour change, clear methodology, trusted advisor relationship built</div></div>
+          <div class="scoring-row"><div class="score-badge">3</div><div class="score-desc">Positive coaching outcome, good approach, some evidence of methodology</div></div>
+          <div class="scoring-row"><div class="score-badge">2</div><div class="score-desc">Limited coaching experience, unclear outcome, more telling than coaching</div></div>
+          <div class="scoring-row"><div class="score-badge">1</div><div class="score-desc">No coaching experience, theoretical answer only</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="showTab('build', document.querySelectorAll('.tab')[1])">
+      Build an interview guide for your own role →
+    </button>
+
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+
+    <div class="build-intro">
+      <p>Paste your job description into the prompt below and Claude will identify the key competencies, generate STAR-format questions, follow-up probes, and a scoring guide — all tailored to your specific role.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Create a free Claude account</h3>
+          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free. No credit card needed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Copy the prompt and fill in your details</h3>
+          <p>Paste your job description where indicated, specify the interview stage and any focus areas, then send.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Get your interview guide instantly</h3>
+          <p>Claude identifies competencies from your JD and generates a complete structured guide. Ask it to add, remove, or adjust any section.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">Your prompt — copy and fill in your details</div>
+      <div class="prompt-text" id="promptText">Please fill in the details below before using this prompt.
+Delete any lines that are not applicable to your situation.
+
+---
+
+INTERVIEW DETAILS:
+- Interview stage: [e.g. Screening call, First round, Final round, Panel interview]
+- Interview duration: [e.g. 45 minutes, 60 minutes, 90 minutes]
+- Number of interviewers: [e.g. 1 interviewer, Panel of 3]
+- Number of competencies to cover: [e.g. 3-4 competencies]
+- Any specific focus areas: [e.g. leadership experience, data skills, culture fit]
+
+PASTE YOUR JOB DESCRIPTION BELOW:
+[Paste the full job description here]
+
+---
+
+Using the job description above, please create a structured, competency-based interview guide that includes:
+
+1. Identify 3-5 key competencies directly from the JD — name each one and explain in one line why it matters for this role
+2. For each competency, write:
+   - One main behavioural question in STAR format (Situation, Task, Action, Result)
+   - One follow-up probe to go deeper
+   - What to look for in a strong answer
+   - A simple 1-4 scoring guide (4 = exceptional, 1 = no evidence)
+3. A recommended time allocation per competency based on the interview duration
+4. 2-3 closing questions the candidate can ask that signal genuine interest and preparation
+
+Format as a clean, structured guide a hiring manager can pick up and use immediately — no HR jargon, practical and direct.</div>
+      <button class="copy-btn" onclick="copyPrompt()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy prompt
+      </button>
+      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, paste it in, add your JD and hit send.</div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--purple)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Click <strong>New Project</strong> and name it "Interview Question Builder"</li>
+        <li>Click <strong>Set instructions</strong> and paste the prompt above</li>
+        <li>Every time you hire for a new role, open this project, paste the JD, and Claude generates a fresh interview guide in seconds — no reformatting needed</li>
+      </ul>
+    </div>
+
+    <a href="https://claude.ai" target="_blank" class="open-btn">
+      Open Claude now →
+    </a>
+
+  </div>
+
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">
+  Part of the AI Agents Library · Built with Claude · Free to use and share
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleComp(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.comp-toggle');
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': 'Interview Question Builder' });
+    const c = document.getElementById('copyConfirm');
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+</script>
+</body>
+</html>

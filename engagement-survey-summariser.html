@@ -11,7 +11,7 @@
   gtag('js', new Date());
   gtag('config', 'G-WFCVJL0P5T');
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,23 +31,23 @@
     --surface: #ffffff;
     --bg: #F5F4EF;
   }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  .hero { background: #1C1F3A; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
-  .hero::after { content: ''; position: absolute; bottom: -80px; right: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(61,77,168,0.2) 0%, transparent 70%); }
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::after { content: ''; position: absolute; bottom: -80px; right: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
   .hero-inner { max-width: 740px; margin: 0 auto; position: relative; }
-  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(61,77,168,0.2); color: #9BA8E8; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(61,77,168,0.3); margin-bottom: 1.25rem; }
-  .hero h1 { font-family: 'Fraunces', serif; font-size: clamp(2rem, 5vw, 3rem); color: #ffffff; line-height: 1.15; margin-bottom: 1rem; font-weight: 300; }
-  .hero h1 span { color: #9BA8E8; }
-  .hero p { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(61,77,168,0.2); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(61,77,168,0.3); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(2rem, 5vw, 3rem); color: #ffffff; line-height: 1.15; margin-bottom: 1rem; font-weight: 300; }
+  .hero h1 span { color: #CAFE48; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
   .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
-  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.35); }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
   .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
 
   .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
   .tabs-inner { max-width: 740px; margin: 0 auto; display: flex; }
-  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
-  .tab.active { color: var(--text); border-bottom-color: var(--indigo); }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
   .tab:hover:not(.active) { color: var(--text); }
 
   .content { max-width: 740px; margin: 0 auto; padding: 2rem; }
@@ -58,7 +58,7 @@
 
   .score-hero { display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; background: var(--surface); border: 0.5px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
   .big-score { text-align: center; }
-  .big-score-num { font-family: 'Fraunces', serif; font-size: 72px; font-weight: 300; color: var(--indigo); line-height: 1; }
+  .big-score-num { font-family: 'Poppins', sans-serif; font-size: 72px; font-weight: 300; color: var(--indigo); line-height: 1; }
   .big-score-label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
   .score-breakdown h3 { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
   .score-breakdown p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; }
@@ -70,7 +70,7 @@
   .metrics-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
   .metric { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1rem; }
   .metric-label { font-size: 11px; color: var(--text-faint); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .metric-value { font-size: 26px; font-weight: 300; font-family: 'Fraunces', serif; color: var(--text); }
+  .metric-value { font-size: 26px; font-weight: 300; font-family: 'Poppins', sans-serif; color: var(--text); }
   .metric-sub { font-size: 11px; color: var(--text-faint); margin-top: 4px; }
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
@@ -80,7 +80,7 @@
   .dept-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .dept-name { font-size: 12px; color: var(--text-muted); width: 100px; flex-shrink: 0; }
   .dept-bar-track { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
-  .dept-bar-fill { height: 100%; border-radius: 3px; background: var(--indigo); }
+  .dept-bar-fill { height: 100%; border-radius: 3px; background: #134611; }
   .dept-score { font-size: 12px; font-weight: 500; color: var(--text); width: 32px; text-align: right; }
 
   .insights-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
@@ -100,8 +100,8 @@
   .badge-med { background: var(--amber-light); color: var(--amber); }
   .badge-low { background: var(--green-light); color: var(--green); }
 
-  .next-btn { display: block; width: 100%; background: #1C1F3A; color: #9BA8E8; border: 0.5px solid rgba(61,77,168,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 1rem; }
-  .next-btn:hover { background: #252850; }
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
 
   /* BUILD TAB */
   .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
@@ -109,26 +109,26 @@
   .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
   .step:first-child { border-radius: 12px 12px 0 0; }
   .step:last-child { border-radius: 0 0 12px 12px; }
-  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #1C1F3A; color: #9BA8E8; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
   .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
   .step-content a { color: var(--indigo); text-decoration: none; }
 
   .prompt-box { background: #1C1F3A; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
-  .prompt-box-label { font-size: 11px; color: #9BA8E8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
-  .prompt-text { font-family: 'DM Sans', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
-  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: var(--indigo); color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .prompt-box-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
   .copy-btn:hover { opacity: 0.88; }
-  .copy-confirm { font-size: 12px; color: #9BA8E8; margin-top: 8px; display: none; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
 
-  .save-box { background: var(--indigo-light); border: 0.5px solid rgba(61,77,168,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
-  .save-box h3 { font-size: 14px; font-weight: 500; color: var(--indigo); margin-bottom: 10px; }
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(61,77,168,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
   .save-steps { list-style: none; counter-reset: save-counter; }
   .save-steps li { counter-increment: save-counter; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: var(--indigo); color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
 
-  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #1C1F3A; color: #9BA8E8; border: 0.5px solid rgba(61,77,168,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: 'DM Sans', sans-serif; }
-  .open-btn:hover { background: #252850; }
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
 
   .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 740px; margin: 0 auto; }
 
@@ -145,6 +145,7 @@
 
 <div class="hero">
   <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
     <div class="agent-badge">
       <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#9BA8E8"/></svg>
       HR &amp; People Analytics · AI Agent
@@ -335,14 +336,14 @@
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-content">
-          <h3>Upload your survey data file</h3>
-          <p>Attach your Excel or CSV file alongside the prompt and hit send. Claude will generate your leadership-ready summary instantly.</p>
+          <h3>Get your written analysis — then optionally turn it into a visual</h3>
+          <p>Claude first returns a leadership-ready written summary. Then use the second prompt below in the same conversation to turn it into an interactive visual dashboard like the one in the demo tab — with your real data inside it.</p>
         </div>
       </div>
     </div>
 
     <div class="prompt-box">
-      <div class="prompt-box-label">Your prompt — copy this</div>
+      <div class="prompt-box-label">Step 1 — Copy this prompt to get your written analysis</div>
       <div class="prompt-text" id="promptText">Please fill in the details below before using this prompt.
 Delete any lines that are not applicable to your situation.
 
@@ -374,11 +375,33 @@ Please analyse it and provide a leadership-ready summary including:
 8. A prioritised action plan with specific recommendations, suggested owners, and timelines
 
 Format the output as a clean executive summary ready to present to leadership. Use clear section headers and plain language — no jargon.</div>
-      <button class="copy-btn" onclick="copyPrompt()">
+      <button class="copy-btn" onclick="copyPrompt('promptText','copyConfirm','Engagement Survey - Step 1')">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Copy prompt
+        Copy Step 1 prompt — written analysis
       </button>
-      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, paste it in, fill your details, and attach your file.</div>
+      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, paste it in, fill your details, and attach your file. You'll get your written report first.</div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">Step 2 — Copy this prompt to turn your analysis into a visual dashboard</div>
+      <div class="prompt-text" id="promptText2">Use this prompt immediately after Step 1 — in the same Claude conversation, without uploading anything again.
+
+---
+
+Now take the engagement survey analysis you just produced and turn it into an interactive visual dashboard. Build it as a clean, presentation-ready artifact that includes:
+
+1. A summary strip showing overall engagement score, response rate, score vs last year, and lowest category score
+2. A horizontal bar chart showing score by department — highest to lowest
+3. A bar chart showing score by survey category (leadership, culture, wellbeing, growth etc.)
+4. Two columns of key themes — top strengths and critical concerns from open-ended comments
+5. A prioritised action plan section with recommended owner and priority level per action
+
+Use the exact data from the analysis above. Make it clean, colour coded, and ready to present to leadership or the board.</div>
+      <button class="copy-btn" onclick="copyPrompt('promptText2','copyConfirm2','Engagement Survey - Step 2')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Copy Step 2 prompt — visual dashboard
+      </button>
+      <div class="copy-confirm" id="copyConfirm2">Copied! Paste this in the same Claude conversation right after your written analysis appears.</div>
     </div>
 
     <div class="save-box">
@@ -399,7 +422,7 @@ Format the output as a clean executive summary ready to present to leadership. U
 
 </div>
 
-<div class="footer">
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">
   Part of the AI Agents Library · Built with Claude · Free to use and share
 </div>
 
@@ -411,11 +434,11 @@ function showTab(id, btn) {
   btn.classList.add('active');
 }
 
-function copyPrompt() {
-  const text = document.getElementById('promptText').innerText;
+function copyPrompt(textId, confirmId, agentName) {
+  const text = document.getElementById(textId).innerText;
   navigator.clipboard.writeText(text).then(() => {
-    gtag('event', 'copy_prompt', { 'agent_name': 'Engagement Survey Summariser' });
-    const c = document.getElementById('copyConfirm');
+    gtag('event', 'copy_prompt', { 'agent_name': agentName });
+    const c = document.getElementById(confirmId);
     c.style.display = 'block';
     setTimeout(() => c.style.display = 'none', 5000);
   });

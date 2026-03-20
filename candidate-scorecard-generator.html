@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candidate Scorecard Generator — AI Agent</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WFCVJL0P5T');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --coral: #C45C3A; --coral-light: #FBF0EC;
+    --navy: #1E3A5F; --navy-light: #E8EEF5;
+    --green: #2A7A4A; --green-light: #E8F5EE;
+    --amber: #B87A1A; --amber-light: #FBF4E3;
+    --red: #B03A2E; --red-light: #FDEEEC;
+    --sheets-green: #0F9D58;
+    --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
+    --border: rgba(0,0,0,0.08); --surface: #ffffff; --bg: #F5F4F0;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::after { content: ''; position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
+  .hero-inner { max-width: 760px; margin: 0 auto; position: relative; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(196,92,58,0.2); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(196,92,58,0.3); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem,4.5vw,2.8rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; font-weight: 500; }
+  .hero h1 span { color: #CAFE48; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
+  .hero-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
+
+  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .tabs-inner { max-width: 760px; margin: 0 auto; display: flex; }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .tab.active { color: var(--text); border-bottom-color: #134611; }
+
+  .content { max-width: 760px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .sample-label { display: inline-flex; align-items: center; gap: 6px; background: var(--amber-light); color: var(--amber); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid rgba(184,122,26,0.25); margin-bottom: 1.25rem; }
+
+  .workflow-banner { display: flex; align-items: flex-start; gap: 12px; background: #134611; border: 0.5px solid rgba(30,58,95,0.15); border-radius: 10px; padding: 12px 14px; margin-bottom: 1.5rem; }
+  .workflow-icon { width: 32px; height: 32px; border-radius: 8px; background: #CAFE48; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .workflow-text { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.6; }
+  .workflow-text strong { color: #CAFE48; display: block; margin-bottom: 2px; }
+
+  /* SHEETS MOCKUP */
+  .sheets-wrapper { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .sheets-toolbar { background: #f8f9fa; border-bottom: 0.5px solid var(--border); padding: 8px 12px; display: flex; align-items: center; gap: 10px; }
+  .sheets-icon { width: 20px; height: 20px; background: #134611; border-radius: 3px; display: flex; align-items: center; justify-content: center; }
+  .sheets-title { font-size: 13px; font-weight: 500; color: var(--text); }
+  .sheets-share { margin-left: auto; font-size: 11px; background: #134611; color: #CAFE48; padding: 4px 12px; border-radius: 20px; font-weight: 500; border: 1px solid rgba(202,254,72,0.3); }
+  .sheets-tabs { background: #f8f9fa; border-bottom: 0.5px solid var(--border); padding: 0 12px; display: flex; gap: 0; overflow-x: auto; }
+  .sheets-tab { font-size: 11px; padding: 6px 14px; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-muted); white-space: nowrap; }
+  .sheets-tab.active { color: var(--sheets-green); border-bottom-color: #134611; font-weight: 500; }
+
+  .candidate-tab { display: none; }
+  .candidate-tab.active { display: block; }
+
+  .candidate-info-bar { padding: 8px 12px; background: #f8f9fa; border-bottom: 0.5px solid var(--border); display: flex; gap: 16px; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; }
+  .candidate-info-bar strong { color: var(--text); }
+
+  .sheet-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .sheet-table th { background: #134611; color: white; padding: 7px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; text-align: left; }
+  .sheet-table td { padding: 8px 10px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+  .sheet-table tr:hover td { background: #f8f9fa; }
+  .td-comp { font-weight: 500; color: var(--text); }
+  .td-weight { color: var(--navy); font-weight: 500; text-align: center; }
+  .td-score select { border: 0.5px solid #90D0F0; background: #EAF5FB; border-radius: 4px; padding: 3px 6px; font-size: 12px; color: var(--navy); font-weight: 500; font-family: 'Poppins', sans-serif; cursor: pointer; }
+  .td-weighted { color: var(--green); font-weight: 500; text-align: center; background: #F0F7F4; }
+  .td-notes { color: var(--text-muted); font-size: 11px; font-style: italic; }
+  .td-flag { text-align: center; }
+  .flag-yes { color: var(--amber); font-size: 11px; font-weight: 500; }
+  .flag-no { color: var(--text-faint); font-size: 11px; }
+
+  .summary-section { margin: 12px; background: #F0F7F4; border: 0.5px solid rgba(15,157,88,0.2); border-radius: 8px; padding: 1rem; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 10px; }
+  .summary-cell { text-align: center; }
+  .summary-label { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .summary-value { font-size: 20px; font-weight: 500; font-family: 'Poppins', sans-serif; }
+  .auto-label { font-size: 10px; color: var(--sheets-green); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; margin-bottom: 6px; }
+  .auto-summary { background: white; border: 0.5px solid rgba(15,157,88,0.2); border-radius: 6px; padding: 10px 12px; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+  .auto-summary strong { color: var(--text); }
+
+  /* COMPARISON TAB */
+  .comparison-inner { padding: 1rem; }
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .comp-table th { background: #134611; color: white; padding: 8px 10px; font-size: 11px; font-weight: 500; text-align: left; }
+  .comp-table td { padding: 8px 10px; border-bottom: 0.5px solid var(--border); }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .score-pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .pill-high { background: var(--green-light); color: var(--green); }
+  .pill-mid { background: var(--amber-light); color: var(--amber); }
+  .pill-low { background: var(--red-light); color: var(--red); }
+  .verdict-badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; }
+  .v-hire { background: var(--green-light); color: var(--green); }
+  .v-hold { background: var(--amber-light); color: var(--amber); }
+  .rank-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 500; background: #134611; color: white; margin-right: 6px; }
+  .panel-note { background: var(--navy-light); border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+  .panel-note strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .next-btn:hover { background: #134611; opacity: 0.88; }
+
+  /* BUILD */
+  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+  .step-block { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .step-block-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .step-block-num { width: 32px; height: 32px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Poppins', sans-serif; }
+  .step-block-title { font-size: 15px; font-weight: 500; color: var(--text); }
+  .optional-tag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; background: var(--amber-light); color: var(--amber); margin-left: 8px; }
+  .step-block-sub { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+  .prompt-box-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
+  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .copy-btn:hover { opacity: 0.88; }
+  .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
+  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(196,92,58,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
+  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
+  .save-steps { list-style: none; counter-reset: save-counter; }
+  .save-steps li { counter-increment: save-counter; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
+  .open-btn:hover { background: #134611; opacity: 0.88; }
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 760px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:700;color:#CAFE48;letter-spacing:-0.5px;margin-bottom:1.25rem;">nofluff.</div>
+    <div class="agent-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#E8957A"/></svg>
+      Recruitment · AI Agent
+    </div>
+    <h1>Candidate Scorecard <span>Generator</span></h1>
+    <p>Generate a custom Google Sheets scoring template for your hiring panel — then upload completed scores for an instant candidate comparison.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Built for <strong>Recruiters &amp; Hiring Managers</strong></div>
+      <div class="hero-meta-item">Powered by <strong>Claude AI</strong></div>
+      <div class="hero-meta-item">Free to use</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="showTab('demo',this)">Live demo</button>
+    <button class="tab" onclick="showTab('build',this)">Build it yourself</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section active" id="demo">
+    <div class="sample-label">
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#B87A1A"/></svg>
+      Sample — Senior HR Business Partner · NovaTech MENA · 3 candidates
+    </div>
+
+    <div class="workflow-banner">
+      <div class="workflow-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M8 2l6 6-6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="workflow-text">
+        <strong>How this works</strong>
+        Step 1 — Claude generates your custom Google Sheets template. Step 2 — Your panel scores each candidate on their own tab. Step 3 — Export as CSV, upload to Claude, get an instant comparison like the Summary tab below.
+      </div>
+    </div>
+
+    <div class="sheets-wrapper">
+      <div class="sheets-toolbar">
+        <div class="sheets-icon"><svg viewBox="0 0 24 24" fill="white" width="12" height="12"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></div>
+        <div class="sheets-title">HRBP Candidate Scorecard — NovaTech MENA</div>
+        <div class="sheets-share">Shared with panel</div>
+      </div>
+      <div class="sheets-tabs">
+        <div class="sheets-tab active" onclick="showSheetTab('c1',this)">Sarah A.</div>
+        <div class="sheets-tab" onclick="showSheetTab('c2',this)">James O.</div>
+        <div class="sheets-tab" onclick="showSheetTab('c3',this)">Priya S.</div>
+        <div class="sheets-tab" onclick="showSheetTab('summary',this)">📊 Summary</div>
+      </div>
+
+      <div class="candidate-tab active" id="c1">
+        <div class="candidate-info-bar">
+          <span><strong>Candidate:</strong> Sarah Al-Mansouri</span>
+          <span><strong>Interviewer:</strong> VP People</span>
+          <span><strong>Date:</strong> 10 Mar 2026</span>
+        </div>
+        <div style="overflow-x:auto;padding:12px;">
+          <table class="sheet-table">
+            <thead><tr><th>Competency</th><th>Weight</th><th>Score (1-4)</th><th>Weighted</th><th>Evidence notes</th><th>Flag?</th></tr></thead>
+            <tbody>
+              <tr><td class="td-comp">Strategic Influence</td><td class="td-weight">30%</td><td class="td-score"><select onchange="updateW('s1w1',this.value,0.30)"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></td><td class="td-weighted" id="s1w1">0.90</td><td class="td-notes">Strong C-suite example, clear outcome</td><td class="td-flag flag-no">—</td></tr>
+              <tr><td class="td-comp">Organisational Design</td><td class="td-weight">25%</td><td class="td-score"><select onchange="updateW('s1w2',this.value,0.25)"><option>1</option><option>2</option><option>3</option><option selected>4</option></select></td><td class="td-weighted" id="s1w2">1.00</td><td class="td-notes">Led full redesign at prev company</td><td class="td-flag flag-no">—</td></tr>
+              <tr><td class="td-comp">Data-Driven Decisions</td><td class="td-weight">25%</td><td class="td-score"><select onchange="updateW('s1w3',this.value,0.25)"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></td><td class="td-weighted" id="s1w3">0.50</td><td class="td-notes">Limited data tools experience</td><td class="td-flag flag-yes">Follow up</td></tr>
+              <tr><td class="td-comp">Coaching &amp; Leadership Dev</td><td class="td-weight">20%</td><td class="td-score"><select onchange="updateW('s1w4',this.value,0.20)"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></td><td class="td-weighted" id="s1w4">0.60</td><td class="td-notes">Good coaching example, VP level</td><td class="td-flag flag-no">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="summary-section">
+          <div class="summary-grid">
+            <div class="summary-cell"><div class="summary-label">Total score</div><div class="summary-value" style="color:var(--green)">3.00 / 4.00</div></div>
+            <div class="summary-cell"><div class="summary-label">Percentile</div><div class="summary-value">75%</div></div>
+            <div class="summary-cell"><div class="summary-label">Verdict</div><div class="summary-value" style="color:var(--green)">Hire</div></div>
+          </div>
+          <div class="auto-label">Auto-generated summary</div>
+          <div class="auto-summary"><strong>Sarah Al-Mansouri</strong> — Strong organisational design and strategic influence. Data skills are a development area. Overall a confident hire at 3.00/4.00.</div>
+        </div>
+      </div>
+
+      <div class="candidate-tab" id="c2">
+        <div class="candidate-info-bar">
+          <span><strong>Candidate:</strong> James Okonkwo</span>
+          <span><strong>Interviewer:</strong> CHRO</span>
+          <span><strong>Date:</strong> 11 Mar 2026</span>
+        </div>
+        <div style="overflow-x:auto;padding:12px;">
+          <table class="sheet-table">
+            <thead><tr><th>Competency</th><th>Weight</th><th>Score (1-4)</th><th>Weighted</th><th>Evidence notes</th><th>Flag?</th></tr></thead>
+            <tbody>
+              <tr><td class="td-comp">Strategic Influence</td><td class="td-weight">30%</td><td class="td-score"><select><option>1</option><option>2</option><option>3</option><option selected>4</option></select></td><td class="td-weighted">1.20</td><td class="td-notes">Exceptional — Board-level exposure</td><td class="td-flag flag-no">—</td></tr>
+              <tr><td class="td-comp">Organisational Design</td><td class="td-weight">25%</td><td class="td-score"><select><option>1</option><option>2</option><option selected>3</option><option>4</option></select></td><td class="td-weighted">0.75</td><td class="td-notes">Solid, mid-scale only</td><td class="td-flag flag-no">—</td></tr>
+              <tr><td class="td-comp">Data-Driven Decisions</td><td class="td-weight">25%</td><td class="td-score"><select><option>1</option><option>2</option><option>3</option><option selected>4</option></select></td><td class="td-weighted">1.00</td><td class="td-notes">Built people dashboard, strong</td><td class="td-flag flag-no">—</td></tr>
+              <tr><td class="td-comp">Coaching &amp; Leadership Dev</td><td class="td-weight">20%</td><td class="td-score"><select><option>1</option><option>2</option><option selected>3</option><option>4</option></select></td><td class="td-weighted">0.60</td><td class="td-notes">Good examples, team of 2</td><td class="td-flag flag-no">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="summary-section">
+          <div class="summary-grid">
+            <div class="summary-cell"><div class="summary-label">Total score</div><div class="summary-value" style="color:var(--green)">3.55 / 4.00</div></div>
+            <div class="summary-cell"><div class="summary-label">Percentile</div><div class="summary-value">89%</div></div>
+            <div class="summary-cell"><div class="summary-label">Verdict</div><div class="summary-value" style="color:var(--green)">Strong hire</div></div>
+          </div>
+          <div class="auto-label">Auto-generated summary</div>
+          <div class="auto-summary"><strong>James Okonkwo</strong> — Standout strategic influencer with strong data capabilities. Highest scoring candidate in this cohort at 3.55/4.00. Recommend as first choice.</div>
+        </div>
+      </div>
+
+      <div class="candidate-tab" id="c3">
+        <div class="candidate-info-bar">
+          <span><strong>Candidate:</strong> Priya Sharma</span>
+          <span><strong>Interviewer:</strong> VP People</span>
+          <span><strong>Date:</strong> 12 Mar 2026</span>
+        </div>
+        <div style="overflow-x:auto;padding:12px;">
+          <table class="sheet-table">
+            <thead><tr><th>Competency</th><th>Weight</th><th>Score (1-4)</th><th>Weighted</th><th>Evidence notes</th><th>Flag?</th></tr></thead>
+            <tbody>
+              <tr><td class="td-comp">Strategic Influence</td><td class="td-weight">30%</td><td class="td-score"><select><option>1</option><option selected>2</option><option>3</option><option>4</option></select></td><td class="td-weighted">0.60</td><td class="td-notes">Junior stakeholders only so far</td><td class="td-flag flag-yes">Follow up</td></tr>
+              <tr><td class="td-comp">Organisational Design</td><td class="td-weight">25%</td><td class="td-score"><select><option>1</option><option>2</option><option selected>3</option><option>4</option></select></td><td class="td-weighted">0.75</td><td class="td-notes">Good process knowledge</td><td class="td-flag flag-no">—</td></tr>
+              <tr><td class="td-comp">Data-Driven Decisions</td><td class="td-weight">25%</td><td class="td-score"><select><option>1</option><option>2</option><option selected>3</option><option>4</option></select></td><td class="td-weighted">0.75</td><td class="td-notes">Comfortable with Excel, no HRIS</td><td class="td-flag flag-no">—</td></tr>
+              <tr><td class="td-comp">Coaching &amp; Leadership Dev</td><td class="td-weight">20%</td><td class="td-score"><select><option>1</option><option selected>2</option><option>3</option><option>4</option></select></td><td class="td-weighted">0.40</td><td class="td-notes">Limited senior coaching experience</td><td class="td-flag flag-yes">Follow up</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="summary-section">
+          <div class="summary-grid">
+            <div class="summary-cell"><div class="summary-label">Total score</div><div class="summary-value" style="color:var(--amber)">2.50 / 4.00</div></div>
+            <div class="summary-cell"><div class="summary-label">Percentile</div><div class="summary-value">63%</div></div>
+            <div class="summary-cell"><div class="summary-label">Verdict</div><div class="summary-value" style="color:var(--amber)">Hold</div></div>
+          </div>
+          <div class="auto-label">Auto-generated summary</div>
+          <div class="auto-summary"><strong>Priya Sharma</strong> — Solid technical foundation but strategic influence underdeveloped for senior role. Consider for mid-level HRBP or re-engage in 12 months.</div>
+        </div>
+      </div>
+
+      <div class="candidate-tab" id="summary">
+        <div class="comparison-inner">
+          <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:12px;">Candidate comparison — Senior HR Business Partner</div>
+          <div style="overflow-x:auto;">
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th>Competency</th>
+                  <th><span class="rank-num">1</span>James O.</th>
+                  <th><span class="rank-num" style="background:var(--coral)">2</span>Sarah A.</th>
+                  <th><span class="rank-num" style="background:var(--text-faint)">3</span>Priya S.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="font-size:11px;color:var(--text-muted)">Strategic Influence (30%)</td><td><span class="score-pill pill-high">4/4</span></td><td><span class="score-pill pill-mid">3/4</span></td><td><span class="score-pill pill-low">2/4</span></td></tr>
+                <tr><td style="font-size:11px;color:var(--text-muted)">Organisational Design (25%)</td><td><span class="score-pill pill-mid">3/4</span></td><td><span class="score-pill pill-high">4/4</span></td><td><span class="score-pill pill-mid">3/4</span></td></tr>
+                <tr><td style="font-size:11px;color:var(--text-muted)">Data-Driven Decisions (25%)</td><td><span class="score-pill pill-high">4/4</span></td><td><span class="score-pill pill-low">2/4</span></td><td><span class="score-pill pill-mid">3/4</span></td></tr>
+                <tr><td style="font-size:11px;color:var(--text-muted)">Coaching &amp; Dev (20%)</td><td><span class="score-pill pill-mid">3/4</span></td><td><span class="score-pill pill-mid">3/4</span></td><td><span class="score-pill pill-low">2/4</span></td></tr>
+                <tr style="background:#f8f9fa;">
+                  <td style="font-weight:500;font-size:12px;">Total weighted</td>
+                  <td><div style="font-size:18px;font-weight:500;font-family:'Syne',sans-serif;color:var(--green)">3.55</div><span class="verdict-badge v-hire">Strong hire</span></td>
+                  <td><div style="font-size:18px;font-weight:500;font-family:'Syne',sans-serif;color:var(--green)">3.00</div><span class="verdict-badge v-hire">Hire</span></td>
+                  <td><div style="font-size:18px;font-weight:500;font-family:'Syne',sans-serif;color:var(--amber)">2.50</div><span class="verdict-badge v-hold">Hold</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="panel-note">
+            <strong>Panel recommendation</strong>
+            James Okonkwo is the strongest candidate. Sarah Al-Mansouri is a solid hire with a data skills gap to address post-onboarding. Priya Sharma should be considered for a more junior HRBP opening or re-engaged in 12–18 months.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="showTab('build',document.querySelectorAll('.tab')[1])">
+      Generate this for your own hiring process →
+    </button>
+  </div>
+
+  <div class="section" id="build">
+    <div class="build-intro">
+      <p>Two steps. First, generate your custom Google Sheets scorecard. Then optionally upload completed scores for an instant candidate comparison report.</p>
+    </div>
+
+    <div class="step-block">
+      <div class="step-block-header">
+        <div class="step-block-num">1</div>
+        <div class="step-block-title">Generate your Google Sheets template</div>
+      </div>
+      <div class="step-block-sub">Fill in your role and competency details. Claude generates a complete Google Sheets scorecard with formulas, weighted scoring, auto-summary per candidate, and a comparison tab — ready for your entire panel to use simultaneously.</div>
+      <div class="prompt-box">
+        <div class="prompt-box-label">Step 1 prompt — copy and fill in your details</div>
+        <div class="prompt-text" id="promptText1">Please fill in the details below before using this prompt.
+Delete any lines that are not applicable to your situation.
+
+---
+
+ROLE DETAILS:
+- Job title: [e.g. Senior HR Business Partner]
+- Seniority level: [e.g. Senior, Manager, Director]
+- Company name: [your company name]
+- Number of candidates to score: [e.g. 5 candidates]
+- Number of interviewers on the panel: [e.g. 3 interviewers]
+- Interview stage: [e.g. Final round, Panel interview]
+
+COMPETENCIES TO ASSESS:
+Choose one option and delete the other:
+
+Option A — I'll define my own:
+- Competency 1: [name] — Weight: [e.g. 30%]
+- Competency 2: [name] — Weight: [e.g. 25%]
+- Competency 3: [name] — Weight: [e.g. 25%]
+- Competency 4: [name] — Weight: [e.g. 20%]
+(Weights must total 100%)
+
+Option B — Extract from my JD:
+[Paste your full job description here]
+
+SCORING PREFERENCE:
+- Rating scale: [e.g. 1-4 or 1-5]
+- Any must-pass competencies (auto no-hire if scored 1): [list or leave blank]
+
+---
+
+Please generate a complete Google Sheets candidate scorecard template with:
+
+1. One tab per candidate (duplicate as needed for each new hire)
+2. Each tab includes: candidate name, interviewer, date fields, competency rows with weights, score column (1-4 dropdown), weighted score formula, evidence notes column, follow-up flag column
+3. Auto-generated summary section at the bottom of each tab showing: total weighted score, percentile, hire/hold/no-hire verdict, and a one-paragraph candidate summary
+4. A Summary tab that pulls all candidate scores into a ranked comparison table with verdicts side by side
+5. All Google Sheets formulas written out clearly with exact cell references so I can set it up immediately
+
+Format as clear step-by-step Google Sheets setup instructions.</div>
+        <button class="copy-btn" onclick="copyPrompt('promptText1','copyConfirm1','Candidate Scorecard - Step 1')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Copy Step 1 prompt
+        </button>
+        <div class="copy-confirm" id="copyConfirm1">Copied! Open Claude, paste it in, fill your details and hit send.</div>
+      </div>
+    </div>
+
+    <div class="step-block">
+      <div class="step-block-header">
+        <div class="step-block-num">2</div>
+        <div class="step-block-title">Upload scores for candidate comparison <span class="optional-tag">Optional</span></div>
+      </div>
+      <div class="step-block-sub">Once your panel has finished scoring, export the Google Sheet as CSV (File → Download → CSV). Upload it to Claude with the prompt below for an instant ranked comparison of all candidates.</div>
+      <div class="prompt-box">
+        <div class="prompt-box-label">Step 2 prompt — use after uploading your completed CSV</div>
+        <div class="prompt-text" id="promptText2">I have uploaded a CSV file with candidate interview scores from our hiring panel.
+
+Please analyse and provide:
+
+1. A ranked candidate comparison table — sorted by total weighted score, highest to lowest
+2. A competency breakdown showing how each candidate scored on each area — highlight standout strengths and gaps
+3. Any scoring inconsistencies between interviewers for the same candidate — flag significant disagreements
+4. A final shortlist recommendation with clear reasoning — hire, hold, or no hire per candidate
+5. Any patterns worth noting — e.g. a candidate who scored low on one critical competency despite a high overall score
+
+Present as a clean structured report the hiring panel can review together in a debrief meeting.</div>
+        <button class="copy-btn" onclick="copyPrompt('promptText2','copyConfirm2','Candidate Scorecard - Step 2')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Copy Step 2 prompt
+        </button>
+        <div class="copy-confirm" id="copyConfirm2">Copied! Upload your CSV to Claude and paste this prompt alongside it.</div>
+      </div>
+    </div>
+
+    <div class="save-box">
+      <h3>Save this agent for repeated use</h3>
+      <ul class="save-steps">
+        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--coral)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
+        <li>Click <strong>New Project</strong> and name it "Candidate Scorecard Generator"</li>
+        <li>Save both prompts above inside the project instructions</li>
+        <li>Every new hire, open the project, paste your JD, get your template — then return with the CSV for the comparison report</li>
+      </ul>
+    </div>
+
+    <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+  </div>
+</div>
+
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function showSheetTab(id, el) {
+  document.querySelectorAll('.candidate-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sheets-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+function updateW(id, val, w) {
+  document.getElementById(id).textContent = (parseFloat(val) * w).toFixed(2);
+}
+function copyPrompt(textId, confirmId, agentName) {
+  const text = document.getElementById(textId).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    gtag('event', 'copy_prompt', { 'agent_name': agentName });
+    const c = document.getElementById(confirmId);
+    c.style.display = 'block';
+    setTimeout(() => c.style.display = 'none', 5000);
+  });
+}
+</script>
+</body>
+</html>
