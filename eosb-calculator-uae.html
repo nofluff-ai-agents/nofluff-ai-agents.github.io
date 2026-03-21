@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>End of Service Gratuity Guide — UAE · AI Agent</title>
+<title>GCC End of Service Gratuity Guide — UAE · KSA · Oman</title>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFCVJL0P5T"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -15,8 +15,8 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --uae-red: #C0392B; --uae-red-light: #FDEEEC;
-    --uae-green: #006633; --uae-green-light: #E6F2EC;
+    --green: #134611; --lime: #CAFE48;
+    --red: #C0392B; --red-light: #FDEEEC;
     --gold: #B8860B; --gold-light: #FBF6E3;
     --navy: #1C2B45; --navy-light: #E8ECF2;
     --text: #1A1A18; --text-muted: #6B6B67; --text-faint: #9E9E99;
@@ -24,18 +24,10 @@
   }
   body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  /* HERO */
   .hero { background: #134611; padding: 3rem 2rem 2.5rem; position: relative; overflow: hidden; }
-  .hero::before { content: ''; position: absolute; top: 0; right: 0; width: 200px; height: 100%; background: linear-gradient(180deg, rgba(0,102,51,0.15) 0%, transparent 100%); }
   .hero::after { content: ''; position: absolute; bottom: -60px; left: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(202,254,72,0.08) 0%, transparent 70%); }
   .hero-inner { max-width: 760px; margin: 0 auto; position: relative; }
-  .uae-flag-stripe { display: flex; gap: 6px; margin-bottom: 1.25rem; align-items: center; }
-  .stripe { height: 4px; border-radius: 2px; }
-  .stripe-red { width: 24px; background: #C0392B; }
-  .stripe-white { width: 24px; background: rgba(255,255,255,0.8); }
-  .stripe-black { width: 24px; background: rgba(255,255,255,0.3); }
-  .stripe-green { width: 8px; background: #006633; }
-  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,102,51,0.2); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(0,102,51,0.3); margin-bottom: 1.25rem; }
+  .agent-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(202,254,72,0.15); color: #CAFE48; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; border: 0.5px solid rgba(202,254,72,0.25); margin-bottom: 1.25rem; }
   .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem,4.5vw,2.8rem); color: #fff; line-height: 1.15; margin-bottom: 1rem; font-weight: 500; }
   .hero h1 span { color: #CAFE48; }
   .hero p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 520px; margin-bottom: 1.5rem; }
@@ -43,47 +35,56 @@
   .hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
   .hero-meta-item strong { color: rgba(255,255,255,0.65); font-weight: 500; }
 
-  /* TABS */
-  .tabs { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
-  .tabs-inner { max-width: 760px; margin: 0 auto; display: flex; }
-  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
-  .tab.active { color: var(--text); border-bottom-color: #134611; }
+  /* COUNTRY SELECTOR */
+  .country-nav { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .country-nav-inner { max-width: 760px; margin: 0 auto; display: flex; }
+  .country-tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Poppins', sans-serif; }
+  .country-tab.active { color: var(--text); border-bottom-color: #134611; }
+  .country-tab:hover:not(.active) { color: var(--text); }
 
   .content { max-width: 760px; margin: 0 auto; padding: 2rem; }
-  .section { display: none; }
-  .section.active { display: block; }
+  .country-section { display: none; }
+  .country-section.active { display: block; }
+
+  /* INNER TABS */
+  .inner-tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border: 0.5px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .inner-tab { flex: 1; padding: 10px; font-size: 13px; font-weight: 500; color: var(--text-muted); border: none; background: var(--surface); cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+  .inner-tab.active { background: #134611; color: #CAFE48; }
+
+  .inner-section { display: none; }
+  .inner-section.active { display: block; }
 
   /* LAW BANNER */
-  .law-banner { display: flex; align-items: flex-start; gap: 12px; background: #134611; border: 0.5px solid rgba(28,43,69,0.2); border-radius: 10px; padding: 12px 14px; margin-bottom: 1.5rem; }
-  .law-icon { width: 32px; height: 32px; border-radius: 8px; background: #134611; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
-  .law-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
-  .law-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+  .law-banner { display: flex; align-items: flex-start; gap: 12px; background: #134611; border-radius: 10px; padding: 12px 14px; margin-bottom: 1.5rem; }
+  .law-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+  .law-text { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; }
+  .law-text strong { color: #CAFE48; display: block; margin-bottom: 2px; }
+
+  /* TIER GRID */
+  .tier-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .tier-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; text-align: center; position: relative; overflow: hidden; }
+  .tier-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .tier-card.no-pay::before { background: var(--red); }
+  .tier-card.partial::before { background: var(--gold); }
+  .tier-card.full::before { background: #134611; }
+  .tier-years { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+  .tier-days { font-size: 28px; font-weight: 500; margin-bottom: 4px; }
+  .tier-days.red { color: var(--red); }
+  .tier-days.gold { color: var(--gold); }
+  .tier-days.green { color: #134611; }
+  .tier-label { font-size: 11px; color: var(--text-faint); }
+  .tier-note { font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.4; }
 
   /* FORMULA STEPS */
-  .formula-title { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
+  .formula-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
   .step-cards { display: flex; flex-direction: column; gap: 1px; margin-bottom: 1.5rem; }
   .step-card { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
   .step-card:first-child { border-radius: 12px 12px 0 0; }
   .step-card:last-child { border-radius: 0 0 12px 12px; }
-  .step-card-num { width: 32px; height: 32px; border-radius: 50%; background: var(--uae-green); color: white; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Poppins', sans-serif; }
+  .step-card-num { width: 32px; height: 32px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .step-card-content h4 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
   .step-card-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
-  .formula-chip { display: inline-block; background: #134611; color: #CAFE48; font-family: 'Poppins', sans-serif; font-size: 12px; padding: 4px 10px; border-radius: 4px; margin-top: 8px; }
-
-  /* TENURE TIERS */
-  .tier-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
-  .tier-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; text-align: center; position: relative; overflow: hidden; }
-  .tier-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-  .tier-card.no-pay::before { background: var(--uae-red); }
-  .tier-card.partial::before { background: var(--gold); }
-  .tier-card.full::before { background: var(--uae-green); }
-  .tier-years { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
-  .tier-days { font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 500; margin-bottom: 4px; }
-  .tier-days.red { color: var(--uae-red); }
-  .tier-days.gold { color: var(--gold); }
-  .tier-days.green { color: var(--uae-green); }
-  .tier-label { font-size: 11px; color: var(--text-faint); }
-  .tier-note { font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.4; }
+  .formula-chip { display: inline-block; background: #134611; color: #CAFE48; font-size: 12px; padding: 4px 10px; border-radius: 4px; margin-top: 8px; }
 
   /* WORKED EXAMPLE */
   .example-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
@@ -97,17 +98,14 @@
   .emp-value { font-size: 13px; font-weight: 500; color: var(--text); }
   .calc-steps { display: flex; flex-direction: column; gap: 8px; }
   .calc-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; }
-  .calc-row.active { background: var(--uae-green-light); border: 0.5px solid rgba(0,102,51,0.15); }
+  .calc-row.active { background: #E6F2EC; border: 0.5px solid rgba(19,70,17,0.15); }
   .calc-row.result { background: #134611; }
-  .calc-step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--uae-green); color: white; font-size: 10px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .calc-step-num.dark { background: rgba(255,255,255,0.15); }
+  .calc-step-num { width: 22px; height: 22px; border-radius: 50%; background: #134611; color: white; font-size: 10px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .calc-step-num.dark { background: rgba(255,255,255,0.15); color: white; }
   .calc-label { font-size: 12px; color: var(--text-muted); flex: 1; }
   .calc-label.white { color: rgba(255,255,255,0.6); }
-  .calc-formula { font-family: 'Poppins', sans-serif; font-size: 12px; color: var(--text-muted); }
-  .calc-formula.green { color: #CAFE48; }
-  .calc-value { font-size: 14px; font-weight: 500; color: var(--uae-green); font-family: 'Poppins', sans-serif; white-space: nowrap; }
+  .calc-value { font-size: 14px; font-weight: 500; color: #134611; white-space: nowrap; }
   .calc-value.white { color: #CAFE48; font-size: 16px; }
-  .calc-arrow { color: var(--text-faint); font-size: 12px; }
 
   /* EDGE CASES */
   .edge-cases { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
@@ -117,22 +115,12 @@
   .edge-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; }
   .edge-icon.warn { background: var(--gold-light); color: var(--gold); }
   .edge-icon.info { background: var(--navy-light); color: var(--navy); }
-  .edge-icon.danger { background: var(--uae-red-light); color: var(--uae-red); }
+  .edge-icon.danger { background: var(--red-light); color: var(--red); }
   .edge-content h4 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
   .edge-content p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
-  /* CAP BOX */
-  .cap-box { display: flex; align-items: center; gap: 14px; background: var(--uae-red-light); border: 0.5px solid rgba(192,57,43,0.2); border-radius: 10px; padding: 14px 16px; margin-bottom: 1.5rem; }
-  .cap-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--uae-red); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; font-weight: 500; font-family: 'Poppins', sans-serif; }
-  .cap-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
-  .cap-text strong { color: var(--text); }
-
-  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
-  .next-btn:hover { background: #134611; opacity: 0.88; }
-
-  /* BUILD */
-  .build-intro p { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; }
-  .build-note { font-size: 13px; color: var(--text-muted); background: var(--uae-green-light); border: 0.5px solid rgba(0,102,51,0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 1.5rem; line-height: 1.6; }
+  /* BUILD TAB */
+  .build-intro p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
   .steps { display: flex; flex-direction: column; gap: 1px; margin-bottom: 2rem; }
   .step { background: var(--surface); border: 0.5px solid var(--border); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; }
   .step:first-child { border-radius: 12px 12px 0 0; }
@@ -140,26 +128,22 @@
   .step-num { width: 30px; height: 30px; border-radius: 50%; background: #134611; color: #CAFE48; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .step-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
   .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-  .step-content a { color: var(--uae-green); text-decoration: none; }
-  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  .step-content a { color: #134611; text-decoration: none; }
+
+  .prompt-box { background: #134611; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
   .prompt-box-label { font-size: 11px; color: #CAFE48; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 500; }
-  .prompt-text { font-family: 'Poppins', sans-serif; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
-  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #134611; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; }
-  .copy-btn:hover { opacity: 0.88; }
+  .prompt-text { font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-top: 1rem; display: inline-flex; align-items: center; gap: 6px; background: #CAFE48; color: #134611; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; }
   .copy-confirm { font-size: 12px; color: #CAFE48; margin-top: 8px; display: none; }
-  .save-box { background: rgba(19,70,17,0.07); border: 0.5px solid rgba(0,102,51,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; }
-  .save-box h3 { font-size: 14px; font-weight: 500; color: #134611; margin-bottom: 10px; }
-  .save-steps { list-style: none; counter-reset: save-counter; }
-  .save-steps li { counter-increment: save-counter; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-  .save-steps li::before { content: counter(save-counter); width: 20px; height: 20px; border-radius: 50%; background: #134611; color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; }
-  .open-btn:hover { background: #134611; opacity: 0.88; }
-  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 0.5px solid var(--border); max-width: 760px; margin: 0 auto; }
-  .disclaimer { font-size: 11px; color: var(--text-faint); text-align: center; margin-top: 1rem; line-height: 1.6; }
+
+  .open-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-decoration: none; font-family: Poppins, sans-serif; margin-top: 1rem; }
+  .next-btn { display: block; width: 100%; background: #134611; color: #CAFE48; border: 0.5px solid rgba(202,254,72,0.3); border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 500; text-align: center; cursor: pointer; font-family: Poppins, sans-serif; margin-top: 1.5rem; }
+  .disclaimer { font-size: 11px; color: var(--text-faint); line-height: 1.6; margin-top: 1.5rem; }
+  .footer { text-align: center; padding: 2rem; font-size: 12px; }
 
   @media (max-width: 600px) {
-    .tier-grid { grid-template-columns: repeat(3,1fr); }
-    .example-employee { grid-template-columns: repeat(2,1fr); }
+    .tier-grid { grid-template-columns: 1fr; }
+    .example-employee { grid-template-columns: 1fr 1fr; }
     .content { padding: 1.25rem; }
   }
 </style>
@@ -168,349 +152,596 @@
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="uae-flag-stripe">
-      <div class="stripe stripe-green"></div>
-      <div class="stripe stripe-white"></div>
-      <div class="stripe stripe-red"></div>
-      <div class="stripe stripe-black"></div>
-    </div>
     <img src="data:image/png;base64,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" alt="nofluff." style="height:50px;margin-bottom:1.25rem;display:block;mix-blend-mode:screen;">
     <div class="agent-badge">
-      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#4DB87A"/></svg>
-      UAE Labour Law · AI Agent
+      <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#CAFE48"/></svg>
+      GCC Labour Law · AI Agent
     </div>
-    <h1>End of Service Gratuity <span>Guide</span></h1>
-    <p>Understand how UAE EOSB is calculated under Federal Decree-Law No. 33 of 2021 — with a worked example, edge case guidance, and a Claude prompt to calculate any employee's gratuity instantly.</p>
+    <h1>End of Service <span>Gratuity Guide</span></h1>
+    <p>Understand EOSB rules across UAE, Saudi Arabia and Oman — law explained, tiers mapped, and a Claude prompt to calculate any employee's gratuity instantly.</p>
     <div class="hero-meta">
       <div class="hero-meta-item">Built for <strong>HR Leaders &amp; PRO Teams</strong></div>
-      <div class="hero-meta-item">Based on <strong>UAE Labour Law 2021</strong></div>
+      <div class="hero-meta-item">Covers <strong>UAE · KSA · Oman</strong></div>
       <div class="hero-meta-item">Free to use</div>
     </div>
   </div>
 </div>
 
-<div class="tabs">
-  <div class="tabs-inner">
-    <button class="tab active" onclick="showTab('demo',this)">How EOSB works</button>
-    <button class="tab" onclick="showTab('build',this)">Calculate with Claude</button>
+<div class="country-nav">
+  <div class="country-nav-inner">
+    <button class="country-tab active" onclick="showCountry('uae', this)">🇦🇪 UAE</button>
+    <button class="country-tab" onclick="showCountry('ksa', this)">🇸🇦 Saudi Arabia</button>
+    <button class="country-tab" onclick="showCountry('oman', this)">🇴🇲 Oman</button>
   </div>
 </div>
 
 <div class="content">
-  <div class="section active" id="demo">
 
-    <div class="law-banner">
-      <div class="law-icon">⚖️</div>
-      <div class="law-text">
-        <strong>Federal Decree-Law No. 33 of 2021 — UAE Labour Law</strong>
-        End of Service Gratuity (EOSB) is a mandatory payment owed to employees upon termination of employment. It is calculated based on basic salary only — allowances are excluded.
-      </div>
+  <!-- UAE -->
+  <div class="country-section active" id="uae">
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="showInner('uae-law', 'uae', this)">The Law</button>
+      <button class="inner-tab" onclick="showInner('uae-calc', 'uae', this)">Calculate with Claude</button>
     </div>
 
-    <!-- STEP BY STEP FORMULA -->
-    <div class="formula-title">The EOSB formula — step by step</div>
-    <div class="step-cards">
-      <div class="step-card">
-        <div class="step-card-num">1</div>
-        <div class="step-card-content">
-          <h4>Calculate the daily basic salary rate</h4>
-          <p>Divide the employee's monthly basic salary by 30 days. This is your daily rate — the foundation of every EOSB calculation. Allowances (housing, transport, phone) are NOT included.</p>
-          <div class="formula-chip">Daily rate = Basic salary ÷ 30</div>
+    <div class="inner-section active" id="uae-law">
+      <div class="law-banner">
+        <div class="law-icon">⚖️</div>
+        <div class="law-text">
+          <strong>Federal Decree-Law No. 33 of 2021 — UAE Labour Law</strong>
+          EOSB is mandatory for all employees upon termination. Calculated on basic salary only — allowances excluded. Capped at 2 years' basic salary.
         </div>
       </div>
-      <div class="step-card">
-        <div class="step-card-num">2</div>
-        <div class="step-card-content">
-          <h4>Calculate total years of service</h4>
-          <p>Count the full years and partial months from the official start date to the last working day. Partial years are prorated — a 6-month partial year counts as 0.5 years.</p>
-          <div class="formula-chip">Tenure = End date − Start date (in years)</div>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-card-num">3</div>
-        <div class="step-card-content">
-          <h4>Apply the correct gratuity rate per year</h4>
-          <p>The rate depends on total tenure. The first 5 years are calculated at 21 days per year. Any service beyond 5 years is calculated at 30 days per year. These are calculated separately then added together.</p>
-          <div class="formula-chip">Years 1–5: 21 days/year · Years 5+: 30 days/year</div>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-card-num">4</div>
-        <div class="step-card-content">
-          <h4>Multiply days by daily rate</h4>
-          <p>Multiply the total gratuity days earned by the daily basic salary rate to get the gross EOSB amount before any deductions.</p>
-          <div class="formula-chip">EOSB = Total gratuity days × Daily rate</div>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-card-num">5</div>
-        <div class="step-card-content">
-          <h4>Apply resignation reduction (if applicable)</h4>
-          <p>If the employee resigned — rather than being terminated — a reduction may apply depending on tenure. Less than 1 year: no gratuity. 1–3 years: one third. 3–5 years: two thirds. Over 5 years: full gratuity regardless of resignation or termination.</p>
-          <div class="formula-chip">Termination = Full · Resignation varies by tenure</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- TENURE TIERS -->
-    <div class="formula-title" style="margin-bottom:1rem;">Gratuity entitlement at a glance</div>
-    <div class="tier-grid">
-      <div class="tier-card no-pay">
-        <div class="tier-years">Less than 1 year</div>
-        <div class="tier-days red">0</div>
-        <div class="tier-label">days gratuity</div>
-        <div class="tier-note">No entitlement regardless of reason for leaving</div>
-      </div>
-      <div class="tier-card partial">
-        <div class="tier-years">1 – 5 years</div>
-        <div class="tier-days gold">21</div>
-        <div class="tier-label">days per year</div>
-        <div class="tier-note">Reduced if employee resigned in years 1–5</div>
-      </div>
-      <div class="tier-card full">
-        <div class="tier-years">Over 5 years</div>
-        <div class="tier-days green">30</div>
-        <div class="tier-label">days per year</div>
-        <div class="tier-note">Full entitlement — resignation or termination</div>
-      </div>
-    </div>
-
-    <!-- CAP -->
-    <div class="cap-box">
-      <div class="cap-icon">!</div>
-      <div class="cap-text"><strong>Important — EOSB is capped at 2 years total basic salary</strong> regardless of tenure length or calculation outcome. If the calculated EOSB exceeds 24 months of basic salary, it must be capped at that amount.</div>
-    </div>
-
-    <!-- WORKED EXAMPLE -->
-    <div class="example-box">
-      <div class="example-header">
-        <h3>Worked example — step by step calculation</h3>
-        <p>Senior HR Business Partner · NovaTech MENA · Resigned after 7 years 6 months</p>
-      </div>
-      <div class="example-body">
-        <div class="example-employee">
-          <div class="emp-field"><div class="emp-label">Basic salary</div><div class="emp-value">AED 22,000/month</div></div>
-          <div class="emp-field"><div class="emp-label">Tenure</div><div class="emp-value">7 years 6 months</div></div>
-          <div class="emp-field"><div class="emp-label">Reason for leaving</div><div class="emp-value">Resignation</div></div>
+      <p class="formula-title">How tenure tiers work</p>
+      <div class="tier-grid">
+        <div class="tier-card no-pay">
+          <div class="tier-years">Under 1 year</div>
+          <div class="tier-days red">0</div>
+          <div class="tier-label">days pay</div>
+          <div class="tier-note">No entitlement regardless of reason for leaving</div>
         </div>
-        <div class="calc-steps">
-          <div class="calc-row active">
-            <div class="calc-step-num">1</div>
-            <div class="calc-label">Daily basic salary rate</div>
-            <div class="calc-formula">AED 22,000 ÷ 30</div>
-            <div class="calc-arrow">→</div>
-            <div class="calc-value">AED 733.33</div>
+        <div class="tier-card partial">
+          <div class="tier-years">1 – 5 years</div>
+          <div class="tier-days gold">21</div>
+          <div class="tier-label">days per year</div>
+          <div class="tier-note">Resignation reduces this to ⅓ (1–3 yrs) or ⅔ (3–5 yrs)</div>
+        </div>
+        <div class="tier-card full">
+          <div class="tier-years">5+ years</div>
+          <div class="tier-days green">30</div>
+          <div class="tier-label">days per year</div>
+          <div class="tier-note">Full entitlement; resignation does not reduce above 5 years</div>
+        </div>
+      </div>
+
+      <p class="formula-title">Calculation steps</p>
+      <div class="step-cards">
+        <div class="step-card">
+          <div class="step-card-num">1</div>
+          <div class="step-card-content">
+            <h4>Calculate daily basic salary</h4>
+            <p>Divide the final monthly basic salary by 30.</p>
+            <span class="formula-chip">Daily rate = Basic salary ÷ 30</span>
           </div>
-          <div class="calc-row active">
-            <div class="calc-step-num">2</div>
-            <div class="calc-label">Gratuity for first 5 years (21 days × 5)</div>
-            <div class="calc-formula">105 days × AED 733.33</div>
-            <div class="calc-arrow">→</div>
-            <div class="calc-value">AED 76,999</div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">2</div>
+          <div class="step-card-content">
+            <h4>Calculate years of service</h4>
+            <p>From start date to last working day. Deduct any unpaid leave periods.</p>
           </div>
-          <div class="calc-row active">
-            <div class="calc-step-num">3</div>
-            <div class="calc-label">Gratuity for years 5–7.5 (30 days × 2.5)</div>
-            <div class="calc-formula">75 days × AED 733.33</div>
-            <div class="calc-arrow">→</div>
-            <div class="calc-value">AED 54,999</div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">3</div>
+          <div class="step-card-content">
+            <h4>Apply the tier formula</h4>
+            <p>First 5 years: 21 days × years. Beyond 5 years: 30 days × remaining years. Prorate partial years.</p>
           </div>
-          <div class="calc-row active">
-            <div class="calc-step-num">4</div>
-            <div class="calc-label">Total gross EOSB (before resignation check)</div>
-            <div class="calc-formula">76,999 + 54,999</div>
-            <div class="calc-arrow">→</div>
-            <div class="calc-value">AED 131,998</div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">4</div>
+          <div class="step-card-content">
+            <h4>Apply resignation reduction if applicable</h4>
+            <p>1–3 years resignation: ⅓ entitlement. 3–5 years resignation: ⅔ entitlement. Above 5 years: full entitlement always.</p>
           </div>
-          <div class="calc-row active">
-            <div class="calc-step-num">5</div>
-            <div class="calc-label">Resignation reduction — over 5 years = full entitlement</div>
-            <div class="calc-formula">No reduction applied</div>
-            <div class="calc-arrow">→</div>
-            <div class="calc-value">AED 131,998</div>
-          </div>
-          <div class="calc-row active">
-            <div class="calc-step-num">6</div>
-            <div class="calc-label">Cap check — 2 years basic salary maximum</div>
-            <div class="calc-formula">AED 22,000 × 24 = AED 528,000</div>
-            <div class="calc-arrow">→</div>
-            <div class="calc-value" style="color:var(--uae-green)">Below cap ✓</div>
-          </div>
-          <div class="calc-row result">
-            <div class="calc-step-num dark">✓</div>
-            <div class="calc-label white">Final EOSB payable</div>
-            <div class="calc-formula green">Full entitlement — resigned after 5+ years</div>
-            <div class="calc-arrow" style="color:rgba(255,255,255,0.3)">→</div>
-            <div class="calc-value white">AED 131,998</div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">5</div>
+          <div class="step-card-content">
+            <h4>Check the 2-year cap</h4>
+            <p>Total EOSB cannot exceed 24 months of basic salary. Apply cap if exceeded.</p>
           </div>
         </div>
       </div>
+
+      <div class="example-box">
+        <div class="example-header">
+          <h3>Worked example</h3>
+          <p>Termination by employer · AED 22,000 basic · 7 years service</p>
+        </div>
+        <div class="example-body">
+          <div class="example-employee">
+            <div class="emp-field"><div class="emp-label">Basic salary</div><div class="emp-value">AED 22,000</div></div>
+            <div class="emp-field"><div class="emp-label">Years of service</div><div class="emp-value">7 years</div></div>
+            <div class="emp-field"><div class="emp-label">Reason</div><div class="emp-value">Termination</div></div>
+          </div>
+          <div class="calc-steps">
+            <div class="calc-row active">
+              <div class="calc-step-num">1</div>
+              <div class="calc-label">Daily rate</div>
+              <div class="calc-value">AED 733.33</div>
+            </div>
+            <div class="calc-row active">
+              <div class="calc-step-num">2</div>
+              <div class="calc-label">First 5 years (21 days × 5)</div>
+              <div class="calc-value">AED 76,999.65</div>
+            </div>
+            <div class="calc-row active">
+              <div class="calc-step-num">3</div>
+              <div class="calc-label">Next 2 years (30 days × 2)</div>
+              <div class="calc-value">AED 43,999.80</div>
+            </div>
+            <div class="calc-row result">
+              <div class="calc-step-num dark">✓</div>
+              <div class="calc-label white">Total EOSB payable</div>
+              <div class="calc-value white">AED 120,999.45</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edge-cases">
+        <div class="edge-title">Edge cases to watch</div>
+        <div class="edge-item">
+          <div class="edge-icon warn">⚠️</div>
+          <div class="edge-content"><h4>Freezone employees</h4><p>DIFC and ADGM have their own employment laws. Always check the specific freezone authority regulations.</p></div>
+        </div>
+        <div class="edge-item">
+          <div class="edge-icon danger">✕</div>
+          <div class="edge-content"><h4>Gross misconduct termination</h4><p>Article 44 terminations may forfeit EOSB entitlement entirely. Seek legal advice before proceeding.</p></div>
+        </div>
+        <div class="edge-item">
+          <div class="edge-icon info">ℹ</div>
+          <div class="edge-content"><h4>Salary changes during tenure</h4><p>EOSB is calculated on the final basic salary — not an average. Salary increases benefit the employee; reductions do not apply retroactively.</p></div>
+        </div>
+      </div>
+
+      <button class="next-btn" onclick="showInner('uae-calc', 'uae', document.querySelectorAll('#uae .inner-tab')[1])">Calculate with Claude →</button>
     </div>
 
-    <!-- EDGE CASES -->
-    <div class="edge-cases">
-      <div class="edge-title">Edge cases to watch for</div>
-      <div class="edge-item">
-        <div class="edge-icon warn">⚠</div>
-        <div class="edge-content">
-          <h4>Unpaid leave deductions</h4>
-          <p>Days of unpaid leave must be subtracted from total service before calculating EOSB. Keep accurate records of all unpaid absence throughout employment.</p>
-        </div>
+    <div class="inner-section" id="uae-calc">
+      <div class="build-intro">
+        <p>Paste the prompt below into Claude, fill in the employee's details, and get a full step-by-step EOSB calculation with workings you can share with the employee or legal team.</p>
       </div>
-      <div class="edge-item">
-        <div class="edge-icon info">i</div>
-        <div class="edge-content">
-          <h4>Salary changes during tenure</h4>
-          <p>EOSB is always calculated on the final basic salary at the time of termination — not an average. A recent salary increase benefits the employee significantly.</p>
-        </div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Create a free Claude account</h3><p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Copy the prompt and fill in the details</h3><p>Enter the employee's basic salary, start and end dates, reason for leaving, and any edge cases.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Get a full calculation with workings</h3><p>Claude calculates step by step, flags edge cases, and states the final amount payable.</p></div></div>
       </div>
-      <div class="edge-item">
-        <div class="edge-icon warn">⚠</div>
-        <div class="edge-content">
-          <h4>Limited vs unlimited contracts</h4>
-          <p>Under the 2021 law, all new contracts are effectively unlimited. However legacy limited contracts may carry different termination implications — always check the original contract type.</p>
-        </div>
-      </div>
-      <div class="edge-item">
-        <div class="edge-icon danger">!</div>
-        <div class="edge-content">
-          <h4>Termination for cause</h4>
-          <p>Under Article 44 of Federal Decree-Law No. 33 of 2021, an employer may terminate without EOSB in cases of gross misconduct. This requires proper documentation and due process — seek legal advice before withholding gratuity.</p>
-        </div>
-      </div>
-      <div class="edge-item">
-        <div class="edge-icon info">i</div>
-        <div class="edge-content">
-          <h4>Freezone employees</h4>
-          <p>Some freezones (DIFC, ADGM) have their own employment regulations which may differ from mainland UAE Labour Law. Always verify the applicable law for your entity type.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="disclaimer">This guide is for educational purposes only and does not constitute legal advice. Always verify calculations with a qualified UAE employment lawyer or licensed HR consultant for complex cases.</div>
-
-    <button class="next-btn" onclick="showTab('build',document.querySelectorAll('.tab')[1])">
-      Calculate a specific employee's EOSB with Claude →
-    </button>
-  </div>
-
-  <!-- BUILD -->
-  <div class="section" id="build">
-    <div class="build-intro">
-      <p>Use the prompt below to walk Claude through any employee's specific EOSB situation. Claude will apply the correct UAE Labour Law formula, handle edge cases, and show you the full calculation with workings.</p>
-    </div>
-    <div class="build-note">
-      Claude will guide you through the calculation step by step and explain its reasoning — not just give you a number. This is especially useful for complex cases involving resignations, unpaid leave, or salary changes during tenure.
-    </div>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-content">
-          <h3>Create a free Claude account</h3>
-          <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free. No credit card needed.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <h3>Copy the prompt and fill in the employee details</h3>
-          <p>Enter the employee's basic salary, start and end dates, reason for leaving, and any known edge cases. Delete lines that don't apply.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <h3>Get a full calculation with workings</h3>
-          <p>Claude calculates the EOSB step by step, flags any edge cases, and tells you the final amount payable — with full reasoning you can share with the employee or legal team.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="prompt-box">
-      <div class="prompt-box-label">Your prompt — copy and fill in employee details</div>
-      <div class="prompt-text" id="promptText">Please fill in the employee details below before using this prompt.
-Delete any lines that are not applicable to your situation.
-
----
-
-EMPLOYEE DETAILS:
+      <div class="prompt-box">
+        <div class="prompt-box-label">Copy this prompt — UAE EOSB</div>
+        <div class="prompt-text" id="uaePrompt">EMPLOYEE DETAILS:
 - Employee name: [e.g. Sarah Al-Mansouri — or use "Employee" for privacy]
-- Nationality: [e.g. UAE National, British, Indian]
+- Nationality: [e.g. UAE National / British / Indian]
 - Job title: [e.g. Senior HR Business Partner]
-- Entity type: [e.g. UAE Mainland / DIFC / ADGM / Abu Dhabi Freezone]
+- Entity type: [UAE Mainland / DIFC / ADGM / Abu Dhabi Freezone]
 
 EMPLOYMENT DETAILS:
 - Start date: [e.g. 1 March 2018]
 - Last working day: [e.g. 28 February 2026]
 - Reason for leaving: [Resignation / Termination by employer / Mutual agreement / Redundancy]
-- Contract type: [Unlimited / Limited — specify end date if limited]
+- Contract type: [Unlimited / Limited]
 
 SALARY DETAILS:
 - Final basic monthly salary: [e.g. AED 22,000]
-- Were there any salary changes during employment? [Yes / No — if Yes, list dates and amounts]
+- Any salary changes during employment? [Yes / No — if Yes, list dates and amounts]
 
 ADDITIONAL FACTORS (delete any that do not apply):
-- Total unpaid leave days during employment: [e.g. 15 days — delete if none]
-- Any periods of suspension without pay: [e.g. 5 days in 2023 — delete if none]
-- Was the employee terminated for gross misconduct? [Yes / No]
-- Any advance gratuity payments already made: [e.g. AED 10,000 paid in 2022 — delete if none]
+- Total unpaid leave days: [e.g. 15 days]
+- Periods of suspension without pay: [e.g. 5 days in 2023]
+- Terminated for gross misconduct? [Yes / No]
+- Any advance gratuity payments already made: [e.g. AED 10,000 in 2022]
 
 ---
 
 Using UAE Federal Decree-Law No. 33 of 2021, please:
-
-1. Calculate the total years and months of service — accounting for any unpaid leave deductions
+1. Calculate total years and months of service — deducting any unpaid leave
 2. Calculate the daily basic salary rate
-3. Apply the correct gratuity entitlement:
-   - First 5 years at 21 days per year
-   - Beyond 5 years at 30 days per year
-   - Partial years prorated accordingly
-4. Apply the resignation reduction if applicable (under 5 years service)
-5. Check against the 2-year cap (24 × monthly basic salary)
+3. Apply the correct gratuity tiers (21 days/year for first 5 years; 30 days/year beyond 5)
+4. Apply resignation reduction if applicable
+5. Check against the 2-year cap
 6. State the final EOSB amount payable
-7. Show all workings clearly so the calculation can be verified and shared
-8. Flag any edge cases or areas where legal advice should be sought
-
-Present as a clear step-by-step calculation with the final amount clearly stated at the end.</div>
-      <button class="copy-btn" onclick="copyPrompt()">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Copy prompt
-      </button>
-      <div class="copy-confirm" id="copyConfirm">Copied! Open Claude, paste it in, fill the employee details and hit send.</div>
+7. Show all workings clearly
+8. Flag any edge cases or areas requiring legal advice</div>
+        <button class="copy-btn" onclick="copyPrompt('uaePrompt','uaeCopied','EOSB UAE')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="#134611" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="#134611" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Copy prompt
+        </button>
+        <div class="copy-confirm" id="uaeCopied">Copied! Open Claude, paste and fill in the employee details.</div>
+      </div>
+      <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+      <div class="disclaimer">This tool is for guidance only and does not constitute legal advice. For complex cases or freezone employees, consult a qualified UAE employment lawyer.</div>
     </div>
-
-    <div class="save-box">
-      <h3>Save this agent for repeated use</h3>
-      <ul class="save-steps">
-        <li>Open <a href="https://claude.ai" target="_blank" style="color:var(--uae-green)">claude.ai</a> and click <strong>Projects</strong> in the left sidebar</li>
-        <li>Click <strong>New Project</strong> and name it "EOSB Calculator — UAE"</li>
-        <li>Click <strong>Set instructions</strong> and paste the prompt above</li>
-        <li>Every time an employee leaves, open this project, fill in their details, and get the full EOSB calculation instantly — no need to re-paste the prompt</li>
-      </ul>
-    </div>
-
-    <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
-
-    <div class="disclaimer" style="margin-top:1.5rem;">This tool is for guidance only and does not constitute legal advice. For complex cases, terminations for cause, or freezone employees, always consult a qualified UAE employment lawyer.</div>
   </div>
+
+  <!-- SAUDI ARABIA -->
+  <div class="country-section" id="ksa">
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="showInner('ksa-law', 'ksa', this)">The Law</button>
+      <button class="inner-tab" onclick="showInner('ksa-calc', 'ksa', this)">Calculate with Claude</button>
+    </div>
+
+    <div class="inner-section active" id="ksa-law">
+      <div class="law-banner">
+        <div class="law-icon">⚖️</div>
+        <div class="law-text">
+          <strong>Saudi Labour Law — Royal Decree No. M/51 (as amended)</strong>
+          End of service award is mandatory for all employees completing at least 2 years of service. Calculated on final basic salary. No cap applies — unlike UAE.
+        </div>
+      </div>
+
+      <p class="formula-title">How tenure tiers work</p>
+      <div class="tier-grid">
+        <div class="tier-card no-pay">
+          <div class="tier-years">Under 2 years</div>
+          <div class="tier-days red">0</div>
+          <div class="tier-label">entitlement</div>
+          <div class="tier-note">No EOSB payable below 2 years regardless of exit reason</div>
+        </div>
+        <div class="tier-card partial">
+          <div class="tier-years">2 – 10 years</div>
+          <div class="tier-days gold">½</div>
+          <div class="tier-label">month per year</div>
+          <div class="tier-note">Half a month's basic salary for each year of service</div>
+        </div>
+        <div class="tier-card full">
+          <div class="tier-years">10+ years</div>
+          <div class="tier-days green">1</div>
+          <div class="tier-label">month per year</div>
+          <div class="tier-note">Full month's basic salary for each year beyond 10</div>
+        </div>
+      </div>
+
+      <p class="formula-title">Calculation steps</p>
+      <div class="step-cards">
+        <div class="step-card">
+          <div class="step-card-num">1</div>
+          <div class="step-card-content">
+            <h4>Confirm minimum service threshold</h4>
+            <p>Employee must have completed at least 2 years. Below 2 years — no entitlement.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">2</div>
+          <div class="step-card-content">
+            <h4>Calculate years of service</h4>
+            <p>From start date to last working day. Partial years are prorated proportionally.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">3</div>
+          <div class="step-card-content">
+            <h4>Apply the tier formula</h4>
+            <p>First 10 years: ½ month × years of service. Beyond 10 years: 1 full month × remaining years.</p>
+            <span class="formula-chip">EOSB = (Years × ½ salary) + (Years beyond 10 × salary)</span>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">4</div>
+          <div class="step-card-content">
+            <h4>Apply resignation reduction if applicable</h4>
+            <p>2–5 years resignation: ⅓ entitlement. 5–10 years resignation: ⅔ entitlement. 10+ years resignation: full entitlement.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="example-header">
+          <h3>Worked example</h3>
+          <p>Termination by employer · SAR 15,000 basic · 8 years service</p>
+        </div>
+        <div class="example-body">
+          <div class="example-employee">
+            <div class="emp-field"><div class="emp-label">Basic salary</div><div class="emp-value">SAR 15,000</div></div>
+            <div class="emp-field"><div class="emp-label">Years of service</div><div class="emp-value">8 years</div></div>
+            <div class="emp-field"><div class="emp-label">Reason</div><div class="emp-value">Termination</div></div>
+          </div>
+          <div class="calc-steps">
+            <div class="calc-row active">
+              <div class="calc-step-num">1</div>
+              <div class="calc-label">Half month salary</div>
+              <div class="calc-value">SAR 7,500</div>
+            </div>
+            <div class="calc-row active">
+              <div class="calc-step-num">2</div>
+              <div class="calc-label">8 years × SAR 7,500</div>
+              <div class="calc-value">SAR 60,000</div>
+            </div>
+            <div class="calc-row result">
+              <div class="calc-step-num dark">✓</div>
+              <div class="calc-label white">Total EOSB payable</div>
+              <div class="calc-value white">SAR 60,000</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edge-cases">
+        <div class="edge-title">Edge cases to watch</div>
+        <div class="edge-item">
+          <div class="edge-icon danger">✕</div>
+          <div class="edge-content"><h4>Article 80 dismissal</h4><p>Termination for gross misconduct under Article 80 forfeits all EOSB entitlement. Requires documented cause.</p></div>
+        </div>
+        <div class="edge-item">
+          <div class="edge-icon warn">⚠️</div>
+          <div class="edge-content"><h4>Saudisation and domestic workers</h4><p>Different rules apply to domestic workers and certain Nitaqat-exempt categories. Verify classification before calculating.</p></div>
+        </div>
+        <div class="edge-item">
+          <div class="edge-icon info">ℹ</div>
+          <div class="edge-content"><h4>No salary cap</h4><p>Unlike UAE, Saudi Arabia has no cap on total EOSB. Long-tenured senior employees may have very large entitlements.</p></div>
+        </div>
+      </div>
+
+      <button class="next-btn" onclick="showInner('ksa-calc', 'ksa', document.querySelectorAll('#ksa .inner-tab')[1])">Calculate with Claude →</button>
+    </div>
+
+    <div class="inner-section" id="ksa-calc">
+      <div class="build-intro">
+        <p>Paste the prompt below into Claude, fill in the employee's details, and get a full Saudi EOSB calculation with step-by-step workings.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Create a free Claude account</h3><p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Copy the prompt and fill in the details</h3><p>Enter the employee's basic salary, start and end dates, reason for leaving, and any edge cases.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Get a full calculation with workings</h3><p>Claude calculates step by step, flags edge cases, and states the final amount payable.</p></div></div>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-box-label">Copy this prompt — Saudi Arabia EOSB</div>
+        <div class="prompt-text" id="ksaPrompt">EMPLOYEE DETAILS:
+- Employee name: [e.g. Ahmed Al-Rashidi — or use "Employee" for privacy]
+- Nationality: [e.g. Saudi National / Expat]
+- Job title: [e.g. Finance Manager]
+- Employment category: [Regular employee / Domestic worker / Part-time]
+
+EMPLOYMENT DETAILS:
+- Start date: [e.g. 1 January 2016]
+- Last working day: [e.g. 31 December 2025]
+- Reason for leaving: [Resignation / Termination by employer / Mutual agreement]
+- Was this an Article 80 dismissal for gross misconduct? [Yes / No]
+
+SALARY DETAILS:
+- Final basic monthly salary: [e.g. SAR 15,000]
+- Any salary changes during employment? [Yes / No — if Yes, list dates and amounts]
+
+ADDITIONAL FACTORS (delete any that do not apply):
+- Total unpaid leave days: [e.g. 10 days]
+- Any advance EOSB payments already made: [e.g. SAR 20,000 paid in 2022]
+
+---
+
+Using the Saudi Labour Law (Royal Decree No. M/51 as amended), please:
+1. Confirm the employee meets the 2-year minimum threshold
+2. Calculate total years and months of service
+3. Apply the correct tiers (½ month per year for first 10 years; 1 full month per year beyond 10)
+4. Apply resignation reduction if applicable (⅓ for 2–5 years; ⅔ for 5–10 years; full for 10+ years)
+5. State the final EOSB amount payable in SAR
+6. Show all workings clearly
+7. Flag any edge cases or areas requiring legal advice</div>
+        <button class="copy-btn" onclick="copyPrompt('ksaPrompt','ksaCopied','EOSB KSA')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="#134611" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="#134611" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Copy prompt
+        </button>
+        <div class="copy-confirm" id="ksaCopied">Copied! Open Claude, paste and fill in the employee details.</div>
+      </div>
+      <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+      <div class="disclaimer">This tool is for guidance only and does not constitute legal advice. For complex cases consult a qualified Saudi employment lawyer.</div>
+    </div>
+  </div>
+
+  <!-- OMAN -->
+  <div class="country-section" id="oman">
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="showInner('oman-law', 'oman', this)">The Law</button>
+      <button class="inner-tab" onclick="showInner('oman-calc', 'oman', this)">Calculate with Claude</button>
+    </div>
+
+    <div class="inner-section active" id="oman-law">
+      <div class="law-banner">
+        <div class="law-icon">⚖️</div>
+        <div class="law-text">
+          <strong>Oman Labour Law — Royal Decree No. 53/2023</strong>
+          End of service gratuity is mandatory for all employees upon completion of 1 year of continuous service. Calculated on basic salary only. No cap applies.
+        </div>
+      </div>
+
+      <p class="formula-title">How tenure tiers work</p>
+      <div class="tier-grid">
+        <div class="tier-card no-pay">
+          <div class="tier-years">Under 1 year</div>
+          <div class="tier-days red">0</div>
+          <div class="tier-label">entitlement</div>
+          <div class="tier-note">No gratuity payable below 1 full year of service</div>
+        </div>
+        <div class="tier-card partial">
+          <div class="tier-years">1 – 3 years</div>
+          <div class="tier-days gold">15</div>
+          <div class="tier-label">days per year</div>
+          <div class="tier-note">Half a month's salary for each year; resignation may reduce entitlement</div>
+        </div>
+        <div class="tier-card full">
+          <div class="tier-years">3+ years</div>
+          <div class="tier-days green">30</div>
+          <div class="tier-label">days per year</div>
+          <div class="tier-note">Full month's salary for each year of service beyond 3 years</div>
+        </div>
+      </div>
+
+      <p class="formula-title">Calculation steps</p>
+      <div class="step-cards">
+        <div class="step-card">
+          <div class="step-card-num">1</div>
+          <div class="step-card-content">
+            <h4>Calculate daily basic salary</h4>
+            <p>Divide final monthly basic salary by 30.</p>
+            <span class="formula-chip">Daily rate = Basic salary ÷ 30</span>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">2</div>
+          <div class="step-card-content">
+            <h4>Calculate years of service</h4>
+            <p>From start date to last working day. Prorate partial years proportionally.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">3</div>
+          <div class="step-card-content">
+            <h4>Apply the tier formula</h4>
+            <p>First 3 years: 15 days × years of service. Beyond 3 years: 30 days × remaining years.</p>
+            <span class="formula-chip">EOSB = (Daily rate × 15 × first 3 yrs) + (Daily rate × 30 × remaining yrs)</span>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-num">4</div>
+          <div class="step-card-content">
+            <h4>Check resignation impact</h4>
+            <p>Resignation after 1 year entitles the employee to full gratuity under the updated 2023 decree — the older reduction rules no longer apply.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="example-header">
+          <h3>Worked example</h3>
+          <p>Termination by employer · OMR 1,200 basic · 6 years service</p>
+        </div>
+        <div class="example-body">
+          <div class="example-employee">
+            <div class="emp-field"><div class="emp-label">Basic salary</div><div class="emp-value">OMR 1,200</div></div>
+            <div class="emp-field"><div class="emp-label">Years of service</div><div class="emp-value">6 years</div></div>
+            <div class="emp-field"><div class="emp-label">Reason</div><div class="emp-value">Termination</div></div>
+          </div>
+          <div class="calc-steps">
+            <div class="calc-row active">
+              <div class="calc-step-num">1</div>
+              <div class="calc-label">Daily rate (1,200 ÷ 30)</div>
+              <div class="calc-value">OMR 40</div>
+            </div>
+            <div class="calc-row active">
+              <div class="calc-step-num">2</div>
+              <div class="calc-label">First 3 years (15 days × 3 × OMR 40)</div>
+              <div class="calc-value">OMR 1,800</div>
+            </div>
+            <div class="calc-row active">
+              <div class="calc-step-num">3</div>
+              <div class="calc-label">Next 3 years (30 days × 3 × OMR 40)</div>
+              <div class="calc-value">OMR 3,600</div>
+            </div>
+            <div class="calc-row result">
+              <div class="calc-step-num dark">✓</div>
+              <div class="calc-label white">Total EOSB payable</div>
+              <div class="calc-value white">OMR 5,400</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edge-cases">
+        <div class="edge-title">Edge cases to watch</div>
+        <div class="edge-item">
+          <div class="edge-icon danger">✕</div>
+          <div class="edge-content"><h4>Dismissal for cause</h4><p>Termination under Article 40 of the Labour Law for serious misconduct may result in forfeiture of gratuity. Requires documented justification.</p></div>
+        </div>
+        <div class="edge-item">
+          <div class="edge-icon warn">⚠️</div>
+          <div class="edge-content"><h4>2023 decree updates</h4><p>Royal Decree No. 53/2023 updated several provisions. Ensure you are applying the current law — older references may be outdated.</p></div>
+        </div>
+        <div class="edge-item">
+          <div class="edge-icon info">ℹ</div>
+          <div class="edge-content"><h4>Omanisation categories</h4><p>Omani nationals and expats follow the same gratuity rules. However, Omani nationals enrolled in PASI social insurance may have different arrangements — confirm before calculating.</p></div>
+        </div>
+      </div>
+
+      <button class="next-btn" onclick="showInner('oman-calc', 'oman', document.querySelectorAll('#oman .inner-tab')[1])">Calculate with Claude →</button>
+    </div>
+
+    <div class="inner-section" id="oman-calc">
+      <div class="build-intro">
+        <p>Paste the prompt below into Claude, fill in the employee's details, and get a full Oman EOSB calculation with step-by-step workings.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h3>Create a free Claude account</h3><p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and sign up for free.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h3>Copy the prompt and fill in the details</h3><p>Enter the employee's basic salary, start and end dates, reason for leaving, and any edge cases.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h3>Get a full calculation with workings</h3><p>Claude calculates step by step, flags edge cases, and states the final amount payable.</p></div></div>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-box-label">Copy this prompt — Oman EOSB</div>
+        <div class="prompt-text" id="omanPrompt">EMPLOYEE DETAILS:
+- Employee name: [e.g. Khalid Al-Balushi — or use "Employee" for privacy]
+- Nationality: [e.g. Omani / Expat]
+- Job title: [e.g. Operations Manager]
+- Is employee enrolled in PASI social insurance? [Yes / No]
+
+EMPLOYMENT DETAILS:
+- Start date: [e.g. 1 April 2019]
+- Last working day: [e.g. 31 March 2026]
+- Reason for leaving: [Resignation / Termination by employer / Mutual agreement]
+- Was this a dismissal for cause under Article 40? [Yes / No]
+
+SALARY DETAILS:
+- Final basic monthly salary: [e.g. OMR 1,200]
+- Any salary changes during employment? [Yes / No — if Yes, list dates and amounts]
+
+ADDITIONAL FACTORS (delete any that do not apply):
+- Total unpaid leave days: [e.g. 10 days]
+- Any advance gratuity payments already made: [specify amount and date]
+
+---
+
+Using the Oman Labour Law (Royal Decree No. 53/2023), please:
+1. Confirm the employee meets the 1-year minimum service threshold
+2. Calculate total years and months of service
+3. Calculate the daily basic salary rate
+4. Apply the correct tiers (15 days/year for first 3 years; 30 days/year beyond 3)
+5. Note any resignation impact under the updated 2023 provisions
+6. State the final EOSB amount payable in OMR
+7. Show all workings clearly
+8. Flag any edge cases or areas requiring legal advice</div>
+        <button class="copy-btn" onclick="copyPrompt('omanPrompt','omanCopied','EOSB Oman')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="#134611" stroke-width="1.2"/><path d="M2 10V2.5A.5.5 0 012.5 2H10" stroke="#134611" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Copy prompt
+        </button>
+        <div class="copy-confirm" id="omanCopied">Copied! Open Claude, paste and fill in the employee details.</div>
+      </div>
+      <a href="https://claude.ai" target="_blank" class="open-btn">Open Claude now →</a>
+      <div class="disclaimer">This tool is for guidance only and does not constitute legal advice. For complex cases consult a qualified Omani employment lawyer.</div>
+    </div>
+  </div>
+
 </div>
 
-<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
+<div class="footer" style="background:#134611;color:#CAFE48;border-top:none;text-align:center;padding:2rem;font-size:12px;">Part of the AI Agents Library · Built with Claude · Free to use and share</div>
 
 <script>
-function showTab(id, btn) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+function showCountry(id, btn) {
+  document.querySelectorAll('.country-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
 }
 
-function copyPrompt() {
-  const text = document.getElementById('promptText').innerText;
+function showInner(id, country, btn) {
+  document.querySelectorAll('#' + country + ' .inner-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('#' + country + ' .inner-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function copyPrompt(textId, confirmId, agentName) {
+  const text = document.getElementById(textId).innerText;
   navigator.clipboard.writeText(text).then(() => {
-    gtag('event', 'copy_prompt', { 'agent_name': 'EOSB Calculator UAE' });
-    const c = document.getElementById('copyConfirm');
+    gtag('event', 'copy_prompt', { 'agent_name': agentName });
+    const c = document.getElementById(confirmId);
     c.style.display = 'block';
     setTimeout(() => c.style.display = 'none', 5000);
   });
