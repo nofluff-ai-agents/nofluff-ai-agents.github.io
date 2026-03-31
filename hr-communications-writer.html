@@ -504,9 +504,11 @@ Every sentence should earn its place. No padding. Write like a senior HR profess
   document.getElementById('pBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+let _agentTracked = false;
+
 function copyPr() {
   navigator.clipboard.writeText(document.getElementById('pText').textContent).then(() => {
-    gtag('event', 'copy_prompt', { 'agent_name': `HR Comms - ${selCommType} - ${selToneLabel}` });
+    if (!_agentTracked) { _agentTracked = true; gtag('event', 'copy_prompt', { 'agent_name': `HR Comms - ${selCommType} - ${selToneLabel}` }); }
     const c = document.getElementById('cc');
     c.style.display = 'block';
     setTimeout(() => c.style.display = 'none', 5000);

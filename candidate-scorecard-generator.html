@@ -437,10 +437,12 @@ function showSheetTab(id, el) {
 function updateW(id, val, w) {
   document.getElementById(id).textContent = (parseFloat(val) * w).toFixed(2);
 }
+let _agentTracked = false;
+
 function copyPrompt(textId, confirmId, agentName) {
   const text = document.getElementById(textId).innerText;
   navigator.clipboard.writeText(text).then(() => {
-    gtag('event', 'copy_prompt', { 'agent_name': agentName });
+    if (!_agentTracked) { _agentTracked = true; gtag('event', 'copy_prompt', { 'agent_name': agentName }); }
     const c = document.getElementById(confirmId);
     c.style.display = 'block';
     setTimeout(() => c.style.display = 'none', 5000);

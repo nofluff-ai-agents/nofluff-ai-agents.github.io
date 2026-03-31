@@ -382,12 +382,14 @@ TONE & FORMAT:
   document.getElementById('promptPreview').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+let _agentTracked = false;
+
 function copyGeneratedPrompt() {
   const text = document.getElementById('generatedPrompt').textContent;
   navigator.clipboard.writeText(text).then(() => {
-    gtag('event', 'copy_prompt', {
+    if (!_agentTracked) { _agentTracked = true; gtag('event', 'copy_prompt', {
       'agent_name': `GCC Policy Helper - ${selectedCountry} - ${selectedPolicy}`
-    });
+    }); }
     const c = document.getElementById('copyConfirm');
     c.style.display = 'block';
     setTimeout(() => c.style.display = 'none', 5000);

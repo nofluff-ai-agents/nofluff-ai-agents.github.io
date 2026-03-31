@@ -396,10 +396,12 @@ function initScrollReveal() {
 
 window.addEventListener('load', initScrollReveal);
 
+let _agentTracked = false;
+
 function copyPrompt() {
   const text = document.getElementById('promptText').innerText;
   navigator.clipboard.writeText(text).then(() => {
-    gtag('event', 'copy_prompt', { 'agent_name': 'Offer Letter Drafting Assistant' });
+    if (!_agentTracked) { _agentTracked = true; gtag('event', 'copy_prompt', { 'agent_name': 'Offer Letter Drafting Assistant' }); }
     const c = document.getElementById('copyConfirm');
     c.style.display = 'block';
     setTimeout(() => c.style.display = 'none', 5000);

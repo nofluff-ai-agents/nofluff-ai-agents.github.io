@@ -368,10 +368,12 @@ function showTab(id, btn) {
   btn.classList.add('active');
 }
 
+let _agentTracked = false;
+
 function copyPrompt() {
   const text = document.getElementById('promptText').innerText;
   navigator.clipboard.writeText(text).then(() => {
-    gtag('event', 'copy_prompt', { 'agent_name': 'Job Description Generator' });
+    if (!_agentTracked) { _agentTracked = true; gtag('event', 'copy_prompt', { 'agent_name': 'Job Description Generator' }); }
     const c = document.getElementById('copyConfirm');
     c.style.display = 'block';
     setTimeout(() => c.style.display = 'none', 5000);
